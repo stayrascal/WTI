@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:repository="http://www.springframework.org/schema/data/repository"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+       http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+    <!--################主业务模块配置 Strat#############-->
+    <!--Jpa Entity Manager 配置， 设置depends-on="cacheManager"，确保共享模式下优先加载Spring CacheManager -->
+    <!--<bean id="entityManagerFactoryApp" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="cacheManager">-->
+    <bean id="entityManagerFactoryApp" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="entityManagerApp"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="packagesToScan">
+            <list>
+                <value>com.rascal.core.audit.envers</value>
+                <value>com.rascal.module.**.entity</value>
+                <value>com.rascal.shop.entity</value>
+            </list>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.connection.autocommit">false</prop>
+                <prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.DefaultNamingStrategy</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate_hbm2ddl_auto}</prop>
+
+                <!--<prop key="hibernate.cache.use_query_cache">true</prop>
+                <prop key="hibernate.cache.use_second_level_cache">true</prop>
+                <prop key="hibernate.cache.use_structured_entries">true</prop>
+                <prop key="javax.persistence.sharedCache.mode">ENABLE_SELECTIVE</prop>
+-->
+                <!--EhCache-->
+                <!--<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory</prop>
+                <prop key="hibernate.cache.provide_class">net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory</prop>
+                <prop key="hibernate.cache.provide_configuration_file_resource_path">classpath:ehcache-config.xml</prop>
+-->
+
+                <!--Redis Cache-->
+                <!--<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.redis.SingletonRedisRegionFactory</prop>
+                <prop key="hibernate.cache.provider_configuration_file_resource_path">redis-config.properties</prop>
+                -->
+
+                <!--<prop key="org.hibernate.envers.default_schema">${hibernate_envers_default_schema}</prop>
+                <prop key="org.hibernate.envers.audit_table_prefix">aud_</prop>
+                <prop key="org.hibernate.envers.audit_table_suffix"></prop>
+                <prop key="org.hibernate.envers.do_not_audit_optimistic_locking_field">false</prop>
+                <prop key="org.hibernate.envers.global_with_modified_flag">true</prop>
+            -->
+            </props>
+        </property>
+    </bean>
+
+    <!--JPA 事务配置-->
+    <bean id="transactionManagerApp" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactoryApp"/>
+    </bean>
+
+    <!--使用annotation定义事务-->
+    <tx:annotation-driven transaction-manager="transactionManagerApp" proxy-target-class="true"/>
+
+    <!--Spring Data JPA 配置-->
+    <jpa:repositories base-package="com.rascal.module.**.dao,com.rascal.shop.dao"
+                      transaction-manager-ref="transactionManagerApp"
+                      entity-manager-factory-ref="entityManagerFactoryApp">
+        <repository:exclude-filter type="regex" expression="com.knight.core.*"/>
+    </jpa:repositories>
+    <!--#############主业务模块配置 End#############-->
+
+
+</beans>

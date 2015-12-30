@@ -1,0 +1,41 @@
+package com.rascal.core.security;
+
+import com.rascal.core.util.Digests;
+import com.rascal.core.util.Encodes;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PasswordService {
+
+    public static final String HASH_ALGORITHM = "MD5";
+    public static final int SALT_SIZE = 8;
+
+    public String generateSalt() {
+        byte[] salt = Digests.generateSalt(SALT_SIZE);
+        return Encodes.encodeHex(salt);
+    }
+
+    public String entryptPassword(String rawPassword) {
+        return entryptPassword(rawPassword, null);
+    }
+
+    public String entryptPassword(String rawPassword, String salt) {
+        byte[] hashPassword = null;
+        if (salt == null) {
+            hashPassword = Digests.md5(rawPassword.getBytes());
+        } else {
+            hashPassword = Digests.md5(injectPasswordSalt(rawPassword, salt).getBytes());
+        }
+        return Encodes.encodeHex(hashPassword);
+
+    }
+
+    /**
+     * 对原始密码注入盐值
+     */
+    public String injectPasswordSalt(String rawPassword, String salt) {
+        return "{" + salt + "}" + rawPassword;
+    }
+
+
+}
