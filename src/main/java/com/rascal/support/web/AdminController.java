@@ -1,43 +1,33 @@
 package com.rascal.support.web;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.cons.GlobalConstant;
-import lab.s2jh.core.pagination.GroupPropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter.MatchType;
-import lab.s2jh.core.security.AuthContextHolder;
-import lab.s2jh.core.security.AuthUserDetails;
-import lab.s2jh.core.security.PasswordService;
-import lab.s2jh.core.security.ShiroJdbcRealm;
-import lab.s2jh.core.web.captcha.ImageCaptchaServlet;
-import lab.s2jh.core.web.filter.WebAppContextInitFilter;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.auth.entity.SignupUser;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
-import lab.s2jh.module.auth.service.SignupUserService;
-import lab.s2jh.module.auth.service.UserService;
-import lab.s2jh.module.sys.entity.NotifyMessage;
-import lab.s2jh.module.sys.entity.UserMessage;
-import lab.s2jh.module.sys.service.MenuService;
-import lab.s2jh.module.sys.service.NotifyMessageService;
-import lab.s2jh.module.sys.service.UserMessageService;
-import lab.s2jh.module.sys.vo.NavMenuVO;
-import lab.s2jh.support.service.DynamicConfigService;
-import lab.s2jh.support.service.MailService;
-
+import com.google.common.collect.Lists;
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.cons.GlobalConstant;
+import com.rascal.core.pagination.GroupPropertyFilter;
+import com.rascal.core.pagination.PropertyFilter;
+import com.rascal.core.pagination.PropertyFilter.MatchType;
+import com.rascal.core.security.AuthContextHolder;
+import com.rascal.core.security.AuthUserDetails;
+import com.rascal.core.web.captcha.ImageCaptchaServlet;
+import com.rascal.core.web.filter.WebAppContextInitFilter;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.auth.entity.SignupUser;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.entity.User.AuthTypeEnum;
+import com.rascal.module.auth.service.SignupUserService;
+import com.rascal.module.auth.service.UserService;
+import com.rascal.module.sys.entity.NotifyMessage;
+import com.rascal.module.sys.entity.UserMessage;
+import com.rascal.module.sys.service.MenuService;
+import com.rascal.module.sys.service.NotifyMessageService;
+import com.rascal.module.sys.service.UserMessageService;
+import com.rascal.module.sys.vo.NavMenuVO;
+import com.rascal.support.service.DynamicConfigService;
+import com.rascal.support.service.MailService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresRoles;
-import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.util.CollectionUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,15 +35,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.*;
 
-import com.google.common.collect.Lists;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
 
 @Controller
 public class AdminController {
@@ -68,9 +54,6 @@ public class AdminController {
     private SignupUserService signupUserService;
 
     @Autowired
-    private PasswordService passwordService;
-
-    @Autowired
     private MailService mailService;
 
     @Autowired
@@ -82,15 +65,9 @@ public class AdminController {
     @Autowired
     private UserMessageService userMessageService;
 
-    @Autowired(required = false)
-    private ShiroJdbcRealm shiroJdbcRealm;
-
-    @Autowired(required = false)
-    private AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor;
-
     @RequiresRoles(AuthUserDetails.ROLE_MGMT_USER)
     @RequestMapping(value = "/admin/dashboard", method = RequestMethod.GET)
-    public String dashboard(Model model) {
+    public String dashboard() {
         return "admin/dashboard";
     }
 
@@ -99,7 +76,7 @@ public class AdminController {
      */
     @RequestMapping(value = "/admin/menus", method = RequestMethod.GET)
     @ResponseBody
-    public List<NavMenuVO> navMenu(HttpSession session) {
+    public List<NavMenuVO> navMenu() {
         User user = AuthContextHolder.findAuthUser();
         //如果未登录则直接返回空
         if (user == null) {
@@ -137,14 +114,14 @@ public class AdminController {
     }
 
     @RequestMapping(value = "/admin/password/reset", method = RequestMethod.GET)
-    public String restPasswordShow(Model model) {
+    public String restPasswordShow() {
         return "admin/pub/password-reset";
     }
 
     @RequestMapping(value = "/admin/password/reset", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult resetPasswordSave(HttpServletRequest request, HttpServletResponse response, @RequestParam("uid") String uid,
-            @RequestParam("code") String code, @RequestParam("newpasswd") String newpasswd, RedirectAttributes redirectAttributes) throws IOException {
+    public OperationResult resetPasswordSave(@RequestParam("uid") String uid,
+                                             @RequestParam("code") String code, @RequestParam("newpasswd") String newpasswd) throws IOException {
         User user = userService.findByAuthTypeAndAuthUid(AuthTypeEnum.SYS, uid);
         if (user != null) {
             if (code.equals(user.getUserExt().getRandomCode())) {
@@ -178,7 +155,7 @@ public class AdminController {
         signupUserService.signup(entity, request.getParameter("password"));
         return OperationResult.buildSuccessResult("注册成功。需要等待管理员审批通过后方可登录系统。");
     }
-    
+
     /**
      * 验证手机唯一性
      * <p>
@@ -187,8 +164,6 @@ public class AdminController {
      * <li><b>mobile</b> 手机号</li>
      * </ul>
      * </p>
-     * @param request
-     * @return
      */
     @RequestMapping(value = "/admin/signup/unique/mobile", method = RequestMethod.GET)
     @ResponseBody
@@ -211,8 +186,6 @@ public class AdminController {
      * <li><b>email</b> 电子邮件</li>
      * </ul>
      * </p>
-     * @param request
-     * @return
      */
     @RequestMapping(value = "/admin/signup/unique/email", method = RequestMethod.GET)
     @ResponseBody
@@ -235,8 +208,6 @@ public class AdminController {
      * <li><b>email</b> 电子邮件</li>
      * </ul>
      * </p>
-     * @param request
-     * @return
      */
     @RequestMapping(value = "/admin/signup/unique/uid", method = RequestMethod.GET)
     @ResponseBody
@@ -320,7 +291,7 @@ public class AdminController {
     public String userMessageView(@PathVariable("messageId") Long messageId, Model model) {
         User user = AuthContextHolder.findAuthUser();
         UserMessage userMessage = userMessageService.findOne(messageId);
-        userMessageService.processUserRead(userMessage, user);
+        userMessageService.processUserRead(userMessage);
         model.addAttribute("notifyMessage", userMessage);
         return "admin/profile/notifyMessage-view";
     }

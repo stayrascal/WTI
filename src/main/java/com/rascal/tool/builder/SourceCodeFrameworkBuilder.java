@@ -1,31 +1,15 @@
 package com.rascal.tool.builder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseEntity;
-import lab.s2jh.core.entity.PersistableEntity;
-import lab.s2jh.core.web.json.DateJsonSerializer;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseEntity;
+import com.rascal.core.entity.PersistableEntity;
+import com.rascal.core.web.json.DateJsonSerializer;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.RevisionEntity;
@@ -33,13 +17,14 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
-import freemarker.template.Configuration;
-import freemarker.template.Template;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.*;
 
 /**
  * 基本CRUD框架代码生成工具类，直接main方法执行或Maven方式运行工程的pom.xml调用生成代码
@@ -48,14 +33,14 @@ import freemarker.template.Template;
  */
 public class SourceCodeFrameworkBuilder {
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static void main(String[] args) throws Exception {
         Configuration cfg = new Configuration();
         // 设置FreeMarker的模版文件位置
         cfg.setClassForTemplateLoading(SourceCodeFrameworkBuilder.class, "/lab/s2jh/tool//builder/freemarker");
         cfg.setDefaultEncoding("UTF-8");
 
-        Set<String> entityNames = new HashSet<String>();
+        Set<String> entityNames = new HashSet<>();
 
         ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
         scanner.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
@@ -88,7 +73,7 @@ public class SourceCodeFrameworkBuilder {
             String modelPackagePath = StringUtils.replace(modelName, ".", File.separator);
             modelPackagePath = File.separator + modelPackagePath;
 
-            Map<String, Object> root = new HashMap<String, Object>();
+            Map<String, Object> root = new HashMap<>();
             String nameField = StringUtils.uncapitalize(className);
             root.put("model_name", modelName);
             root.put("model_path", modelPath);
@@ -118,16 +103,12 @@ public class SourceCodeFrameworkBuilder {
             Set<Field> fields = Sets.newLinkedHashSet();
 
             Field[] curfields = entityClass.getDeclaredFields();
-            for (Field field : curfields) {
-                fields.add(field);
-            }
+            Collections.addAll(fields, curfields);
 
             Class superClass = entityClass.getSuperclass();
             while (superClass != null && !superClass.equals(BaseEntity.class)) {
                 Field[] superfields = superClass.getDeclaredFields();
-                for (Field field : superfields) {
-                    fields.add(field);
-                }
+                Collections.addAll(fields, superfields);
                 superClass = superClass.getSuperclass();
             }
 
@@ -225,7 +206,7 @@ public class SourceCodeFrameworkBuilder {
                     if (entityCodeField.getList() || entityCodeField.getListHidden()) {
                         JoinColumn fieldJoinColumn = field.getAnnotation(JoinColumn.class);
                         if (fieldJoinColumn != null) {
-                            if (fieldJoinColumn.nullable() == false) {
+                            if (!fieldJoinColumn.nullable()) {
                                 fetchJoinFields.put(field.getName(), "INNER");
                             } else {
                                 fetchJoinFields.put(field.getName(), "LEFT");
@@ -293,10 +274,8 @@ public class SourceCodeFrameworkBuilder {
 
     /**
      * 对象属性转换为字段 例如：userName to user_name
-     * 
-     * @param property
-     *            字段名
-     * @return
+     *
+     * @param property 字段名
      */
     public static String propertyToField(String property) {
         if (null == property) {
@@ -306,7 +285,7 @@ public class SourceCodeFrameworkBuilder {
         StringBuffer sb = new StringBuffer();
         for (char c : chars) {
             if (CharUtils.isAsciiAlphaUpper(c)) {
-                sb.append("-" + StringUtils.lowerCase(CharUtils.toString(c)));
+                sb.append("-").append(StringUtils.lowerCase(CharUtils.toString(c)));
             } else {
                 sb.append(c);
             }

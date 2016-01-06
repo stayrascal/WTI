@@ -1,13 +1,12 @@
 package com.rascal.core.dao.mybatis;
 
-import java.util.List;
-import java.util.Map;
-
-import lab.s2jh.core.pagination.GroupPropertyFilter;
-
+import com.rascal.core.pagination.GroupPropertyFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import java.util.List;
+import java.util.Map;
 
 public interface MyBatisDao {
 

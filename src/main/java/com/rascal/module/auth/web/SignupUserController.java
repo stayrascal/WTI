@@ -1,20 +1,15 @@
 package com.rascal.module.auth.web;
 
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.service.Validation;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.core.web.EntityProcessCallbackHandler;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.auth.entity.SignupUser;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.service.RoleService;
-import lab.s2jh.module.auth.service.SignupUserService;
-import lab.s2jh.module.auth.service.UserService;
-import lab.s2jh.support.service.DynamicConfigService;
-
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.service.Validation;
+import com.rascal.core.web.BaseController;
+import com.rascal.core.web.EntityProcessCallbackHandler;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.auth.entity.SignupUser;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.service.RoleService;
+import com.rascal.module.auth.service.SignupUserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.joda.time.DateTime;
@@ -22,24 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping(value = "/admin/auth/signup-user")
 public class SignupUserController extends BaseController<SignupUser, Long> {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private SignupUserService signupUserService;
-
-    @Autowired
-    private DynamicConfigService dynamicConfigService;
 
     @Autowired
     private RoleService roleService;
@@ -58,7 +45,7 @@ public class SignupUserController extends BaseController<SignupUser, Long> {
     @MenuData("配置管理:权限管理:注册用户管理")
     @RequiresPermissions("配置管理:权限管理:注册用户管理")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index(Model model) {
+    public String index() {
         return "admin/auth/signupUser-index";
     }
 
@@ -84,7 +71,7 @@ public class SignupUserController extends BaseController<SignupUser, Long> {
     @RequiresPermissions("配置管理:权限管理:注册用户管理")
     @RequestMapping(value = "/audit", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult auditSave(@ModelAttribute("entity") SignupUser entity, Model model) {
+    public OperationResult auditSave(@ModelAttribute("entity") SignupUser entity) {
         Validation.notDemoMode();
         signupUserService.auditNewUser(entity);
         return OperationResult.buildSuccessResult("数据保存处理完成", entity);
@@ -95,12 +82,9 @@ public class SignupUserController extends BaseController<SignupUser, Long> {
     @ResponseBody
     public OperationResult delete(@RequestParam("ids") Long... ids) {
         Validation.notDemoMode();
-        return super.delete(ids, new EntityProcessCallbackHandler<SignupUser>() {
-            @Override
-            public void processEntity(SignupUser entity) throws EntityProcessCallbackException {
-                if (entity.getAuditTime() != null) {
-                    throw new EntityProcessCallbackException("已审核数据不允许删除");
-                }
+        return super.delete(ids, entity -> {
+            if (entity.getAuditTime() != null) {
+                throw new EntityProcessCallbackHandler.EntityProcessCallbackException("已审核数据不允许删除");
             }
         });
     }

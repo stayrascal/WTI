@@ -1,30 +1,24 @@
 package com.rascal.aud.web;
 
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.aud.entity.SendMessageLog;
-import lab.s2jh.aud.entity.SendMessageLog.SendMessageTypeEnum;
-import lab.s2jh.aud.service.SendMessageLogService;
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.util.EnumUtils;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.core.web.json.JsonViews;
-import lab.s2jh.core.web.view.OperationResult;
-
+import com.fasterxml.jackson.annotation.JsonView;
+import com.rascal.aud.entity.SendMessageLog;
+import com.rascal.aud.entity.SendMessageLog.SendMessageTypeEnum;
+import com.rascal.aud.service.SendMessageLogService;
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.util.EnumUtils;
+import com.rascal.core.web.BaseController;
+import com.rascal.core.web.json.JsonViews;
+import com.rascal.core.web.view.OperationResult;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.annotation.JsonView;
+import javax.servlet.http.HttpServletRequest;
 
 @MetaData("发送消息记录管理")
 @Controller
@@ -61,7 +55,7 @@ public class SendMessageLogController extends BaseController<SendMessageLog, Lon
     }
 
     @RequestMapping(value = "/edit-tabs", method = RequestMethod.GET)
-    public String editTabs(HttpServletRequest request) {
+    public String editTabs() {
         return "admin/aud/sendMessageLog-inputTabs";
     }
 

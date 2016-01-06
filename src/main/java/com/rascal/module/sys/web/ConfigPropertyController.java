@@ -1,30 +1,24 @@
 package com.rascal.module.sys.web;
 
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.core.web.listener.ApplicationContextPostListener;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.sys.entity.ConfigProperty;
-import lab.s2jh.module.sys.service.ConfigPropertyService;
-
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.web.BaseController;
+import com.rascal.core.web.listener.ApplicationContextPostListener;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.sys.entity.ConfigProperty;
+import com.rascal.module.sys.service.ConfigPropertyService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @MetaData("参数管理")
 @Controller
@@ -54,7 +48,7 @@ public class ConfigPropertyController extends BaseController<ConfigProperty, Lon
     }
 
     @RequestMapping(value = "/edit-tabs", method = RequestMethod.GET)
-    public String editTabs(HttpServletRequest request) {
+    public String editTabs() {
         return "admin/sys/configProperty-inputTabs";
     }
 

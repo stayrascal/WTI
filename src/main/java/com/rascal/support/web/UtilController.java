@@ -1,35 +1,20 @@
 package com.rascal.support.web;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.exception.WebException;
-import lab.s2jh.core.mq.BrokeredMessageListener;
-import lab.s2jh.core.security.AuthUserDetails;
-import lab.s2jh.core.service.Validation;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.util.Exceptions;
-import lab.s2jh.core.util.ExtStringUtils;
-import lab.s2jh.core.web.filter.WebAppContextInitFilter;
-import lab.s2jh.core.web.util.ServletUtils;
-import lab.s2jh.core.web.view.OperationResult;
+import ch.qos.logback.classic.Level;
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.exception.WebException;
+import com.rascal.core.mq.BrokeredMessageListener;
+import com.rascal.core.security.AuthUserDetails;
+import com.rascal.core.service.Validation;
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.util.Exceptions;
+import com.rascal.core.util.ExtStringUtils;
+import com.rascal.core.web.filter.WebAppContextInitFilter;
+import com.rascal.core.web.util.ServletUtils;
+import com.rascal.core.web.view.OperationResult;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -42,14 +27,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import ch.qos.logback.classic.Level;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("/admin/util")
@@ -84,7 +79,7 @@ public class UtilController {
             String[] cacheNames = cacheManager.getCacheNames();
             for (String cacheName : cacheNames) {
                 //对于Apache Shiro缓存忽略
-                if (cacheName.indexOf(".authorizationCache") > -1) {
+                if (cacheName.contains(".authorizationCache")) {
                     continue;
                 }
                 logger.debug(" - clearing cache： {}", cacheName);
@@ -101,7 +96,7 @@ public class UtilController {
     @RequestMapping(value = "/logger-update", method = RequestMethod.POST)
     @ResponseBody
     public OperationResult loggerLevelUpdate(@RequestParam(value = "loggerName", required = false) String loggerName,
-            @RequestParam("loggerLevel") String loggerLevel) {
+                                             @RequestParam("loggerLevel") String loggerLevel) {
         if (StringUtils.isBlank(loggerName)) {
             Validation.notDemoMode();
             loggerName = Logger.ROOT_LOGGER_NAME;
@@ -117,13 +112,13 @@ public class UtilController {
 
     @RequestMapping(value = "/validate", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, Object> formValidation(Model model, @RequestParam("clazz") String clazz) {
+    public Map<String, Object> formValidation(@RequestParam("clazz") String clazz) {
         return ServletUtils.buildValidateRules(clazz);
     }
 
     @RequestMapping(value = "/validate/unique", method = RequestMethod.GET)
     @ResponseBody
-    public boolean formValidationUnique(HttpServletRequest request, Model model, @RequestParam("clazz") String clazz) {
+    public boolean formValidationUnique(HttpServletRequest request, @RequestParam("clazz") String clazz) {
         String element = request.getParameter("element");
         Assert.notNull(element);
 
@@ -133,7 +128,7 @@ public class UtilController {
         }
 
         Class<?> entityClass = ClassUtils.forName(clazz);
-        String jql = "select id from " + entityClass.getName() + " where " + element + "=:value ";
+        String jql = String.format("select id from %s where %s=:value ", entityClass.getName(), element);
         Query query = null;
 
         // 处理额外补充参数，有些数据是通过两个字段共同决定唯一性，可以通过additional参数补充提供
@@ -159,7 +154,7 @@ public class UtilController {
             if (entities.size() == 1) {// 查询到一条重复数据
                 String id = request.getParameter("id");
                 if (StringUtils.isNotBlank(id)) {
-                    String entityId = ((Long) entities.get(0)).toString();
+                    String entityId = entities.get(0).toString();
                     logger.debug("Check Unique Entity ID = {}", entityId);
                     if (id.equals(entityId)) {// 查询到数据是当前更新数据，不算已存在
                         return true;
@@ -212,8 +207,6 @@ public class UtilController {
             }
             wb.write(os);
             IOUtils.closeQuietly(os);
-        } catch (UnsupportedEncodingException e) {
-            Exceptions.unchecked(e);
         } catch (IOException e) {
             Exceptions.unchecked(e);
         }
@@ -232,11 +225,9 @@ public class UtilController {
         DateUtils.setCurrentDate(DateUtils.parseMultiFormatDate(time));
 
         //为了避免遗忘执行手工恢复操作，在“临时调整系统时间”操作后，默认在N分钟后强制恢复为当前系统时间。
-        Runnable runnable = new Runnable() {
-            public void run() {
-                DateUtils.setCurrentDate(null);
-                logger.info("Processed DateUtils.currentDate() reset to new Date()");
-            }
+        Runnable runnable = () -> {
+            DateUtils.setCurrentDate(null);
+            logger.info("Processed DateUtils.currentDate() reset to new Date()");
         };
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.schedule(runnable, 5, TimeUnit.MINUTES);

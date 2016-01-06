@@ -1,47 +1,20 @@
 package com.rascal.core.web.util;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.regex.Matcher;
-
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.context.SpringContextHolder;
-import lab.s2jh.core.security.AuthContextHolder;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.util.UidUtils;
-import lab.s2jh.core.web.filter.WebAppContextInitFilter;
-import lab.s2jh.core.web.json.DateJsonSerializer;
-import lab.s2jh.core.web.json.DateTimeJsonSerializer;
-import lab.s2jh.core.web.json.ShortDateTimeJsonSerializer;
-import lab.s2jh.support.service.DynamicConfigService;
-
+import ch.qos.logback.classic.ClassicConstants;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.context.SpringContextHolder;
+import com.rascal.core.security.AuthContextHolder;
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.util.UidUtils;
+import com.rascal.core.web.filter.WebAppContextInitFilter;
+import com.rascal.core.web.json.DateJsonSerializer;
+import com.rascal.core.web.json.DateTimeJsonSerializer;
+import com.rascal.core.web.json.ShortDateTimeJsonSerializer;
+import com.rascal.support.service.DynamicConfigService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -55,12 +28,20 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import ch.qos.logback.classic.ClassicConstants;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import javax.persistence.*;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.regex.Matcher;
 
 public class ServletUtils {
 
@@ -79,12 +60,12 @@ public class ServletUtils {
 
     /**
      * 取得带相同前缀的Request Parameters, copy from spring WebUtils.
-     * 
+     * <p>
      * 返回的结果的Parameter名已去除前缀.
      */
     public static Map<String, Object> buildParameters(ServletRequest request) {
         Enumeration<?> paramNames = request.getParameterNames();
-        Map<String, Object> params = new TreeMap<String, Object>();
+        Map<String, Object> params = new TreeMap<>();
         String prefix = "search_";
         while ((paramNames != null) && paramNames.hasMoreElements()) {
             String paramName = (String) paramNames.nextElement();
@@ -108,7 +89,7 @@ public class ServletUtils {
 
     /**
      * 设置让浏览器弹出下载对话框的Header.
-     * 
+     *
      * @param fileName 下载后的文件名.
      */
     public static void setFileDownloadHeader(HttpServletResponse response, String fileName) {
@@ -116,7 +97,7 @@ public class ServletUtils {
             //中文文件名支持
             String encodedfileName = new String(fileName.getBytes("UTF-8"), "ISO8859-1");
             response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedfileName + "\"");
-        } catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException ignored) {
         }
     }
 
@@ -155,8 +136,6 @@ public class ServletUtils {
 
     /**
      * 基于构建的哈希标识计算获取校验规则
-     * @param id
-     * @return
      */
     public static Map<String, Object> buildValidateRules(String entityClazz) {
         Map<String, Object> nameRules = entityValidationRulesMap.get(entityClazz);
@@ -204,13 +183,13 @@ public class ServletUtils {
                     Column column = field.getAnnotation(Column.class);
 
                     if (column != null) {
-                        if (retType != Boolean.class && column.nullable() == false) {
+                        if (retType != Boolean.class && !column.nullable()) {
                             rules.put("required", true);
                         }
-                        if (column.unique() == true) {
+                        if (column.unique()) {
                             rules.put("unique", true);
                         }
-                        if (column.updatable() == false) {
+                        if (!column.updatable()) {
                             rules.put("readonly", true);
                         }
                         if (column.length() > 0 && retType == String.class && field.getAnnotation(Lob.class) == null) {
@@ -220,7 +199,7 @@ public class ServletUtils {
 
                     JoinColumn joinColumn = field.getAnnotation(JoinColumn.class);
                     if (joinColumn != null) {
-                        if (joinColumn.nullable() == false) {
+                        if (!joinColumn.nullable()) {
                             rules.put("required", true);
                         }
                     }
@@ -358,7 +337,7 @@ public class ServletUtils {
                     attrValue = "NULL";
                 }
                 String attr = attrValue.toString();
-                if (attr != null && attr.toString().length() > 100) {
+                if (attr != null && attr.length() > 100) {
                     attr = attr.substring(0, 100) + "...";
                 }
                 dataMap.put("req.attr[" + attrName + "]", attr);
@@ -374,8 +353,8 @@ public class ServletUtils {
                         attrValue = "NULL";
                     }
                     String attr = attrValue.toString();
-                    if (attr != null && attr.toString().length() > 100) {
-                        attr = attr.toString().substring(0, 100) + "...";
+                    if (attr != null && attr.length() > 100) {
+                        attr = attr.substring(0, 100) + "...";
                     }
                     dataMap.put("session.attr[" + attrName + "]", attr);
                 }
@@ -388,7 +367,6 @@ public class ServletUtils {
 
     /**
      * 文件显示URL前缀
-     * @return
      */
     public static String getReadFileUrlPrefix() {
         if (readFileUrlPrefix == null) {
@@ -403,7 +381,6 @@ public class ServletUtils {
 
     /**
      * 将URL进行解析处理，如果http打头直接返回，否则添加文件访问路径前缀
-     * @return
      */
     public static String parseReadFileUrl(String url) {
         if (StringUtils.isBlank(url)) {
@@ -417,7 +394,6 @@ public class ServletUtils {
 
     /**
      * 将URL基于/切分，把路径中的中文部分做UTF8编码后再组装返回
-     * @return
      */
     public static String encodeUtf8Url(String url) {
         if (url == null) {
@@ -443,6 +419,7 @@ public class ServletUtils {
 
     /**
      * 获取文件上传根目录：优先取write_upload_file_dir参数值，如果没有定义则取webapp/upload
+     *
      * @return 返回图片访问相对路径
      */
     public static String writeUploadFile(InputStream fis, String name, long length) {
@@ -465,7 +442,7 @@ public class ServletUtils {
         DateTime now = new DateTime();
         StringBuilder sb = new StringBuilder();
         int year = now.getYear();
-        sb.append("/" + year);
+        sb.append("/").append(year);
         String month = "";
         int monthOfYear = now.getMonthOfYear();
         if (monthOfYear < 10) {
@@ -480,10 +457,10 @@ public class ServletUtils {
         } else {
             day = "" + dayOfMonth;
         }
-        sb.append("/" + month);
-        sb.append("/" + day);
+        sb.append("/").append(month);
+        sb.append("/").append(day);
         Assert.notNull(id, "id is required to buildInstance");
-        sb.append("/" + id);
+        sb.append("/").append(id);
 
         String path = "/upload/" + sb + "/" + name;
         String fullPath = staticFileUploadDir + path;

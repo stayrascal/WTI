@@ -10,13 +10,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 /**
  * 基于Spring MVC Test的Controller测试基类.
- * @see http://docs.spring.io/spring/docs/current/spring-framework-reference/html/testing.html#spring-mvc-test-framework
- *   
- * 子类需要定义applicationContext文件的位置, 如:
+ *
  * @ContextConfiguration(locations = { "classpath*:/context/spring-bpm.xml" })
- * 
+ * see http://docs.spring.io/spring/docs/current/spring-framework-reference/html/testing.html#spring-mvc-test-framework
+ * <p>
+ * 子类需要定义applicationContext文件的位置, 如:
  */
-@ContextConfiguration(locations = { "classpath*:/spring-mvc.xml" })
+@ContextConfiguration(locations = {"classpath*:/spring-mvc.xml"})
 @WebAppConfiguration
 public abstract class SpringControllerTestCase extends SpringTransactionalTestCase {
 

@@ -1,16 +1,14 @@
 package com.rascal.core.validation.impl;
 
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.rascal.core.validation.FormattedDate;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import lab.s2jh.core.validation.FormattedDate;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FormattedDateValidator implements ConstraintValidator<FormattedDate, Object> {
 
@@ -40,10 +38,7 @@ public class FormattedDateValidator implements ConstraintValidator<FormattedDate
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         String data = String.valueOf(value);
-        if (StringUtils.isBlank(data)) {
-            return true;
-        }
-        return isDate(data, pattern);
+        return StringUtils.isBlank(data) || isDate(data, pattern);
     }
 
     private static boolean isDate(String value, String format) {
@@ -60,10 +55,7 @@ public class FormattedDateValidator implements ConstraintValidator<FormattedDate
                 return false;
             } else {
                 //更为严谨的日期,如2011-03-024认为是不合法的  
-                if (pos.getIndex() > sdf.format(date).length()) {
-                    return false;
-                }
-                return true;
+                return pos.getIndex() <= sdf.format(date).length();
             }
         } catch (Exception e) {
             return false;

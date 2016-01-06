@@ -1,33 +1,29 @@
 package com.rascal.module.auth.web;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.pagination.GroupPropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter.MatchType;
-import lab.s2jh.core.security.AuthUserDetails;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.service.Validation;
-import lab.s2jh.core.util.EnumUtils;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.auth.entity.Privilege;
-import lab.s2jh.module.auth.entity.RoleR2Privilege;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
-import lab.s2jh.module.auth.entity.UserR2Role;
-import lab.s2jh.module.auth.service.PrivilegeService;
-import lab.s2jh.module.auth.service.RoleService;
-import lab.s2jh.module.auth.service.UserService;
-import lab.s2jh.module.sys.service.MenuService;
-import lab.s2jh.module.sys.vo.NavMenuVO;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.pagination.GroupPropertyFilter;
+import com.rascal.core.pagination.PropertyFilter;
+import com.rascal.core.pagination.PropertyFilter.MatchType;
+import com.rascal.core.security.AuthUserDetails;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.service.Validation;
+import com.rascal.core.util.EnumUtils;
+import com.rascal.core.web.BaseController;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.auth.entity.Privilege;
+import com.rascal.module.auth.entity.RoleR2Privilege;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.entity.User.AuthTypeEnum;
+import com.rascal.module.auth.entity.UserR2Role;
+import com.rascal.module.auth.service.PrivilegeService;
+import com.rascal.module.auth.service.RoleService;
+import com.rascal.module.auth.service.UserService;
+import com.rascal.module.sys.service.MenuService;
+import com.rascal.module.sys.vo.NavMenuVO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
@@ -35,15 +31,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 
 @Controller
 @RequestMapping(value = "/admin/auth/user")
@@ -88,7 +82,7 @@ public class UserController extends BaseController<User, Long> {
     }
 
     @RequestMapping(value = "/edit-tabs", method = RequestMethod.GET)
-    public String editTabs(HttpServletRequest request) {
+    public String editTabs() {
         return "admin/auth/user-inputTabs";
     }
 
@@ -103,8 +97,8 @@ public class UserController extends BaseController<User, Long> {
     @RequiresPermissions("配置管理:权限管理:用户账号")
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult editSave(@ModelAttribute("entity") User entity, Model model,
-            @RequestParam(value = "rawPassword", required = false) String rawPassword) {
+    public OperationResult editSave(@ModelAttribute("entity") User entity,
+                                    @RequestParam(value = "rawPassword", required = false) String rawPassword) {
         Validation.notDemoMode();
         if (entity.isNew()) {
             Validation.isTrue(StringUtils.isNotBlank(rawPassword), "创建用户必须设置初始密码");
@@ -156,14 +150,14 @@ public class UserController extends BaseController<User, Long> {
     @MetaData(value = "汇总用户关联菜单集合")
     @RequiresPermissions("配置管理:权限管理:用户账号")
     @RequestMapping(value = "/menus", method = RequestMethod.GET)
-    public String menusShow(Model model) {
+    public String menusShow() {
         return "admin/auth/user-menus";
     }
 
     @RequiresPermissions("配置管理:权限管理:用户账号")
     @RequestMapping(value = "/menus/data", method = RequestMethod.GET)
     @ResponseBody
-    public Object menusData(Model model, @ModelAttribute("entity") User entity) {
+    public Object menusData(@ModelAttribute("entity") User entity) {
         List<Map<String, Object>> items = Lists.newArrayList();
         List<NavMenuVO> navMenuVOs = menuService.processUserMenu(entity);
         for (NavMenuVO navMenuVO : navMenuVOs) {
@@ -181,7 +175,7 @@ public class UserController extends BaseController<User, Long> {
 
     @RequestMapping(value = "/tags", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> tagsData(Model model, @RequestParam("q") String q) {
+    public List<Map<String, Object>> tagsData(@RequestParam("q") String q) {
         GroupPropertyFilter groupFilter = GroupPropertyFilter.buildDefaultOrGroupFilter();
         groupFilter.append(new PropertyFilter(MatchType.CN, "authUid", q));
         groupFilter.append(new PropertyFilter(MatchType.CN, "nickName", q));

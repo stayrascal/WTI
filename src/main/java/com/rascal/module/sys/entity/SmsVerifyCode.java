@@ -1,28 +1,22 @@
 package com.rascal.module.sys.entity;
 
-import java.util.Date;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseNativeEntity;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseNativeEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "sys_SmsVerifyCode")
+@Table(name = "sys_sms_verify_code")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @MetaData(value = "短信校验码")
 public class SmsVerifyCode extends BaseNativeEntity {

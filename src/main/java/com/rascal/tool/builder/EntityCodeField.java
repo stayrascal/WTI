@@ -7,29 +7,53 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * 用于代码生成处理的辅助对象
  */
 public class EntityCodeField implements Comparable<EntityCodeField> {
-    /** 属性标题 */
+    /**
+     * 属性标题
+     */
     private String title;
-    /** Java属性名称 */
+    /**
+     * Java属性名称
+     */
     private String fieldName;
-    /** 属性描述 */
+    /**
+     * 属性描述
+     */
     private String description;
-    /** 属性在列表jqGrid中定义的宽度 */
+    /**
+     * 属性在列表jqGrid中定义的宽度
+     */
     private Integer listWidth = 200;
-    /** 在生成代码中属性的相对顺序 */
+    /**
+     * 在生成代码中属性的相对顺序
+     */
     private Integer order = Integer.MAX_VALUE;
-    /** 属性在列表jqGrid中定义的对齐方式：left，right，center */
+    /**
+     * 属性在列表jqGrid中定义的对齐方式：left，right，center
+     */
     private String listAlign = "center";
-    /** 属性在列表jqGrid中定义的宽度固定模式 */
+    /**
+     * 属性在列表jqGrid中定义的宽度固定模式
+     */
     private boolean listFixed = false;
-    /** 属性在列表jqGrid中定义的默认不显示模式 */
+    /**
+     * 属性在列表jqGrid中定义的默认不显示模式
+     */
     private boolean listHidden = false;
-    /** 属性在编辑界面生成表单元素 */
+    /**
+     * 属性在编辑界面生成表单元素
+     */
     private boolean edit = true;
-    /** 属性在jqGrid列表中生成column定义 */
+    /**
+     * 属性在jqGrid列表中生成column定义
+     */
     private boolean list = true;
-    /** 标识属性是否枚举类型，根据Java属性反射获取  */
+    /**
+     * 标识属性是否枚举类型，根据Java属性反射获取
+     */
     private Boolean enumField = false;
-    /** 属性类型，根据Java属性反射获取 */
+    /**
+     * 属性类型，根据Java属性反射获取
+     */
     private String fieldType;
 
     public String getTitle() {

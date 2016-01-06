@@ -1,21 +1,20 @@
 package com.rascal.core.util;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringEscapeUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
 /**
  * 封装各种格式的编码解码工具类.
- * 
+ * <p>
  * 1.Commons-Codec的 hex/base64 编码
  * 2.自制的base62 编码
  * 3.Commons-Lang的xml/html escape
  * 4.JDK提供的URLEncoder
- * 
  */
 public class Encodes {
 
@@ -136,6 +135,6 @@ public class Encodes {
 
     public static void main(String[] args) {
         String text = "18696597327";
-        System.out.println("Base64 encode for '" + text + "' is " + encodeBase64(text.getBytes()));
+        System.out.printf("Base64 encode for '%s' is %s%n", text, encodeBase64(text.getBytes()));
     }
 }

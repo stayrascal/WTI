@@ -1,23 +1,9 @@
 package com.rascal.core.data;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Table;
-import javax.transaction.Transactional;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.support.service.DynamicConfigService;
-
+import com.google.common.collect.Sets;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.util.DateUtils;
+import com.rascal.support.service.DynamicConfigService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.util.ClassUtils;
 import org.hibernate.Session;
@@ -33,7 +19,14 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import com.google.common.collect.Sets;
+import javax.persistence.*;
+import javax.transaction.Transactional;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 数据库数据初始化处理器触发器
@@ -100,7 +93,7 @@ public class DatabaseDataInitializeExecutor {
      * 初始化自增对象起始值
      */
     public static void autoIncrementInitValue(final Class<?> entity, final EntityManager entityManager) {
-        Object count = entityManager.createQuery("select count(1) from " + entity.getSimpleName()).getSingleResult();
+        Object count = entityManager.createQuery(String.format("select count(1) from %s", entity.getSimpleName())).getSingleResult();
         if (Integer.valueOf(String.valueOf(count)) > 0) {
             logger.debug("Skipped autoIncrementInitValue as exist data: {}", entity.getClass());
             return;
@@ -116,14 +109,14 @@ public class DatabaseDataInitializeExecutor {
                 String name = databaseMetaData.getDatabaseProductName().toLowerCase();
                 //根据不同数据库类型执行不同初始化SQL脚本
                 String sql = null;
-                if (name.indexOf("mysql") > -1) {
-                    sql = "ALTER TABLE " + table.name() + " AUTO_INCREMENT =" + metaData.autoIncrementInitValue();
-                } else if (name.indexOf("sql server") > -1) {
+                if (name.contains("mysql")) {
+                    sql = String.format("ALTER TABLE %s AUTO_INCREMENT =%d", table.name(), metaData.autoIncrementInitValue());
+                } else if (name.contains("sql server")) {
                     //DBCC   CHECKIDENT( 'tb ',   RESEED,   20000)  
-                    sql = "DBCC CHECKIDENT('" + table.name() + "',RESEED," + metaData.autoIncrementInitValue() + ")";
-                } else if (name.indexOf("h2") > -1) {
+                    sql = String.format("DBCC CHECKIDENT('%s',RESEED,%d)", table.name(), metaData.autoIncrementInitValue());
+                } else if (name.contains("h2")) {
                     //DO Nothing;
-                } else if (name.indexOf("oracle") > -1) {
+                } else if (name.contains("oracle")) {
                     //DO Nothing;
                 } else {
                     throw new UnsupportedOperationException(name);

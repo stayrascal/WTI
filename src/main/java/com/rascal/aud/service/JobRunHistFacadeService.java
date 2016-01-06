@@ -1,7 +1,6 @@
 package com.rascal.aud.service;
 
-import lab.s2jh.aud.entity.JobRunHist;
-
+import com.rascal.aud.entity.JobRunHist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ public class JobRunHistFacadeService {
 
     /**
      * 异步新开事务写入定时任务运行记录
-     * @param entity
      */
     @Async
     public void saveWithAsyncAndNewTransition(JobRunHist entity) {

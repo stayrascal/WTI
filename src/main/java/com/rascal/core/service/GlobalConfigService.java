@@ -1,7 +1,6 @@
 package com.rascal.core.service;
 
-import lab.s2jh.core.annotation.MetaData;
-
+import com.rascal.core.annotation.MetaData;
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,14 +1,13 @@
 package com.rascal.core.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class IPAddrFetcher {
 
@@ -16,8 +15,6 @@ public class IPAddrFetcher {
 
     /**
      * 获取客户端IP地址，支持代理服务器
-     * @param request
-     * @return
      */
     public static String getRemoteIpAddress(HttpServletRequest request) {
         String ip = "";
@@ -74,7 +71,7 @@ public class IPAddrFetcher {
             while (interfaces.hasMoreElements()) {
                 NetworkInterface ni = interfaces.nextElement();
 
-                sb.append("Interface " + ni.getName() + ":\r\n");
+                sb.append("Interface ").append(ni.getName()).append(":\r\n");
 
                 Enumeration<InetAddress> inetAddresses = ni.getInetAddresses();
 
@@ -89,7 +86,7 @@ public class IPAddrFetcher {
                         sb.append("(v6)");
                     }
 
-                    sb.append(":address=" + address.getHostAddress() + " name=" + address.getHostName() + "\r\n");
+                    sb.append(":address=").append(address.getHostAddress()).append(" name=").append(address.getHostName()).append("\r\n");
                 }
             }
         } catch (Exception ex) {

@@ -1,46 +1,29 @@
 package com.rascal.module.sys.entity;
 
-import java.util.List;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseNativeEntity;
-import lab.s2jh.core.web.json.EntityIdDisplaySerializer;
-import lab.s2jh.core.web.json.JsonViews;
-import lab.s2jh.module.sys.service.DataDictService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseNativeEntity;
+import com.rascal.core.web.json.EntityIdDisplaySerializer;
+import com.rascal.core.web.json.JsonViews;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "sys_DataDict", uniqueConstraints = @UniqueConstraint(columnNames = { "parent_id", "primaryKey", "secondaryKey" }))
+@Table(name = "sys_data_dict", uniqueConstraints = @UniqueConstraint(columnNames = { "parent_id", "primaryKey", "secondaryKey" }))
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @MetaData(value = "数据字典")
 @Audited
@@ -68,7 +51,7 @@ public class DataDict extends BaseNativeEntity {
     /**
      * 字典数据对应的数据Value值
      * 大部分情况一般都是key-value形式的数据，只需要维护primaryKey和primaryValue即可，
-     * 然后通过{@link DataDictService#findChildrenByPrimaryKey(String)}即可快速返回key-value形式的Map数据
+     * 然后通过{link DataDictService#findChildrenByPrimaryKey(String)}即可快速返回key-value形式的Map数据
      */
     @MetaData(value = "主要数据")
     @JsonView(JsonViews.List.class)
@@ -76,7 +59,7 @@ public class DataDict extends BaseNativeEntity {
 
     /**
      * 字典数据对应的补充数据Value值，如果除了primaryValue业务设计需要其他补充数据可启用扩展Value字段存取这些值
-     * 对于扩展数据的获取一般通过{@link lab.s2jh.sys.service.DataDictService#findByPrimaryKey(String)}
+     * 对于扩展数据的获取一般通过{link com.rascal.sys.service.DataDictService#findByPrimaryKey(String)}
      * 对于返回的数据，根据实际业务定制化使用即可
      */
     @MetaData(value = "次要数据")
@@ -85,7 +68,7 @@ public class DataDict extends BaseNativeEntity {
 
     /**
      * 字典数据对应的补充文件类型Value值，页面以文件组件方式维护
-     * 对于扩展数据的获取一般通过{@link lab.s2jh.sys.service.DataDictService#findByPrimaryKey(String)}
+     * 对于扩展数据的获取一般通过{link com.rascal.sys.service.DataDictService#findByPrimaryKey(String)}
      * 对于返回的数据，根据实际业务定制化使用即可
      */
     @MetaData(value = "文件路径数据")
@@ -95,7 +78,7 @@ public class DataDict extends BaseNativeEntity {
     
     /**
      * 字典数据对应的补充图片类型Value值，页面以多图组件方式维护
-     * 对于扩展数据的获取一般通过{@link lab.s2jh.sys.service.DataDictService#findByPrimaryKey(String)}
+     * 对于扩展数据的获取一般通过{link com.rascal.sys.service.DataDictService#findByPrimaryKey(String)}
      * 对于返回的数据，根据实际业务定制化使用即可
      */
     @MetaData(value = "图片路径数据")
@@ -105,7 +88,7 @@ public class DataDict extends BaseNativeEntity {
 
     /**
      * 字典数据对应的补充数据大文本类型Value值，如果除了primaryValue业务设计需要其他补充数据可启用扩展Value字段存取这些值
-     * 对于扩展数据的获取一般通过{@link lab.s2jh.sys.service.DataDictService#findByPrimaryKey(String)}
+     * 对于扩展数据的获取一般通过{link com.rascal.sys.service.DataDictService#findByPrimaryKey(String)}
      * 对于返回的数据，根据实际业务定制化使用即可
      */
     @MetaData(value = "大文本数据", tooltips = "以CLOB大文本方式存储用于特定的大文本数据配置")
@@ -145,11 +128,11 @@ public class DataDict extends BaseNativeEntity {
     public String getUniqueKey() {
         StringBuilder sb = new StringBuilder();
         if (parent != null) {
-            sb.append(parent.getPrimaryKey() + "_");
+            sb.append(parent.getPrimaryKey()).append("_");
         }
         sb.append(primaryKey);
         if (StringUtils.isNotBlank(secondaryKey)) {
-            sb.append("_" + secondaryKey);
+            sb.append("_").append(secondaryKey);
         }
         return sb.toString();
     }

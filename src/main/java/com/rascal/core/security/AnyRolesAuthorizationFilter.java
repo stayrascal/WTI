@@ -1,12 +1,11 @@
 package com.rascal.core.security;
 
-import java.io.IOException;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.filter.authz.AuthorizationFilter;
+import java.io.IOException;
 
 /**
  * Shiro filterChainDefinitions中 roles默认是and，定制一个过滤器支持any语法
@@ -25,8 +24,8 @@ public class AnyRolesAuthorizationFilter extends AuthorizationFilter {
             return true;
         }
 
-        for (int i = 0; i < rolesArray.length; i++) {
-            if (subject.hasRole(rolesArray[i])) {
+        for (String aRolesArray : rolesArray) {
+            if (subject.hasRole(aRolesArray)) {
                 return true;
             }
         }

@@ -1,13 +1,9 @@
 package com.rascal.module.schedule;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
-import lab.s2jh.module.schedule.entity.JobBeanCfg;
-import lab.s2jh.module.schedule.service.JobBeanCfgService;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.rascal.module.schedule.entity.JobBeanCfg;
+import com.rascal.module.schedule.service.JobBeanCfgService;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
@@ -23,8 +19,9 @@ import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.sql.DataSource;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 扩展标准的SchedulerFactoryBean，实现基于数据库配置的任务管理器初始化
@@ -130,7 +127,7 @@ public class ExtSchedulerFactoryBean extends SchedulerFactoryBean {
             allTriggers.add((Trigger) beanFactory.getBean(triggerName));
         }
 
-        this.setTriggers(allTriggers.toArray(new Trigger[] {}));
+        this.setTriggers(allTriggers.toArray(new Trigger[allTriggers.size()]));
         super.registerJobsAndTriggers();
 
         for (Trigger trigger : allTriggers) {

@@ -1,10 +1,7 @@
 package com.rascal.core.dao.mybatis;
 
-import java.util.List;
-import java.util.Map;
-
-import lab.s2jh.core.pagination.GroupPropertyFilter;
-
+import com.rascal.core.pagination.GroupPropertyFilter;
+import com.rascal.mybatis.pagination.PaginationInterceptor;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.data.domain.Page;
@@ -12,7 +9,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import com.github.loafer.mybatis.pagination.PaginationInterceptor;
+import java.util.List;
+import java.util.Map;
 
 public class MyBatisGenerialDaoImpl implements MyBatisDao {
 
@@ -69,8 +67,7 @@ public class MyBatisGenerialDaoImpl implements MyBatisDao {
         PaginationInterceptor.setPaginationOrderby(pageable.getSort());
         List<E> rows = sqlSession.selectList(statement, parameters, rowBounds);
         int total = PaginationInterceptor.getPaginationTotal();
-        Page<E> page = new PageImpl<E>(rows, pageable, total);
-        return page;
+        return new PageImpl<>(rows, pageable, total);
     }
 
     @Override
@@ -80,8 +77,7 @@ public class MyBatisGenerialDaoImpl implements MyBatisDao {
         PaginationInterceptor.setPaginationOrderby(pageable.getSort());
         List<E> rows = sqlSession.selectList(statement, parameters, rowBounds);
         int total = PaginationInterceptor.getPaginationTotal();
-        Page<E> page = new PageImpl<E>(rows, pageable, total);
-        return page;
+        return new PageImpl<>(rows, pageable, total);
     }
 
     @Override

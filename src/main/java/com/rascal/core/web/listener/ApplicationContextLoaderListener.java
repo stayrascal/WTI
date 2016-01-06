@@ -1,10 +1,10 @@
 package com.rascal.core.web.listener;
 
-import javax.servlet.ServletContextEvent;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ContextLoaderListener;
+
+import javax.servlet.ServletContextEvent;
 
 /**
  * 简单扩展Spring标准的ContextLoaderListener，以便兼容共享jar部署模式

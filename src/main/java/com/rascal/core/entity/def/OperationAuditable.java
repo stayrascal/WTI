@@ -8,8 +8,7 @@ public interface OperationAuditable {
 
     /**
      * 转换操作状态数据值为字面显示字符串
-     * @return
      */
-    public abstract String convertStateToDisplay(String rawState);
+    String convertStateToDisplay(String rawState);
 
 }

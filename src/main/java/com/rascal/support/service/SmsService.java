@@ -1,13 +1,14 @@
 package com.rascal.support.service;
 
-import lab.s2jh.core.annotation.MetaData;
+
+import com.rascal.core.annotation.MetaData;
 
 public interface SmsService {
     /**
      * 短信发送接口
+     *
      * @param smsContent 短信内容
-     * @param mobileNum 手机号码
-     * 
+     * @param mobileNum  手机号码
      * @return 如果成功则返回null；否则失败返回异常消息
      */
     String sendSMS(String smsContent, String mobileNum, SmsMessageTypeEnum smsType);
@@ -20,7 +21,7 @@ public interface SmsService {
         Signup,
 
         @MetaData(value = "验证码", comments = "用于发送短信验证码，限制条件为 间隔不能小于一分钟，一个小时内不能超过10次")
-        VerifyCode;
+        VerifyCode
 
     }
 }

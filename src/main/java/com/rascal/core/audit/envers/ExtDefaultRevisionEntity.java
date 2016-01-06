@@ -2,10 +2,10 @@ package com.rascal.core.audit.envers;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.PersistableEntity;
-import lab.s2jh.core.web.json.DateTimeJsonSerializer;
-import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.PersistableEntity;
+import com.rascal.core.web.json.DateTimeJsonSerializer;
+import com.rascal.module.auth.entity.User.AuthTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
@@ -18,27 +18,31 @@ import java.util.Date;
 
 /**
  * 扩展默认的Hibernate Envers审计表对象定义
- * 
- * @see http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html/ch15.html
+ * <p>
+ * http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html/ch15.html
  */
 @Getter
 @Setter
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "aud_RevisionEntity")
+@Table(name = "aud_revision_entity")
 @RevisionEntity(ExtRevisionListener.class)
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "javassistLazyInitializer", "revisionEntity", "handler" }, ignoreUnknown = true)
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "javassistLazyInitializer", "revisionEntity", "handler"}, ignoreUnknown = true)
 public class ExtDefaultRevisionEntity extends PersistableEntity<Long> {
 
     private static final long serialVersionUID = -2946153158442502361L;
 
-    /** 记录版本 */
+    /**
+     * 记录版本
+     */
     @Id
     @GeneratedValue
     @RevisionNumber
     private Long rev;
 
-    /** 记录时间 */
+    /**
+     * 记录时间
+     */
     @RevisionTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @JsonSerialize(using = DateTimeJsonSerializer.class)
@@ -46,25 +50,39 @@ public class ExtDefaultRevisionEntity extends PersistableEntity<Long> {
 
     private String entityClassName;
 
-    /** Controller注解定义的requestMapping */
+    /**
+     * Controller注解定义的requestMapping
+     */
     private String requestMappingUri;
 
-    /** 请求执行的Web Controller类名 */
+    /**
+     * 请求执行的Web Controller类名
+     */
     private String controllerClassName;
 
-    /** 请求执行的Web Controller类MetaData中文注解 */
+    /**
+     * 请求执行的Web Controller类MetaData中文注解
+     */
     private String controllerClassLabel;
 
-    /** 请求执行的Web Controller方法名 */
+    /**
+     * 请求执行的Web Controller方法名
+     */
     private String controllerMethodName;
 
-    /** 请求执行的Web Controller方法的MetaData中文注解 */
+    /**
+     * 请求执行的Web Controller方法的MetaData中文注解
+     */
     private String controllerMethodLabel;
 
-    /** 请求执行的Web Controller方法RequestMethod: POST */
+    /**
+     * 请求执行的Web Controller方法RequestMethod: POST
+     */
     private String controllerMethodType;
 
-    /** 全局唯一的用户ID，确保明确与唯一操作用户关联 */
+    /**
+     * 全局唯一的用户ID，确保明确与唯一操作用户关联
+     */
     @Column(length = 128)
     private String authGuid;
 

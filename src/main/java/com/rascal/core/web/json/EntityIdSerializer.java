@@ -1,21 +1,19 @@
 package com.rascal.core.web.json;
 
-import java.io.IOException;
-import java.io.Serializable;
-
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Persistable;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
+import java.io.IOException;
+import java.io.Serializable;
 
 public class EntityIdSerializer extends JsonSerializer<Persistable<? extends Serializable>> {
 
     @Override
     public void serialize(Persistable<? extends Serializable> value, JsonGenerator jgen, SerializerProvider provider)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         if (value != null) {
             jgen.writeStartObject();
             jgen.writeFieldName("id");

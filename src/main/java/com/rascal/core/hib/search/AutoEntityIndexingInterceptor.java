@@ -8,6 +8,7 @@ import org.springframework.data.domain.Persistable;
 
 /**
  * ORM数据保存后自动更新Hibernate Search索引
+ *
  * @see org.hibernate.search.indexes.interceptor.DontInterceptEntityInterceptor
  */
 @SuppressWarnings("rawtypes")

@@ -1,8 +1,9 @@
 package com.rascal.module.sys.vo;
 
+import com.rascal.core.annotation.MetaData;
+
 import java.io.Serializable;
 
-import lab.s2jh.core.annotation.MetaData;
 
 public class NavMenuVO implements Serializable {
 

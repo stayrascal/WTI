@@ -1,22 +1,14 @@
 package com.rascal.core.security;
 
-import java.util.Date;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import lab.s2jh.aud.entity.UserLogonLog;
-import lab.s2jh.core.security.SourceUsernamePasswordToken.AuthSourceEnum;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.util.IPAddrFetcher;
-import lab.s2jh.core.util.UidUtils;
-import lab.s2jh.core.web.captcha.ImageCaptchaServlet;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.UserExt;
-import lab.s2jh.module.auth.service.UserService;
-
+import com.rascal.aud.entity.UserLogonLog;
+import com.rascal.core.security.SourceUsernamePasswordToken.AuthSourceEnum;
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.util.IPAddrFetcher;
+import com.rascal.core.util.UidUtils;
+import com.rascal.core.web.captcha.ImageCaptchaServlet;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.entity.UserExt;
+import com.rascal.module.auth.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -29,6 +21,12 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 
 public class JcaptchaFormAuthenticationFilter extends FormAuthenticationFilter {
 
@@ -217,6 +215,7 @@ public class JcaptchaFormAuthenticationFilter extends FormAuthenticationFilter {
         userService.userLogonLog(authAccount, userLogonLog);
 
         AuthUserDetails authUserDetails = AuthContextHolder.getAuthUserDetails();
+        assert authUserDetails != null;
         authUserDetails.setAccessToken(authAccount.getAccessToken());
 
         //根据不同登录类型转向不同成功界面

@@ -1,19 +1,13 @@
 package com.rascal.module.auth.web;
 
-import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.auth.entity.Role;
-import lab.s2jh.module.auth.entity.RoleR2Privilege;
-import lab.s2jh.module.auth.service.PrivilegeService;
-import lab.s2jh.module.auth.service.RoleService;
-
+import com.google.common.collect.Sets;
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.web.BaseController;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.auth.entity.Role;
+import com.rascal.module.auth.entity.RoleR2Privilege;
+import com.rascal.module.auth.service.RoleService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -22,13 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.google.common.collect.Sets;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/admin/auth/role")
@@ -36,9 +28,6 @@ public class RoleController extends BaseController<Role, Long> {
 
     @Autowired
     private RoleService roleService;
-
-    @Autowired
-    private PrivilegeService privilegeService;
 
     @Override
     protected BaseService<Role, Long> getEntityService() {
@@ -69,7 +58,7 @@ public class RoleController extends BaseController<Role, Long> {
     }
 
     @RequestMapping(value = "/edit-tabs", method = RequestMethod.GET)
-    public String editTabs(HttpServletRequest request) {
+    public String editTabs() {
         return "admin/auth/role-inputTabs";
     }
 
@@ -82,7 +71,7 @@ public class RoleController extends BaseController<Role, Long> {
     @RequiresPermissions("配置管理:权限管理:角色配置")
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult editSave(@ModelAttribute("entity") Role entity, Model model) {
+    public OperationResult editSave(@ModelAttribute("entity") Role entity) {
         return super.editSave(entity);
     }
 
@@ -111,7 +100,7 @@ public class RoleController extends BaseController<Role, Long> {
     @RequestMapping(value = "/privileges", method = RequestMethod.POST)
     @ResponseBody
     public OperationResult privilegeR2sSave(@ModelAttribute("entity") Role entity,
-            @RequestParam(value = "privilegeIds", required = false) Long[] privilegeIds) {
+                                            @RequestParam(value = "privilegeIds", required = false) Long[] privilegeIds) {
         roleService.updateRelatedPrivilegeR2s(entity, privilegeIds);
         return OperationResult.buildSuccessResult();
     }

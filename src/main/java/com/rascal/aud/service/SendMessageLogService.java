@@ -1,10 +1,9 @@
 package com.rascal.aud.service;
 
-import lab.s2jh.aud.dao.SendMessageLogDao;
-import lab.s2jh.aud.entity.SendMessageLog;
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.service.BaseService;
-
+import com.rascal.aud.dao.SendMessageLogDao;
+import com.rascal.aud.entity.SendMessageLog;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;

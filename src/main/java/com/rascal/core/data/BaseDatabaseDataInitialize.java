@@ -1,18 +1,9 @@
 package com.rascal.core.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.support.service.DynamicConfigService;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.rascal.core.util.DateUtils;
+import com.rascal.support.service.DynamicConfigService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -31,8 +22,14 @@ import org.springframework.orm.hibernate4.SessionHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 数据库基础数据初始化处理器
@@ -56,8 +53,8 @@ public abstract class BaseDatabaseDataInitialize {
 
     /**
      * 帮助类方法，从当前类的classpath路径下面读取文本内容为String字符串
+     *
      * @param fileName 文件名称
-     * @return
      */
     protected String getStringFromTextFile(String fileName) {
         InputStream is = this.getClass().getResourceAsStream(fileName);
@@ -80,14 +77,14 @@ public abstract class BaseDatabaseDataInitialize {
      */
     @SuppressWarnings("unchecked")
     protected <X> List<X> findAll(Class<X> entity) {
-        return entityManager.createQuery("from " + entity.getSimpleName()).getResultList();
+        return entityManager.createQuery(String.format("from %s", entity.getSimpleName())).getResultList();
     }
 
     /**
      * 获取表数据总记录数
      */
     protected int countTable(Class<?> entity) {
-        Object count = entityManager.createQuery("select count(1) from " + entity.getSimpleName()).getSingleResult();
+        Object count = entityManager.createQuery(String.format("select count(1) from %s", entity.getSimpleName())).getSingleResult();
         return Integer.valueOf(String.valueOf(count));
     }
 
@@ -95,12 +92,8 @@ public abstract class BaseDatabaseDataInitialize {
      * 判定实体对象对应表是否为空
      */
     protected boolean isEmptyTable(Class<?> entity) {
-        Object count = entityManager.createQuery("select count(1) from " + entity.getSimpleName()).getSingleResult();
-        if (count == null || String.valueOf(count).equals("0")) {
-            return true;
-        } else {
-            return false;
-        }
+        Object count = entityManager.createQuery(String.format("select count(1) from %s", entity.getSimpleName())).getSingleResult();
+        return count == null || String.valueOf(count).equals("0");
     }
 
     /**
@@ -136,8 +129,7 @@ public abstract class BaseDatabaseDataInitialize {
      * 读取Excel数据内容
      * 约定格式要求：第一行为标题行，之后为数据行
      * 返回结构为Map结构的List集合：每行的key=第一行的标题，value=单元格值，统一为字符串，根据需要自行转换数据类型
-     * 
-     * @param InputStream
+     *
      * @return Map 包含单元格数据内容的Map对象
      */
     protected List<Map<String, String>> readExcelContent(String excelName, String sheetName) {
@@ -209,44 +201,41 @@ public abstract class BaseDatabaseDataInitialize {
 
     /**
      * 根据HSSFCell类型设置数据
-     * 
-     * @param cell
-     * @return
      */
     private static String getCellFormatValue(Cell cell) {
         String cellvalue = null;
         if (cell != null) {
             // 判断当前Cell的Type
             switch (cell.getCellType()) {
-            // 如果当前Cell的Type为NUMERIC
-            case Cell.CELL_TYPE_NUMERIC:
-            case Cell.CELL_TYPE_FORMULA: {
-                // 判断当前的cell是否为Date
-                if (HSSFDateUtil.isCellDateFormatted(cell)) {
-                    // 如果是Date类型则，转化为Data格式
+                // 如果当前Cell的Type为NUMERIC
+                case Cell.CELL_TYPE_NUMERIC:
+                case Cell.CELL_TYPE_FORMULA: {
+                    // 判断当前的cell是否为Date
+                    if (HSSFDateUtil.isCellDateFormatted(cell)) {
+                        // 如果是Date类型则，转化为Data格式
 
-                    //方法1：这样子的data格式是带时分秒的：2011-10-12 0:00:00
-                    //cellvalue = cell.getDateCellValue().toLocaleString();
+                        //方法1：这样子的data格式是带时分秒的：2011-10-12 0:00:00
+                        //cellvalue = cell.getDateCellValue().toLocaleString();
 
-                    //方法2：这样子的data格式是不带带时分秒的：2011-10-12
-                    Date date = cell.getDateCellValue();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    cellvalue = sdf.format(date);
+                        //方法2：这样子的data格式是不带带时分秒的：2011-10-12
+                        Date date = cell.getDateCellValue();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        cellvalue = sdf.format(date);
 
+                    }
+                    // 如果是纯数字
+                    else {
+                        // 取得当前Cell的数值
+                        DecimalFormat df = new DecimalFormat("#.####");
+                        cellvalue = df.format(cell.getNumericCellValue());
+                    }
+                    break;
                 }
-                // 如果是纯数字
-                else {
-                    // 取得当前Cell的数值
-                    DecimalFormat df = new DecimalFormat("#.####");
-                    cellvalue = df.format(cell.getNumericCellValue());
-                }
-                break;
-            }
-            // 如果当前Cell的Type为STRIN
-            case Cell.CELL_TYPE_STRING:
-                // 取得当前的Cell字符串
-                cellvalue = cell.getRichStringCellValue().getString();
-                break;
+                // 如果当前Cell的Type为STRIN
+                case Cell.CELL_TYPE_STRING:
+                    // 取得当前的Cell字符串
+                    cellvalue = cell.getRichStringCellValue().getString();
+                    break;
             }
         }
         if (cellvalue == null) {

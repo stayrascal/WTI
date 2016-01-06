@@ -1,30 +1,22 @@
 package com.rascal.module.auth.entity;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.persistence.UniqueConstraint;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseNativeEntity;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseNativeEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
+
+import javax.persistence.*;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "auth_RoleR2Privilege", uniqueConstraints = @UniqueConstraint(columnNames = { "privilege_id", "role_id" }))
+@Table(name = "auth_role_r2_privilege", uniqueConstraints = @UniqueConstraint(columnNames = { "privilege_id", "role_id" }))
 @MetaData(value = "角色与权限关联")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Audited

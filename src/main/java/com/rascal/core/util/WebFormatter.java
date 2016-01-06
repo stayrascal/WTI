@@ -11,7 +11,7 @@ public class WebFormatter {
         int start = 0;
         boolean previousIsPre = false;
         Token token = null;
-        for (;;) {
+        for (; ; ) {
             token = parse(data, start, previousIsPre);
             if (token == null)
                 break;
@@ -108,7 +108,7 @@ class Token {
     private static final char[] END_TAG_TR = "</tr>".toCharArray();
     private static final char[] END_TAG_LI = "</li>".toCharArray();
 
-    private static final Map<String, String> SPECIAL_CHARS = new HashMap<String, String>();
+    private static final Map<String, String> SPECIAL_CHARS = new HashMap<>();
 
     private int type;
     private String html; // original html
@@ -176,7 +176,7 @@ class Token {
         int start = 0;
         boolean continueSpace = false;
         char current, next;
-        for (;;) {
+        for (; ; ) {
             if (start >= cs.length)
                 break;
             current = cs[start]; // read current char
@@ -286,9 +286,7 @@ class Token {
         // the following char should not be a-z:
         if (tag.length > ori_tag.length) {
             char c = Character.toLowerCase(tag[ori_tag.length]);
-            if (c < 'a' || c > 'z')
-                return true;
-            return false;
+            return c < 'a' || c > 'z';
         }
         return true;
     }

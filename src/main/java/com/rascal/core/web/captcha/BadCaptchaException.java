@@ -1,6 +1,6 @@
 package com.rascal.core.web.captcha;
 
-public class BadCaptchaException extends RuntimeException{
+public class BadCaptchaException extends RuntimeException {
 
     public BadCaptchaException(String message, Throwable e) {
         super(message, e);

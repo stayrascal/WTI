@@ -1,16 +1,11 @@
 package com.rascal.aud.service;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import lab.s2jh.aud.dao.RevisionEntityDao;
-import lab.s2jh.core.audit.envers.EntityRevision;
-import lab.s2jh.core.audit.envers.ExtDefaultRevisionEntity;
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.service.BaseService;
-
+import com.google.common.collect.Lists;
+import com.rascal.aud.dao.RevisionEntityDao;
+import com.rascal.core.audit.envers.EntityRevision;
+import com.rascal.core.audit.envers.ExtDefaultRevisionEntity;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.service.BaseService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.AuditReaderFactory;
@@ -21,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Lists;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Service
 @Transactional
@@ -40,14 +37,10 @@ public class RevisionEntityService extends BaseService<ExtDefaultRevisionEntity,
 
     /**
      * 查询对象历史记录版本集合
-     * 
-     * @param id
-     *            实体主键
-     * @param property
-     *            过滤属性
-     * @param changed
-     *            过滤方式，有无变更
-     * @return
+     *
+     * @param id       实体主键
+     * @param property 过滤属性
+     * @param changed  过滤方式，有无变更
      */
     @Transactional(readOnly = true)
     public List<EntityRevision> findEntityRevisions(final Class<?> entityClass, final Object id, String property, Boolean changed) {
@@ -77,9 +70,6 @@ public class RevisionEntityService extends BaseService<ExtDefaultRevisionEntity,
 
     /**
      * 查询对象历史记录版本集合
-     * 
-     * @param id
-     * @return
      */
     @Transactional(readOnly = true)
     public List<EntityRevision> findEntityRevisions(final Class<?> entityClass, Number id, Number... revs) {

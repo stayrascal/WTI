@@ -5,23 +5,16 @@ import com.rascal.core.annotation.MetaData;
 
 import java.util.Map;
 
-/**
- * Date: 2015/11/22
- * Time: 23:02
- *
- * @author Rascal
- */
 public class GlobalConstant {
 
     public static final Map<Boolean, String> booleanLabelMap = Maps.newLinkedHashMap();
-    public final static String GlobalForeignKeyName = "none";
-
     static {
         booleanLabelMap.put(Boolean.TRUE, "是");
         booleanLabelMap.put(Boolean.FALSE, "否");
     }
 
-    public enum GenderEnum {
+    //性别
+    public static enum GenderEnum {
         @MetaData(value = "男")
         M,
 
@@ -29,7 +22,20 @@ public class GlobalConstant {
         F,
 
         @MetaData(value = "保密")
-        U
+        U;
     }
-}
 
+    @MetaData("ConfigProperty:系统标题名称")
+    public final static String cfg_system_title = "cfg_system_title";
+
+    @MetaData("ConfigProperty:是否禁用管理账号注册功能")
+    public final static String cfg_mgmt_signup_disabled = "cfg_mgmt_signup_disabled";
+
+
+    @MetaData("ConfigProperty:是否全局禁用开放手机号短信发送功能")
+    public final static String cfg_public_send_sms_disabled = "cfg_public_send_sms_disabled";
+
+    @MetaData("数据字典:消息类型")
+    public final static String DataDict_Message_Type = "DataDict_Message_Type";
+
+}

@@ -1,7 +1,6 @@
 package com.rascal.core.security;
 
-import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
-
+import com.rascal.module.auth.entity.User.AuthTypeEnum;
 import org.apache.shiro.authc.AuthenticationToken;
 
 public class BearerAuthenticationToken implements AuthenticationToken {

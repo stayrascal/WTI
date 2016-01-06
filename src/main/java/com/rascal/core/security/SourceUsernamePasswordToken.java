@@ -1,7 +1,6 @@
 package com.rascal.core.security;
 
-import lab.s2jh.core.annotation.MetaData;
-
+import com.rascal.core.annotation.MetaData;
 import org.apache.shiro.authc.UsernamePasswordToken;
 
 public class SourceUsernamePasswordToken extends UsernamePasswordToken {
@@ -30,7 +29,7 @@ public class SourceUsernamePasswordToken extends UsernamePasswordToken {
         W,
 
         @MetaData(value = "Admin管理端")
-        A;
+        A
     }
 
     public AuthSourceEnum getSource() {

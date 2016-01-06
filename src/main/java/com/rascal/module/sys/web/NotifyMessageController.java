@@ -1,27 +1,21 @@
 package com.rascal.module.sys.web;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.cons.GlobalConstant;
-import lab.s2jh.core.pagination.GroupPropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.service.Validation;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.util.EnumUtils;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.sys.entity.NotifyMessage;
-import lab.s2jh.module.sys.entity.NotifyMessage.NotifyMessagePlatformEnum;
-import lab.s2jh.module.sys.entity.NotifyMessageRead;
-import lab.s2jh.module.sys.service.DataDictService;
-import lab.s2jh.module.sys.service.NotifyMessageReadService;
-import lab.s2jh.module.sys.service.NotifyMessageService;
-
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.cons.GlobalConstant;
+import com.rascal.core.pagination.GroupPropertyFilter;
+import com.rascal.core.pagination.PropertyFilter;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.service.Validation;
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.util.EnumUtils;
+import com.rascal.core.web.BaseController;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.sys.entity.NotifyMessage;
+import com.rascal.module.sys.entity.NotifyMessage.NotifyMessagePlatformEnum;
+import com.rascal.module.sys.entity.NotifyMessageRead;
+import com.rascal.module.sys.service.DataDictService;
+import com.rascal.module.sys.service.NotifyMessageReadService;
+import com.rascal.module.sys.service.NotifyMessageService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +25,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Controller
 @RequestMapping(value = "/admin/sys/notify-message")
@@ -72,7 +65,7 @@ public class NotifyMessageController extends BaseController<NotifyMessage, Long>
     @MenuData("配置管理:系统管理:公告管理")
     @RequiresPermissions("配置管理:系统管理:公告管理")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index(Model model) {
+    public String index() {
         return "admin/sys/notifyMessage-index";
     }
 
@@ -94,14 +87,14 @@ public class NotifyMessageController extends BaseController<NotifyMessage, Long>
     @RequiresPermissions("配置管理:系统管理:公告管理")
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult editSave(@ModelAttribute("entity") NotifyMessage entity, Model model) {
+    public OperationResult editSave(@ModelAttribute("entity") NotifyMessage entity) {
         return super.editSave(entity);
     }
 
     @RequiresPermissions("配置管理:系统管理:公告管理")
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult delete(@ModelAttribute("entity") NotifyMessage entity, Model model) {
+    public OperationResult delete(@ModelAttribute("entity") NotifyMessage entity) {
         Integer readCount = notifyMessageReadService.countByNotifyMessage(entity);
         Validation.isTrue(readCount <= 0, "该公告已经被阅读，不能被删除");
         notifyMessageService.delete(entity);

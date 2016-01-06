@@ -1,13 +1,6 @@
 package com.rascal.core.dao.router;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +8,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.datasource.AbstractDataSource;
 import org.springframework.util.Assert;
 
-import com.google.common.collect.Lists;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @see org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource
@@ -38,7 +36,6 @@ public class AnnotationRoutingDataSource extends AbstractDataSource implements I
      * Specify the map of target DataSources, with the lookup key as key.
      * The mapped value can either be a corresponding {@link DataSource}
      * instance or a data source name String (to be resolved via a
-     * {@link #setDataSourceLookup DataSourceLookup}).
      * <p>The key can be of arbitrary type; this class implements the
      * generic lookup process only. The concrete key representation will
      * be handled by {@link #resolveSpecifiedLookupKey(Object)} and
@@ -52,7 +49,6 @@ public class AnnotationRoutingDataSource extends AbstractDataSource implements I
      * Specify the default target DataSource, if any.
      * <p>The mapped value can either be a corresponding {@link DataSource}
      * instance or a data source name String (to be resolved via a
-     * {@link #setDataSourceLookup DataSourceLookup}).
      * <p>This DataSource will be used as target if none of the keyed
      * {@link #setTargetDataSources targetDataSources} match the
      * {@link #determineCurrentLookupKey()} current lookup key.
@@ -67,6 +63,7 @@ public class AnnotationRoutingDataSource extends AbstractDataSource implements I
      * a lookup in the {@link #setTargetDataSources targetDataSources} map,
      * falls back to the specified
      * {@link #setDefaultTargetDataSource default target DataSource} if necessary.
+     *
      * @see #determineCurrentLookupKey()
      */
     protected DataSource determineTargetDataSource() {
@@ -96,8 +93,7 @@ public class AnnotationRoutingDataSource extends AbstractDataSource implements I
     @Override
     public Connection getConnection() throws SQLException {
         DataSource dataSource = determineTargetDataSource();
-        Connection connection = dataSource.getConnection();
-        return connection;
+        return dataSource.getConnection();
     }
 
     @Override
@@ -111,6 +107,7 @@ public class AnnotationRoutingDataSource extends AbstractDataSource implements I
      * the actual lookup key to be used for matching with the
      * {@link #determineCurrentLookupKey() current lookup key}.
      * <p>The default implementation simply returns the given key as-is.
+     *
      * @param lookupKey the lookup key object as specified by the user
      * @return the lookup key as needed for matching
      */
@@ -121,9 +118,10 @@ public class AnnotationRoutingDataSource extends AbstractDataSource implements I
     /**
      * Resolve the specified data source object into a DataSource instance.
      * <p>The default implementation handles DataSource instances and data source
-     * names (to be resolved via a {@link #setDataSourceLookup DataSourceLookup}).
+     * names (to be resolved via a {link #setDataSourceLookup DataSourceLookup}).
+     *
      * @param dataSource the data source value object as specified in the
-     * {@link #setTargetDataSources targetDataSources} map
+     *                   {@link #setTargetDataSources targetDataSources} map
      * @return the resolved DataSource (never {@code null})
      * @throws IllegalArgumentException in case of an unsupported value type
      */
@@ -143,7 +141,7 @@ public class AnnotationRoutingDataSource extends AbstractDataSource implements I
         if (this.targetDataSources == null) {
             throw new IllegalArgumentException("Property 'targetDataSources' is required");
         }
-        this.resolvedDataSources = new HashMap<Object, List<DataSource>>(this.targetDataSources.size());
+        this.resolvedDataSources = new HashMap<>(this.targetDataSources.size());
         for (Map.Entry<Object, Object> entry : this.targetDataSources.entrySet()) {
             Object lookupKey = resolveSpecifiedLookupKey(entry.getKey());
             List<DataSource> dataSource = resolveSpecifiedDataSource(entry.getValue());

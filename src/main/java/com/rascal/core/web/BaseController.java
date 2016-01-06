@@ -1,25 +1,15 @@
 package com.rascal.core.web;
 
-import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.entity.PersistableEntity;
-import lab.s2jh.core.exception.WebException;
-import lab.s2jh.core.pagination.GroupPropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.web.EntityProcessCallbackHandler.EntityProcessCallbackException;
-import lab.s2jh.core.web.view.OperationResult;
-
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.rascal.core.entity.PersistableEntity;
+import com.rascal.core.exception.WebException;
+import com.rascal.core.pagination.GroupPropertyFilter;
+import com.rascal.core.pagination.PropertyFilter;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.web.EntityProcessCallbackHandler.EntityProcessCallbackException;
+import com.rascal.core.web.view.OperationResult;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -32,20 +22,29 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public abstract class BaseController<T extends PersistableEntity<ID>, ID extends Serializable> {
 
     private final static Logger logger = LoggerFactory.getLogger(BaseController.class);
 
-    /** 子类指定泛型对应的实体Service接口对象 */
+    /**
+     * 子类指定泛型对应的实体Service接口对象
+     */
     abstract protected BaseService<T, ID> getEntityService();
 
-    /** 实体泛型对应的Class定义 */
+    /**
+     * 实体泛型对应的Class定义
+     */
     protected Class<T> entityClass;
 
-    /** 主键泛型对应的Class定义 */
+    /**
+     * 主键泛型对应的Class定义
+     */
     protected Class<ID> entityIdClass;
 
     /**
@@ -69,6 +68,7 @@ public abstract class BaseController<T extends PersistableEntity<ID>, ID extends
     /**
      * 将id=123格式的字符串id参数转换为ID泛型对应的主键变量实例
      * 另外，页面也会以Struts标签获取显示当前操作对象的ID值
+     *
      * @return ID泛型对象实例
      */
     public ID getId(HttpServletRequest request) {
@@ -78,6 +78,7 @@ public abstract class BaseController<T extends PersistableEntity<ID>, ID extends
     /**
      * 将指定参数转换为ID泛型对应的主键变量实例
      * 另外，页面也会以Struts标签获取显示当前操作对象的ID值
+     *
      * @return ID泛型对象实例
      */
     @SuppressWarnings("unchecked")
@@ -204,8 +205,6 @@ public abstract class BaseController<T extends PersistableEntity<ID>, ID extends
 
     /**
      * 如果子类需要一对多关联对象批量处理，则在子类返回定制的detach对象
-     * @param id
-     * @return
      */
     protected T buildDetachedBindingEntity(ID id) {
         return null;
@@ -225,7 +224,8 @@ public abstract class BaseController<T extends PersistableEntity<ID>, ID extends
      * 子类额外追加过滤限制条件的入口方法，一般基于当前登录用户强制追加过滤条件
      * 注意：凡是基于当前登录用户进行的控制参数，一定不要通过页面请求参数方式传递，存在用户篡改请求数据访问非法数据的风险
      * 因此一定要在Controller层面通过覆写此回调函数或自己的业务方法中强制追加过滤条件
-     * @param filters 已基于Request组装好查询条件的集合对象
+     *
+     * @param groupPropertyFilter 已基于Request组装好查询条件的集合对象
      */
     protected void appendFilterProperty(GroupPropertyFilter groupPropertyFilter) {
 

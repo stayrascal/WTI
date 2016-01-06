@@ -1,15 +1,16 @@
 package com.rascal.module.auth.dao.test;
 
-import lab.s2jh.core.test.SpringTransactionalTestCase;
-import lab.s2jh.core.util.MockEntityUtils;
-import lab.s2jh.module.auth.dao.UserDao;
-import lab.s2jh.module.auth.entity.User;
-
+import com.rascal.core.util.MockEntityUtils;
+import com.rascal.module.auth.dao.UserDao;
+import com.rascal.module.auth.entity.User;
+import com.rascal.support.test.SpringTransactionalTestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class UserDaoTest extends SpringTransactionalTestCase {
 
+    @Qualifier("userDao")
     @Autowired
     private UserDao userDao;
 

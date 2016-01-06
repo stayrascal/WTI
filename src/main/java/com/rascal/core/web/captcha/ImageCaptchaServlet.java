@@ -1,7 +1,11 @@
 package com.rascal.core.web.captcha;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import com.octo.captcha.service.captchastore.FastHashMapCaptchaStore;
+import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
+import com.octo.captcha.service.image.ImageCaptchaService;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.servlet.Servlet;
@@ -10,14 +14,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.octo.captcha.service.captchastore.FastHashMapCaptchaStore;
-import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
-import com.octo.captcha.service.image.ImageCaptchaService;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class ImageCaptchaServlet extends HttpServlet implements Servlet {
 

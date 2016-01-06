@@ -1,6 +1,6 @@
 package com.rascal.core.exception;
 
-public class WebException extends BaseRuntimeException{
+public class WebException extends BaseRuntimeException {
 
     public WebException(String msg) {
         super(msg);

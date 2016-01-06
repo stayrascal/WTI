@@ -3,23 +3,16 @@
  */
 package com.rascal.core.web.filter;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.web.util.ServletUtils;
-
+import com.rascal.core.web.util.ServletUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * 打印输出HTTP请求信息，一般用于开发调试
@@ -58,7 +51,7 @@ public class HttpRequestLogFilter implements Filter {
             Map<String, String> dataMap = ServletUtils.buildRequestInfoDataMap(req, verbose);
             StringBuilder sb = new StringBuilder("HTTP Request Info:");
             for (Map.Entry<String, String> me : dataMap.entrySet()) {
-                sb.append(StringUtils.rightPad("\n" + me.getKey(), 50) + " : " + me.getValue());
+                sb.append(StringUtils.rightPad("\n" + me.getKey(), 50)).append(" : ").append(me.getValue());
             }
             logger.info(sb.toString());
         }

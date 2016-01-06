@@ -1,6 +1,7 @@
 package com.rascal.core.entity.def;
 
-import lab.s2jh.core.annotation.MetaData;
+
+import com.rascal.core.annotation.MetaData;
 
 public enum DynamicParameterTypeEnum {
 
@@ -38,6 +39,5 @@ public enum DynamicParameterTypeEnum {
     HTML_TEXT,
 
     @MetaData("单行文本")
-    STRING;
-
+    STRING
 }

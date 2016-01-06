@@ -1,9 +1,9 @@
 package com.rascal.core.data;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * 数据库数据初始化处理器触发器
@@ -27,7 +27,7 @@ public class DatabaseDataInitializeTrigger {
                 msgException = msgException.getCause();
             } while (msgException != null);
 
-            if (msg != null && msg.indexOf("Transaction not active") > -1) {
+            if (msg != null && msg.contains("Transaction not active")) {
                 logger.warn(msg);
             } else {
                 logger.warn(e.getMessage(), e);

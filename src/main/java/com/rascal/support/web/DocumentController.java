@@ -1,40 +1,23 @@
 package com.rascal.support.web;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Entity;
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseNativeEntity;
-import lab.s2jh.core.pagination.GroupPropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.core.web.filter.WebAppContextInitFilter;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.auth.entity.Department;
-import lab.s2jh.module.auth.entity.Privilege;
-import lab.s2jh.module.auth.service.DepartmentService;
-import lab.s2jh.module.auth.service.PrivilegeService;
-import lab.s2jh.module.auth.service.UserService;
-import lab.s2jh.module.sys.service.MenuService;
-import lab.s2jh.support.web.DocumentController.MockEntity;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseNativeEntity;
+import com.rascal.core.pagination.GroupPropertyFilter;
+import com.rascal.core.pagination.PropertyFilter;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.web.BaseController;
+import com.rascal.core.web.filter.WebAppContextInitFilter;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.auth.entity.Department;
+import com.rascal.module.auth.entity.Privilege;
+import com.rascal.module.auth.service.DepartmentService;
+import com.rascal.module.auth.service.PrivilegeService;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -53,27 +36,22 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
-public class DocumentController extends BaseController<MockEntity, Long> {
+public class DocumentController extends BaseController<DocumentController.MockEntity, Long> {
 
     private final static Logger logger = LoggerFactory.getLogger(DocumentController.class);
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private MenuService menuService;
 
     @Autowired
     private DepartmentService departmentService;
@@ -115,7 +93,7 @@ public class DocumentController extends BaseController<MockEntity, Long> {
     }
 
     @RequestMapping(value = "/admin/docs/ui-feature", method = RequestMethod.GET)
-    public String uiFeature(Model model) {
+    public String uiFeature() {
         return "admin/docs/ui-feature";
     }
 
@@ -148,18 +126,18 @@ public class DocumentController extends BaseController<MockEntity, Long> {
         model.addAttribute("multiSelectItems", multiSelectItems);
 
         MockEntity entity = new MockEntity();
-        entity.setSelectedIds(new Long[] { 2L });
+        entity.setSelectedIds(new Long[]{2L});
         model.addAttribute("entity", entity);
-        
+
         //上下文完整路径
         model.addAttribute("webContextFullUrl", WebAppContextInitFilter.getInitedWebContextFullUrl());
-        
+
         return "admin/docs/ui-feature-items";
     }
 
     @RequestMapping(value = "/docs/mock/tree-datas", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> mockTreeDatas(Model model) {
+    public List<Map<String, Object>> mockTreeDatas() {
         List<Department> items = departmentService.findRoots();
         List<Map<String, Object>> treeDatas = Lists.newArrayList();
 
@@ -188,7 +166,7 @@ public class DocumentController extends BaseController<MockEntity, Long> {
 
     @RequestMapping(value = "/docs/mock/tags", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String, Object>> tagsData(Model model, @RequestParam("q") String q) {
+    public List<Map<String, Object>> tagsData(@RequestParam("q") String q) {
         List<Map<String, Object>> items = Lists.newArrayList();
         for (int i = 0, length = new Double((5 + Math.random() * 10)).intValue(); i < length; i++) {
             Map<String, Object> item = Maps.newHashMap();
@@ -201,11 +179,11 @@ public class DocumentController extends BaseController<MockEntity, Long> {
     }
 
     @RequestMapping(value = "/docs/ui-feature/dropdownselect", method = RequestMethod.GET)
-    public String uiFeatureDropdownselect(Model model) {
+    public String uiFeatureDropdownselect() {
         return "admin/docs/ui-feature-dropdownselect";
     }
 
-    public Map<Long, Object> mockRemoteSelectOptions(Model model, @RequestParam("code") String code) {
+    public Map<Long, Object> mockRemoteSelectOptions(@RequestParam("code") String code) {
         Map<Long, Object> data = Maps.newLinkedHashMap();
         for (long i = 0; i < 10; i++) {
             data.put(i, code + "选项" + i);
@@ -215,7 +193,7 @@ public class DocumentController extends BaseController<MockEntity, Long> {
 
     @RequestMapping(value = "/docs/mock/dynamic-table", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult saveDynamicTable(@ModelAttribute("entity") MockEntity entity, Model model) {
+    public OperationResult saveDynamicTable(@ModelAttribute("entity") MockEntity entity) {
         logger.debug("MockEntity: {}", entity);
 
         //处理关联对象删除
@@ -244,14 +222,14 @@ public class DocumentController extends BaseController<MockEntity, Long> {
 
     @RequestMapping(value = "/docs/mock/btn-post", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult btnPost(Model model) {
+    public OperationResult btnPost() {
         return OperationResult.buildSuccessResult("模拟POST数据处理成功");
     }
 
     @MetaData("模拟表单校验Confirm")
     @RequestMapping(value = "/docs/mock/validation-confirm", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult validationConfirm(HttpServletRequest request, Model model, @RequestParam("quantity") Integer quantity) {
+    public OperationResult validationConfirm(HttpServletRequest request, @RequestParam("quantity") Integer quantity) {
         //先进行常规的must数据校验
 
         //检测本次提交表单没有用户已confirm确认标识，则进行相关预警校验检查

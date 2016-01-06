@@ -1,33 +1,24 @@
 package com.rascal.module.sys.entity;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseNativeEntity;
-import lab.s2jh.core.web.json.EntityIdDisplaySerializer;
-import lab.s2jh.module.auth.entity.User;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseNativeEntity;
+import com.rascal.core.web.json.EntityIdDisplaySerializer;
+import com.rascal.module.auth.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import javax.persistence.*;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "sys_UserProfileData", uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "code" }))
+@Table(name = "sys_user_profile_data", uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "code" }))
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @MetaData(value = "用户配置数据")
 public class UserProfileData extends BaseNativeEntity {

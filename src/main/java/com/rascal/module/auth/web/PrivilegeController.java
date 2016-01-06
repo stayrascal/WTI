@@ -1,13 +1,10 @@
 package com.rascal.module.auth.web;
 
-import java.util.List;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.module.auth.entity.Privilege;
-import lab.s2jh.module.auth.service.PrivilegeService;
-
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.web.BaseController;
+import com.rascal.module.auth.entity.Privilege;
+import com.rascal.module.auth.service.PrivilegeService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,6 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/admin/auth/privilege")

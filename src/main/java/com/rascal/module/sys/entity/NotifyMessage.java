@@ -1,38 +1,29 @@
 package com.rascal.module.sys.entity;
 
-import java.util.Date;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseNativeEntity;
-import lab.s2jh.core.util.WebFormatter;
-import lab.s2jh.core.web.json.JsonViews;
-import lab.s2jh.core.web.json.ShortDateTimeJsonSerializer;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseNativeEntity;
+import com.rascal.core.util.WebFormatter;
+import com.rascal.core.web.json.JsonViews;
+import com.rascal.core.web.json.ShortDateTimeJsonSerializer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "sys_NotifyMessage")
+@Table(name = "sys_notify_message")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @MetaData(value = "公告消息")
 public class NotifyMessage extends BaseNativeEntity {
@@ -153,10 +144,7 @@ public class NotifyMessage extends BaseNativeEntity {
 
     @Transient
     public boolean isPublic() {
-        if (StringUtils.isBlank(audienceTags) && StringUtils.isBlank(audienceAndTags) && StringUtils.isBlank(audienceAlias)) {
-            return true;
-        }
-        return false;
+        return StringUtils.isBlank(audienceTags) && StringUtils.isBlank(audienceAndTags) && StringUtils.isBlank(audienceAlias);
     }
 
     @MetaData(value = "辅助方法：用于表单数据绑定")

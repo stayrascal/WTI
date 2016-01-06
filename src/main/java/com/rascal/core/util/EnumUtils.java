@@ -1,11 +1,10 @@
 package com.rascal.core.util;
 
+import com.google.common.collect.Maps;
+import com.rascal.core.annotation.MetaData;
+
 import java.lang.reflect.Field;
 import java.util.Map;
-
-import lab.s2jh.core.annotation.MetaData;
-
-import com.google.common.collect.Maps;
 
 public class EnumUtils {
 
@@ -13,8 +12,6 @@ public class EnumUtils {
 
     /**
      * 基于Enum类返回对应的key-value Map构建对象
-     * @param enumClass
-     * @return
      */
     public static Map<Enum<?>, String> getEnumDataMap(Class<? extends Enum> enumClass) {
         Map<Enum<?>, String> enumDataMap = enumDatasContainer.get(enumClass);

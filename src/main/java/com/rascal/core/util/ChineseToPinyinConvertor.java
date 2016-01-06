@@ -1,18 +1,17 @@
 package com.rascal.core.util;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Utils for convert Chinese to Pinyin
@@ -20,6 +19,7 @@ import org.apache.shiro.util.CollectionUtils;
 public class ChineseToPinyinConvertor {
 
     static HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
+
     static {
         defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
@@ -44,8 +44,8 @@ public class ChineseToPinyinConvertor {
     }
 
     public static Set<String> toPinyin(String chinese, MODE mode) {
-        List<String> pinyins = new ArrayList<String>();
-        List<String> pinyinHeads = new ArrayList<String>();
+        List<String> pinyins = new ArrayList<>();
+        List<String> pinyinHeads = new ArrayList<>();
         char[] arr = chinese.toCharArray();
         try {
             for (char one : arr) {
@@ -54,7 +54,7 @@ public class ChineseToPinyinConvertor {
                 //System.out.println("Char: " + one);
                 CharType charType = checkType(one);
                 if (CharType.NUM.equals(charType) || CharType.LETTER.equals(charType)) {
-                    charPinyins = new String[] { String.valueOf(one) };
+                    charPinyins = new String[]{String.valueOf(one)};
                 } else if (CharType.CHINESE.equals(charType)) {
                     charPinyins = PinyinHelper.toHanyuPinyinStringArray(one, defaultFormat);
                 }
@@ -70,8 +70,7 @@ public class ChineseToPinyinConvertor {
 
                 int pinyinSize = charPinyins.length;
                 if (listSize == 0) {
-                    for (int i = 0; i < pinyinSize; i++) {
-                        String py = charPinyins[i];
+                    for (String py : charPinyins) {
                         pinyins.add(py);
                         pinyinHeads.add(String.valueOf(py.charAt(0)));
                     }
@@ -83,7 +82,7 @@ public class ChineseToPinyinConvertor {
                             pinyinHeads.set(i, pinyinHeads.get(i) + String.valueOf(py.charAt(0)));
                         }
                     } else {
-                        List<String> newList = new ArrayList<String>();
+                        List<String> newList = new ArrayList<>();
                         for (String py : pinyins) {
                             for (String c : charPinyins) {
                                 newList.add(py + c);
@@ -91,7 +90,7 @@ public class ChineseToPinyinConvertor {
                         }
                         pinyins = newList;
 
-                        List<String> newHeadList = new ArrayList<String>();
+                        List<String> newHeadList = new ArrayList<>();
                         for (String py : pinyinHeads) {
                             for (String c : charPinyins) {
                                 newHeadList.add(py + c.charAt(0));
@@ -106,7 +105,7 @@ public class ChineseToPinyinConvertor {
             e.printStackTrace();
         }
 
-        Set<String> filterDups = new LinkedHashSet<String>();
+        Set<String> filterDups = new LinkedHashSet<>();
         if (MODE.capital.equals(mode)) {
             filterDups.addAll(pinyinHeads);
             return filterDups;
@@ -125,14 +124,15 @@ public class ChineseToPinyinConvertor {
         NUM, //2字节数字１２３４ 
         LETTER, //gb2312中的，例如:ＡＢＣ，2字节字符同时包含 1字节能表示的 basic latin and latin-1 OTHER,// 其他字符 
         OTHER, // 其他字符
-        CHINESE;//中文字
+        CHINESE//中文字
     }
 
     /**
-    * 判断输入char类型变量的字符类型
-    * @param c char类型变量
-    * @return CharType 字符类型
-    */
+     * 判断输入char类型变量的字符类型
+     *
+     * @param c char类型变量
+     * @return CharType 字符类型
+     */
     private static CharType checkType(char c) {
         CharType ct = null;
 

@@ -10,8 +10,7 @@ public interface AttachmentableEntity {
 
     /**
      * 关联附件个数
-     * @return
      */
     @JsonProperty
-    public Integer getAttachmentSize();
+    Integer getAttachmentSize();
 }

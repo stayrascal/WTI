@@ -1,12 +1,11 @@
 package com.rascal.core.service;
 
-import java.util.Collection;
-
-import lab.s2jh.core.exception.ValidationException;
-import lab.s2jh.support.service.DynamicConfigService;
-
+import com.rascal.core.exception.ValidationException;
+import com.rascal.support.service.DynamicConfigService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Collection;
 
 /**
  * 用于业务逻辑校验的“断言”控制，与常规的Assert断言区别在于抛出 @see ValidationException

@@ -1,38 +1,25 @@
 package com.rascal.aud.entity;
 
-import java.util.Date;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.PersistableEntity;
-import lab.s2jh.core.web.json.DateTimeJsonSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.PersistableEntity;
+import com.rascal.core.web.json.DateTimeJsonSerializer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "sche_JobRunHist")
+@Table(name = "sche_job_run_hist")
 @MetaData(value = "任务计划运行历史记录")
 @Cache(usage = CacheConcurrencyStrategy.NONE)
 public class JobRunHist extends PersistableEntity<Long> {

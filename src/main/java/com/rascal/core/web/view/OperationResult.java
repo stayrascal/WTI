@@ -3,16 +3,15 @@
  */
 package com.rascal.core.web.view;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-
-import lab.s2jh.core.annotation.MetaData;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.rascal.core.annotation.MetaData;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 
 /**
  * 用于Object到JSON序列化的对象结构体定义
@@ -30,7 +29,9 @@ public class OperationResult {
     //全局未知错误标识代码
     public final static String FAILURE = "999999";
 
-    /** 标识操作结果类型 */
+    /**
+     * 标识操作结果类型
+     */
     public enum OPERATION_RESULT_TYPE {
         @MetaData(value = "成功", comments = "操作处理成功。前端一般是绿色的短暂气泡提示")
         success,
@@ -45,19 +46,29 @@ public class OperationResult {
         confirm
     }
 
-    /** 返回success或failure操作标识 */
+    /**
+     * 返回success或failure操作标识
+     */
     private String type;
 
-    /** 成功：100000，其他标识错误 */
+    /**
+     * 成功：100000，其他标识错误
+     */
     private String code;
 
-    /** 国际化处理的返回JSON消息正文，一般用于提供failure错误消息 */
+    /**
+     * 国际化处理的返回JSON消息正文，一般用于提供failure错误消息
+     */
     private String message;
 
-    /** 补充的业务数据 */
+    /**
+     * 补充的业务数据
+     */
     private Object data;
 
-    /** 标识redirect路径 */
+    /**
+     * 标识redirect路径
+     */
     private String redirect;
 
     public static OperationResult buildSuccessResult(String message, Object data) {

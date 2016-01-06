@@ -1,19 +1,19 @@
 package com.rascal.module.sys.service;
 
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.pagination.GroupPropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter.MatchType;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.sys.dao.UserMessageDao;
-import lab.s2jh.module.sys.entity.UserMessage;
-import lab.s2jh.support.service.MailService;
-import lab.s2jh.support.service.MessagePushService;
-import lab.s2jh.support.service.SmsService;
-import lab.s2jh.support.service.SmsService.SmsMessageTypeEnum;
 
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.pagination.GroupPropertyFilter;
+import com.rascal.core.pagination.PropertyFilter;
+import com.rascal.core.pagination.PropertyFilter.MatchType;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.util.DateUtils;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.sys.dao.UserMessageDao;
+import com.rascal.module.sys.entity.UserMessage;
+import com.rascal.support.service.MailService;
+import com.rascal.support.service.MessagePushService;
+import com.rascal.support.service.SmsService;
+import com.rascal.support.service.SmsService.SmsMessageTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +46,7 @@ public class UserMessageService extends BaseService<UserMessage, Long> {
 
     /**
      * 查询用户未读消息个数
+     *
      * @param user 当前登录用户
      */
     @Transactional(readOnly = true)
@@ -56,7 +57,7 @@ public class UserMessageService extends BaseService<UserMessage, Long> {
         return count(filter);
     }
 
-    public void processUserRead(UserMessage entity, User user) {
+    public void processUserRead(UserMessage entity) {
         if (entity.getFirstReadTime() == null) {
             entity.setFirstReadTime(DateUtils.currentDate());
             entity.setLastReadTime(entity.getFirstReadTime());
@@ -70,7 +71,6 @@ public class UserMessageService extends BaseService<UserMessage, Long> {
 
     /**
      * 消息推送处理
-     * @param entity
      */
     public void pushMessage(UserMessage entity) {
         //定向用户消息处理

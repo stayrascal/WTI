@@ -1,11 +1,10 @@
 package com.rascal.core.security;
 
+import com.rascal.module.auth.service.UserService;
+import org.apache.shiro.web.filter.authc.LogoutFilter;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import lab.s2jh.module.auth.service.UserService;
-
-import org.apache.shiro.web.filter.authc.LogoutFilter;
 
 public class AppLogoutFilter extends LogoutFilter {
 

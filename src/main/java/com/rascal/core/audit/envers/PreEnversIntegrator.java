@@ -23,7 +23,7 @@ public class PreEnversIntegrator implements Integrator {
 
     @Override
     public void integrate(Configuration configuration, SessionFactoryImplementor sessionFactory,
-            SessionFactoryServiceRegistry serviceRegistry) {
+                          SessionFactoryServiceRegistry serviceRegistry) {
         final boolean autoRegister = ConfigurationHelper.getBoolean(AUTO_REGISTER, configuration.getProperties(), true);
         if (!autoRegister) {
             LOG.debug("Skipping Envers listener auto registration");
@@ -57,7 +57,7 @@ public class PreEnversIntegrator implements Integrator {
      */
     @Override
     public void integrate(MetadataImplementor metadata, SessionFactoryImplementor sessionFactory,
-            SessionFactoryServiceRegistry serviceRegistry) {
+                          SessionFactoryServiceRegistry serviceRegistry) {
         // TODO: implement
     }
 

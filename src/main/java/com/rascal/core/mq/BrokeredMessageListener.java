@@ -8,10 +8,10 @@ public interface BrokeredMessageListener {
     /**
      * 开启消息接收监听
      */
-    public void startup();
+    void startup();
 
     /**
      * 关闭消息接收监听
      */
-    public void shutdown();
+    void shutdown();
 }

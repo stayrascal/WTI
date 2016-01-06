@@ -1,16 +1,12 @@
 package com.rascal.support.service;
 
-import java.util.Set;
-
-import javax.mail.internet.MimeMessage;
-
-import lab.s2jh.aud.entity.SendMessageLog;
-import lab.s2jh.aud.entity.SendMessageLog.SendMessageTypeEnum;
-import lab.s2jh.aud.service.SendMessageLogService;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.exception.ServiceException;
-import lab.s2jh.core.util.DateUtils;
-
+import com.google.common.collect.Sets;
+import com.rascal.aud.entity.SendMessageLog;
+import com.rascal.aud.entity.SendMessageLog.SendMessageTypeEnum;
+import com.rascal.aud.service.SendMessageLogService;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.exception.ServiceException;
+import com.rascal.core.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +19,8 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.Assert;
 
-import com.google.common.collect.Sets;
+import javax.mail.internet.MimeMessage;
+import java.util.Set;
 
 @Service
 public class MailService {

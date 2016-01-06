@@ -1,7 +1,8 @@
 package com.rascal.support.service;
 
-import lab.s2jh.module.sys.entity.NotifyMessage;
-import lab.s2jh.module.sys.entity.UserMessage;
+
+import com.rascal.module.sys.entity.NotifyMessage;
+import com.rascal.module.sys.entity.UserMessage;
 
 /**
  * 消息APP推送服务接口

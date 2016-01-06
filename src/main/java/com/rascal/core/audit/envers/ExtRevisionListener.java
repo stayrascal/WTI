@@ -1,20 +1,22 @@
 package com.rascal.core.audit.envers;
 
 import com.google.common.collect.Maps;
-import lab.s2jh.core.security.AuthContextHolder;
-import lab.s2jh.core.security.AuthUserDetails;
+import com.rascal.core.security.AuthContextHolder;
+import com.rascal.core.security.AuthUserDetails;
 import org.hibernate.envers.RevisionListener;
 
 import java.util.Map;
 
 /**
  * 扩展默认的RevisionListener，额外追加记录登录用户信息
- * @see http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html/ch15.html
+ * http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html/ch15.html
  */
 public class ExtRevisionListener implements RevisionListener {
 
-    /** 以ThreadLocal机制把Web层相关审计属性值带入Envers监听器 */
-    private static final ThreadLocal<Map<String, String>> operationDataContainer = new ThreadLocal<Map<String, String>>();
+    /**
+     * 以ThreadLocal机制把Web层相关审计属性值带入Envers监听器
+     */
+    private static final ThreadLocal<Map<String, String>> operationDataContainer = new ThreadLocal<>();
 
     public final static String entityClassName = "entityClassName";
     public final static String controllerClassName = "controllerClassName";

@@ -1,15 +1,14 @@
 package com.rascal.shop.support.service;
 
-import javax.annotation.PostConstruct;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.support.service.SmsService;
-
+import com.rascal.core.annotation.MetaData;
+import com.rascal.support.service.SmsService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
 
 @Service
 public class SmsServiceImpl implements SmsService {
@@ -35,9 +34,9 @@ public class SmsServiceImpl implements SmsService {
 
     /**
      * 短信发送接口
+     *
      * @param smsContent 短信内容
-     * @param mobileNum 手机号码
-     * 
+     * @param mobileNum  手机号码
      * @return 如果成功则返回null；否则失败返回异常消息
      */
     @Override

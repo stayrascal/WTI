@@ -1,11 +1,11 @@
 package com.rascal.module.sys.service;
 
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.module.sys.dao.NotifyMessageReadDao;
-import lab.s2jh.module.sys.entity.NotifyMessage;
-import lab.s2jh.module.sys.entity.NotifyMessageRead;
 
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.service.BaseService;
+import com.rascal.module.sys.dao.NotifyMessageReadDao;
+import com.rascal.module.sys.entity.NotifyMessage;
+import com.rascal.module.sys.entity.NotifyMessageRead;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

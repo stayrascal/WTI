@@ -1,22 +1,18 @@
 package com.rascal.core.validation;
 
-import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.CONSTRUCTOR;
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
 
+import com.rascal.core.validation.impl.FormattedDateValidator;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
+import static java.lang.annotation.ElementType.*;
 
-import lab.s2jh.core.validation.impl.FormattedDateValidator;
-
-@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER })
+@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = FormattedDateValidator.class)
 @Documented
@@ -47,17 +43,17 @@ public @interface FormattedDate {
      */
     public enum ISO {
 
-        /** 
+        /**
          * The most common ISO Date Format <code>yyyy-MM-dd</code> e.g. 2000-10-31.
          */
         DATE,
 
-        /** 
+        /**
          * The most common ISO Time Format <code>hh:mm:ss.SSSZ</code> e.g. 01:30:00.000-05:00.
          */
         TIME,
 
-        /** 
+        /**
          * The most common ISO DateTime Format <code>yyyy-MM-dd'T'hh:mm:ss.SSSZ</code> e.g. 2000-10-31 01:30:00.000-05:00.
          * The default if no annotation value is specified.
          */

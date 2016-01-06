@@ -1,6 +1,6 @@
 package com.rascal.core.exception;
 
-public class DuplicateTokenException extends BaseRuntimeException{
+public class DuplicateTokenException extends BaseRuntimeException {
 
     public DuplicateTokenException(String msg) {
         super(msg);

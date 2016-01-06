@@ -1,13 +1,12 @@
 package com.rascal.module.auth.dao;
 
-import javax.persistence.QueryHint;
-
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.module.auth.entity.Department;
-
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.module.auth.entity.Department;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.stereotype.Repository;
+
+import javax.persistence.QueryHint;
 
 @Repository
 public interface DepartmentDao extends BaseDao<Department, Long> {

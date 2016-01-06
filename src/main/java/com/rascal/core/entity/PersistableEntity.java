@@ -1,21 +1,18 @@
 package com.rascal.core.entity;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Persistable;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Persistable;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.io.Serializable;
 
 @Getter
 @Setter
@@ -76,7 +73,7 @@ public abstract class PersistableEntity<ID extends Serializable> extends Abstrac
             return false;
         }
         Persistable that = (Persistable) obj;
-        return null == this.getId() ? false : this.getId().equals(that.getId());
+        return null != this.getId() && this.getId().equals(that.getId());
     }
 
     /*
@@ -107,7 +104,6 @@ public abstract class PersistableEntity<ID extends Serializable> extends Abstrac
     /**
      * 从扩展属性中取值判断当前对象是否标记需要删除
      * 一般用于前端UI对关联集合对象元素移除操作
-     * @return
      */
     @Transient
     @JsonIgnore
@@ -125,9 +121,6 @@ public abstract class PersistableEntity<ID extends Serializable> extends Abstrac
         } else if (opParams instanceof String) {
             op = (String) opParams;
         }
-        if ("remove".equalsIgnoreCase(op)) {
-            return true;
-        }
-        return false;
+        return "remove".equalsIgnoreCase(op);
     }
 }

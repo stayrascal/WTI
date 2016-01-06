@@ -1,13 +1,12 @@
 package com.rascal.core.web.sitemesh;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.sitemesh.DecoratorSelector;
 import org.sitemesh.content.Content;
 import org.sitemesh.webapp.WebAppContext;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * 基于request的header和parameter参数decorator值进行动态定位装饰器的选择器
@@ -33,7 +32,7 @@ public class ParamDecoratorSelector implements DecoratorSelector<WebAppContext> 
         }
         if (StringUtils.isNotBlank(decorator)) {
             //按照参数值返回对应路径下面的jsp装饰模板页码
-            return new String[] { "/WEB-INF/views/layouts/" + decorator + ".jsp" };
+            return new String[]{"/WEB-INF/views/layouts/" + decorator + ".jsp"};
         }
 
         // Otherwise, fallback to the standard configuration

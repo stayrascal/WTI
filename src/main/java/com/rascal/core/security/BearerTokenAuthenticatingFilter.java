@@ -1,16 +1,15 @@
 package com.rascal.core.security;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
-
+import com.rascal.module.auth.entity.User.AuthTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.web.filter.authc.AuthenticatingFilter;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 public class BearerTokenAuthenticatingFilter extends AuthenticatingFilter {
 
@@ -37,10 +36,7 @@ public class BearerTokenAuthenticatingFilter extends AuthenticatingFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String accessToken = httpServletRequest.getHeader(KEY_ACCESS_TOKEN);
-        if (StringUtils.isNotBlank(accessToken)) {
-            return executeLogin(request, response);
-        }
-        return true;
+        return !StringUtils.isNotBlank(accessToken) || executeLogin(request, response);
     }
 
     protected void setFailureAttribute(ServletRequest request, AuthenticationException ae) {

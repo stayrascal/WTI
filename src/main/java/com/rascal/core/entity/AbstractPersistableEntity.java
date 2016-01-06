@@ -1,10 +1,9 @@
 package com.rascal.core.entity;
 
-import java.io.Serializable;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.domain.Persistable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
 
 public abstract class AbstractPersistableEntity<ID extends Serializable> extends AbstractPojo implements Persistable<ID> {
 

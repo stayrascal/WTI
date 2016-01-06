@@ -1,43 +1,28 @@
 package com.rascal.support.data;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.cons.GlobalConstant;
+import com.rascal.core.context.ExtPropertyPlaceholderConfigurer;
+import com.rascal.core.data.BaseDatabaseDataInitialize;
+import com.rascal.core.security.AuthUserDetails;
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.util.Exceptions;
+import com.rascal.core.util.UidUtils;
+import com.rascal.module.auth.entity.*;
+import com.rascal.module.auth.entity.User.AuthTypeEnum;
+import com.rascal.module.auth.service.DepartmentService;
+import com.rascal.module.auth.service.PrivilegeService;
+import com.rascal.module.auth.service.RoleService;
+import com.rascal.module.auth.service.UserService;
+import com.rascal.module.sys.entity.*;
+import com.rascal.module.sys.service.*;
+import com.rascal.support.service.DynamicConfigService;
 import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.cons.GlobalConstant;
-import lab.s2jh.core.context.ExtPropertyPlaceholderConfigurer;
-import lab.s2jh.core.data.BaseDatabaseDataInitialize;
-import lab.s2jh.core.security.AuthUserDetails;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.util.Exceptions;
-import lab.s2jh.core.util.UidUtils;
-import lab.s2jh.module.auth.entity.Department;
-import lab.s2jh.module.auth.entity.Privilege;
-import lab.s2jh.module.auth.entity.Role;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
-import lab.s2jh.module.auth.entity.UserR2Role;
-import lab.s2jh.module.auth.service.DepartmentService;
-import lab.s2jh.module.auth.service.PrivilegeService;
-import lab.s2jh.module.auth.service.RoleService;
-import lab.s2jh.module.auth.service.UserService;
-import lab.s2jh.module.sys.entity.ConfigProperty;
-import lab.s2jh.module.sys.entity.DataDict;
-import lab.s2jh.module.sys.entity.Menu;
-import lab.s2jh.module.sys.entity.NotifyMessage;
-import lab.s2jh.module.sys.entity.UserMessage;
-import lab.s2jh.module.sys.service.ConfigPropertyService;
-import lab.s2jh.module.sys.service.DataDictService;
-import lab.s2jh.module.sys.service.MenuService;
-import lab.s2jh.module.sys.service.NotifyMessageService;
-import lab.s2jh.module.sys.service.UserMessageService;
-import lab.s2jh.support.service.DynamicConfigService;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -51,8 +36,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 数据库基础数据初始化处理器
@@ -275,8 +261,7 @@ public class BasicDatabaseDataInitialize extends BaseDatabaseDataInitialize {
             Set<BeanDefinition> beanDefinitions = Sets.newHashSet();
             ClassPathScanningCandidateComponentProvider scan = new ClassPathScanningCandidateComponentProvider(false);
             scan.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
-            beanDefinitions.addAll(scan.findCandidateComponents("lab.s2jh.**.web.**"));
-            beanDefinitions.addAll(scan.findCandidateComponents("s2jh.biz.**.web.**"));
+            beanDefinitions.addAll(scan.findCandidateComponents("com.rascal.**.web.**"));
 
             ClassPool pool = ClassPool.getDefault();
             //The default ClassPool returned by a static method ClassPool.getDefault() searches the same path that the underlying JVM (Java virtual machine) has. 
@@ -347,8 +332,7 @@ public class BasicDatabaseDataInitialize extends BaseDatabaseDataInitialize {
             Set<BeanDefinition> beanDefinitions = Sets.newHashSet();
             ClassPathScanningCandidateComponentProvider scan = new ClassPathScanningCandidateComponentProvider(false);
             scan.addIncludeFilter(new AnnotationTypeFilter(Controller.class));
-            beanDefinitions.addAll(scan.findCandidateComponents("lab.s2jh.**.web.**"));
-            beanDefinitions.addAll(scan.findCandidateComponents("s2jh.biz.**.web.**"));
+            beanDefinitions.addAll(scan.findCandidateComponents("com.rascal.**.web.**"));
 
             List<Privilege> privileges = privilegeService.findAllCached();
             ClassPool pool = ClassPool.getDefault();

@@ -1,17 +1,17 @@
 package com.rascal.core.context.async;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+
 /**
- *  用于增强Spring @Async 注解在异步模式能捕捉到异常日志
- *  <bean id="handlingAsyncTaskExecutor" class="lab.s2jh.core.context.async.HandlingAsyncTaskExecutor"/>
- *  <task:annotation-driven executor="handlingAsyncTaskExecutor" />
+ * 用于增强Spring @Async 注解在异步模式能捕捉到异常日志
+ * <bean id="handlingAsyncTaskExecutor" class="lab.s2jh.core.context.async.HandlingAsyncTaskExecutor"/>
+ * <task:annotation-driven executor="handlingAsyncTaskExecutor" />
  */
 public class HandlingAsyncTaskExecutor implements AsyncTaskExecutor {
 
@@ -54,28 +54,22 @@ public class HandlingAsyncTaskExecutor implements AsyncTaskExecutor {
     }
 
     private <T> Callable<T> createCallable(final Callable<T> task) {
-        return new Callable<T>() {
-            @Override
-            public T call() throws Exception {
-                try {
-                    return task.call();
-                } catch (Exception e) {
-                    handle(e);
-                    throw e;
-                }
+        return () -> {
+            try {
+                return task.call();
+            } catch (Exception e) {
+                handle(e);
+                throw e;
             }
         };
     }
 
     private Runnable createWrappedRunnable(final Runnable task) {
-        return new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    task.run();
-                } catch (Exception e) {
-                    handle(e);
-                }
+        return () -> {
+            try {
+                task.run();
+            } catch (Exception e) {
+                handle(e);
             }
         };
     }

@@ -1,29 +1,24 @@
 package com.rascal.support.web;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.cons.GlobalConstant;
-import lab.s2jh.core.security.AuthContextHolder;
-import lab.s2jh.core.security.AuthUserDetails;
-import lab.s2jh.core.security.JcaptchaFormAuthenticationFilter;
-import lab.s2jh.core.web.captcha.ImageCaptchaServlet;
-import lab.s2jh.core.web.filter.WebAppContextInitFilter;
-import lab.s2jh.core.web.util.ServletUtils;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.service.UserService;
-import lab.s2jh.module.sys.entity.NotifyMessage.NotifyMessagePlatformEnum;
-import lab.s2jh.module.sys.service.NotifyMessageService;
-import lab.s2jh.module.sys.service.SmsVerifyCodeService;
-import lab.s2jh.module.sys.service.UserMessageService;
-import lab.s2jh.module.sys.service.UserProfileDataService;
-import lab.s2jh.support.service.DynamicConfigService;
-import lab.s2jh.support.service.SmsService;
-import lab.s2jh.support.service.SmsService.SmsMessageTypeEnum;
-
+import com.google.common.collect.Maps;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.cons.GlobalConstant;
+import com.rascal.core.security.AuthContextHolder;
+import com.rascal.core.security.AuthUserDetails;
+import com.rascal.core.security.JcaptchaFormAuthenticationFilter;
+import com.rascal.core.web.captcha.ImageCaptchaServlet;
+import com.rascal.core.web.filter.WebAppContextInitFilter;
+import com.rascal.core.web.util.ServletUtils;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.sys.entity.NotifyMessage.NotifyMessagePlatformEnum;
+import com.rascal.module.sys.service.NotifyMessageService;
+import com.rascal.module.sys.service.SmsVerifyCodeService;
+import com.rascal.module.sys.service.UserMessageService;
+import com.rascal.module.sys.service.UserProfileDataService;
+import com.rascal.support.service.DynamicConfigService;
+import com.rascal.support.service.SmsService;
+import com.rascal.support.service.SmsService.SmsMessageTypeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.annotation.RequiresRoles;
@@ -36,13 +31,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.collect.Maps;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Controller
 public class IndexController {
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private SmsVerifyCodeService smsVerifyCodeService;
@@ -75,7 +68,7 @@ public class IndexController {
 
     @RequiresRoles(AuthUserDetails.ROLE_MGMT_USER)
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public String adminIndex(HttpServletRequest request, Model model) {
+    public String adminIndex(Model model) {
         model.addAttribute("baiduMapAppkey", dynamicConfigService.getString("baidu_map_appkey"));
         model.addAttribute("buildVersion", dynamicConfigService.getString("build_version"));
         model.addAttribute("buildTimetamp", dynamicConfigService.getString("build_timestamp"));
@@ -88,8 +81,8 @@ public class IndexController {
 
     @RequiresRoles(AuthUserDetails.ROLE_MGMT_USER)
     @RequestMapping(value = "/admin/", method = RequestMethod.GET)
-    public String adminIndexMore(HttpServletRequest request, Model model) {
-        return adminIndex(request, model);
+    public String adminIndexMore(Model model) {
+        return adminIndex(model);
     }
 
     @RequestMapping(value = "/{source}/login", method = RequestMethod.GET)
@@ -101,31 +94,30 @@ public class IndexController {
         return source + "/login";
     }
 
-    /** 
+    /**
      * <h3>APP接口: 登录。</h3>
-     * 
+     * <p>
      * <p>
      * 业务输入参数列表：
-     * <ul> 
+     * <ul>
      * <li><b>username</b> 账号</li>
      * <li><b>password</b> 密码</li>
      * <li><b>uuid</b> 设备或应用唯一标识</li>
-     * </ul> 
+     * </ul>
      * </p>
-     * 
+     * <p>
      * <p>
      * 业务输出参数列表：
      * <ul>
      * <li><b>token</b> 本次登录的随机令牌Token，目前设定半年有效期。APP取到此token值后存储在本应用持久化，在后续访问或下次重开应用时把此token以HTTP Header形式附在Request信息中：ACCESS-TOKEN={token}</li>
      * </ul>
      * </p>
-     * 
-     * @return  {@link OperationResult} 通用标准结构
-     * 
+     *
+     * @return {@link OperationResult} 通用标准结构
      */
     @RequestMapping(value = "/app/login", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult appLogin(HttpServletRequest request, Model model) {
+    public OperationResult appLogin(HttpServletRequest request) {
         //获取认证异常的类名
         AuthenticationException ae = (AuthenticationException) request.getAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME);
         if (ae == null) {
@@ -145,10 +137,8 @@ public class IndexController {
 
     /**
      * PC站点方式登录失败，转向登录界面。表单的/login POST请求首先会被Shiro拦截处理，在认证失败之后才会触发调用此方法
+     *
      * @param source 登录来源,  @see SourceUsernamePasswordToken.AuthSourceEnum
-     * @param request
-     * @param model
-     * @return
      */
     @RequestMapping(value = "/{source}/login", method = RequestMethod.POST)
     public String loginFailure(@PathVariable("source") String source, HttpServletRequest request, Model model) {
@@ -163,21 +153,20 @@ public class IndexController {
 
     }
 
-    /** 
+    /**
      * <h3>APP接口: 发送短信验证码。</h3>
      * <p>从接口会向所有手机号发送短信验证码，但是可能在极端情况通过全局系统参数关闭向开放手机发送短信功能。</p>
      * <p>此接口主要适用于开放式的注册验证码发送功能，如果调用端功能能明确是向已注册用户发送短信，如找回密码功能，则请用/user-sms-code接口</p>
-     * 
-     * 
+     * <p>
+     * <p>
      * <p>
      * 业务输入参数列表：
-     * <ul> 
+     * <ul>
      * <li><b>mobile</b> 手机号</li>
-     * </ul> 
+     * </ul>
      * </p>
-     * 
-     * @return  {@link OperationResult} 通用标准结构
-     * 
+     *
+     * @return {@link OperationResult} 通用标准结构
      */
     @RequestMapping(value = "/send-sms-code/{mobile}", method = RequestMethod.GET)
     @ResponseBody
@@ -201,18 +190,17 @@ public class IndexController {
         }
     }
 
-    /** 
+    /**
      * <h3>APP接口: 只会向平台已验证过的手机号发送短信验证码。</h3>
      * <p>此接口主要适用于向已通过短信验证成功注册用户发送短信，如找回密码功能，其他开放注册功能请用/send-sms-code接口</p>
      * <p>
      * 业务输入参数列表：
-     * <ul> 
+     * <ul>
      * <li><b>mobile</b> 手机号</li>
-     * </ul> 
+     * </ul>
      * </p>
-     * 
-     * @return  {@link OperationResult} 通用标准结构
-     * 
+     *
+     * @return {@link OperationResult} 通用标准结构
      */
     @RequestMapping(value = "/user-sms-code/{mobile}", method = RequestMethod.GET)
     @ResponseBody
@@ -227,11 +215,6 @@ public class IndexController {
         }
     }
 
-    /**
-     * 
-     * @param platform 平台
-     * @return
-     */
     @MetaData("用户未读公告数目")
     @RequestMapping(value = "/notify-message/count", method = RequestMethod.GET)
     @ResponseBody

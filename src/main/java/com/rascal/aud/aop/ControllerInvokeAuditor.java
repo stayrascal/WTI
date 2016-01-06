@@ -1,9 +1,9 @@
 package com.rascal.aud.aop;
 
 import com.google.common.collect.Maps;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.audit.envers.ExtRevisionListener;
-import lab.s2jh.support.service.DynamicConfigService;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.audit.envers.ExtRevisionListener;
+import com.rascal.support.service.DynamicConfigService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.util.ClassUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -38,7 +38,7 @@ public class ControllerInvokeAuditor {
             if (logger.isDebugEnabled()) {
                 String monthName = method.getName();
                 String className = joinPoint.getThis().getClass().getName();
-                if (className.indexOf("$$") > -1) { // 如果是CGLIB动态生成的类  
+                if (className.contains("$$")) { // 如果是CGLIB动态生成的类
                     className = StringUtils.substringBefore(className, "$$");
                 }
                 logger.debug("AOP Aspect: {}, Point: {}.{}", ControllerInvokeAuditor.class, className, monthName);
@@ -62,7 +62,7 @@ public class ControllerInvokeAuditor {
 
                         Class<?> thisClazz = joinPoint.getThis().getClass();
                         String className = thisClazz.getName();
-                        if (className.indexOf("$$") > -1) { // 如果是CGLIB动态生成的类  
+                        if (className.contains("$$")) { // 如果是CGLIB动态生成的类
                             className = StringUtils.substringBefore(className, "$$");
                         }
                         Class<?> controllerClazz = ClassUtils.forName(className);

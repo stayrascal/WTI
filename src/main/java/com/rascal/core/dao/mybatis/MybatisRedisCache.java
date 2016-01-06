@@ -1,17 +1,15 @@
 package com.rascal.core.dao.mybatis;
 
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.apache.ibatis.cache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
+
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MybatisRedisCache implements Cache {
 
@@ -24,7 +22,9 @@ public class MybatisRedisCache implements Cache {
 
     private static RedisSerializer<Object> defaultSerializer = new JdkSerializationRedisSerializer();
 
-    /** The ReadWriteLock. */
+    /**
+     * The ReadWriteLock.
+     */
 
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
@@ -49,67 +49,50 @@ public class MybatisRedisCache implements Cache {
 
     @Override
     public int getSize() {
-        Long size = redisTemplate.execute(new RedisCallback<Long>() {
-            @Override
-            public Long doInRedis(RedisConnection connection) throws DataAccessException {
-                Long dbSize = connection.dbSize();
-                logger.debug("Mybatis redis getSize:" + dbSize);
-                return dbSize;
-            }
+        Long size = redisTemplate.execute((RedisConnection connection) -> {
+            Long dbSize = connection.dbSize();
+            logger.debug("Mybatis redis getSize:" + dbSize);
+            return dbSize;
         });
         return size == null ? 0 : size.intValue();
     }
 
     @Override
     public void putObject(final Object key, final Object value) {
-        redisTemplate.execute(new RedisCallback<Object>() {
-            @Override
-            public Object doInRedis(RedisConnection connection) throws DataAccessException {
-                logger.debug("Mybatis redis putObject: " + key + "=" + value);
-                connection.set(defaultSerializer.serialize(key), defaultSerializer.serialize(value));
-                return null;
-            }
+        redisTemplate.execute((RedisConnection connection) -> {
+            logger.debug("Mybatis redis putObject: " + key + "=" + value);
+            connection.set(defaultSerializer.serialize(key), defaultSerializer.serialize(value));
+            return null;
         });
     }
 
     @Override
     public Object getObject(final Object key) {
-        Object value = redisTemplate.execute(new RedisCallback<Object>() {
-            @Override
-            public Object doInRedis(RedisConnection connection) throws DataAccessException {
-                byte[] keyBytes = defaultSerializer.serialize(key);
-                if (connection.exists(keyBytes)) {
-                    Object v = defaultSerializer.deserialize(connection.get(keyBytes));
-                    logger.debug("Mybatis redis getObject: " + key + "=" + v);
-                    return v;
-                }
-                return null;
+        return redisTemplate.execute((RedisConnection connection) -> {
+            byte[] keyBytes = defaultSerializer.serialize(key);
+            if (connection.exists(keyBytes)) {
+                Object v = defaultSerializer.deserialize(connection.get(keyBytes));
+                logger.debug("Mybatis redis getObject: " + key + "=" + v);
+                return v;
             }
+            return null;
         });
-        return value;
     }
 
     @Override
     public Object removeObject(final Object key) {
-        Object value = redisTemplate.execute(new RedisCallback<Object>() {
-            @Override
-            public Object doInRedis(RedisConnection connection) throws DataAccessException {
-                logger.debug("Mybatis redis removeObject: " + key);
-                return connection.expire(defaultSerializer.serialize(key), 0);
-            }
+        return redisTemplate.execute((RedisConnection connection) -> {
+            logger.debug("Mybatis redis removeObject: " + key);
+            return connection.expire(defaultSerializer.serialize(key), 0);
         });
-        return value;
     }
 
     @Override
     public void clear() {
-        redisTemplate.execute(new RedisCallback<Object>() {
-            @Override
-            public Object doInRedis(RedisConnection connection) throws DataAccessException {
-                logger.debug("Mybatis redis flushDB.");
-                connection.flushDb();
-                return null;
-            }
+        redisTemplate.execute((RedisConnection connection) -> {
+            logger.debug("Mybatis redis flushDB.");
+            connection.flushDb();
+            return null;
         });
     }
 

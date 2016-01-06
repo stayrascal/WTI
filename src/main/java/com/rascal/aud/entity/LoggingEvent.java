@@ -1,41 +1,26 @@
 package com.rascal.aud.entity;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.PersistableEntity;
-import lab.s2jh.core.web.json.DateTimeJsonSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.PersistableEntity;
+import com.rascal.core.web.json.DateTimeJsonSerializer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.util.CollectionUtils;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
-/** 
+/**
  * 基于logback的DBAppender表结构规范对应的实体定义
- * @see http://logback.qos.ch/manual/configuration.html#DBAppender
+ * http://logback.qos.ch/manual/configuration.html#DBAppender
  */
 @Getter
 @Setter
@@ -114,7 +99,7 @@ public class LoggingEvent extends PersistableEntity<Long> {
         TODO,
 
         @MetaData("已忽略")
-        IGNORE;
+        IGNORE
     }
 
     @Transient
@@ -129,7 +114,7 @@ public class LoggingEvent extends PersistableEntity<Long> {
         StringBuilder sb = new StringBuilder();
         if (!CollectionUtils.isEmpty(loggingEventExceptions)) {
             for (LoggingEventException loggingEventException : loggingEventExceptions) {
-                sb.append(loggingEventException.getTraceLine() + "\n");
+                sb.append(loggingEventException.getTraceLine()).append("\n");
             }
         }
         return sb.toString();

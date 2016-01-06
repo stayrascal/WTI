@@ -1,17 +1,18 @@
 package com.rascal.aud.entity;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import java.util.Objects;
+
 /** 
  * 基于logback的DBAppender表结构规范对应的实体定义
- * @see http://logback.qos.ch/manual/configuration.html#DBAppender
+ * http://logback.qos.ch/manual/configuration.html#DBAppender
  */
 @Getter
 @Setter
@@ -37,7 +38,7 @@ public class LoggingEventExceptionId implements java.io.Serializable {
             return false;
         LoggingEventExceptionId castOther = (LoggingEventExceptionId) other;
 
-        return ((this.getEventId() == castOther.getEventId()) || (this.getEventId() != null && castOther.getEventId() != null && this.getEventId()
+        return ((Objects.equals(this.getEventId(), castOther.getEventId())) || (this.getEventId() != null && castOther.getEventId() != null && this.getEventId()
                 .equals(castOther.getEventId()))) && (this.getI() == castOther.getI());
     }
 

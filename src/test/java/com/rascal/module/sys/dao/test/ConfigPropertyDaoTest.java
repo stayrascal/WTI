@@ -1,15 +1,16 @@
 package com.rascal.module.sys.dao.test;
 
-import lab.s2jh.core.test.SpringTransactionalTestCase;
-import lab.s2jh.core.util.MockEntityUtils;
-import lab.s2jh.module.sys.dao.ConfigPropertyDao;
-import lab.s2jh.module.sys.entity.ConfigProperty;
-
+import com.rascal.core.util.MockEntityUtils;
+import com.rascal.module.sys.dao.ConfigPropertyDao;
+import com.rascal.module.sys.entity.ConfigProperty;
+import com.rascal.support.test.SpringTransactionalTestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class ConfigPropertyDaoTest extends SpringTransactionalTestCase {
 
+    @Qualifier("configPropertyDao")
     @Autowired
     private ConfigPropertyDao configPropertyDao;
 

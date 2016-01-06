@@ -1,16 +1,11 @@
 package com.rascal.core.entity.def;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseNativeEntity;
-
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseNativeEntity;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.persistence.*;
 
 @MappedSuperclass
 public abstract class DynamicParameterDef extends BaseNativeEntity {
@@ -161,25 +156,25 @@ public abstract class DynamicParameterDef extends BaseNativeEntity {
     public String getFullValidateRules() {
         StringBuilder sb = new StringBuilder();
         switch (this.getType()) {
-        case DATE:
-            sb.append("date:true,");
-            break;
-        case TIMESTAMP:
-            sb.append("timestamp:true,");
-            break;
-        case FLOAT:
-            sb.append("number:true,");
-            break;
-        case INTEGER:
-            sb.append("number:true,digits:true,");
-            break;
-        default:
+            case DATE:
+                sb.append("date:true,");
+                break;
+            case TIMESTAMP:
+                sb.append("timestamp:true,");
+                break;
+            case FLOAT:
+                sb.append("number:true,");
+                break;
+            case INTEGER:
+                sb.append("number:true,digits:true,");
+                break;
+            default:
         }
         if (BooleanUtils.toBoolean(this.required)) {
             sb.append("required:true,");
         }
         if (StringUtils.isNotBlank(this.getValidateRules())) {
-            sb.append(this.getValidateRules() + ",");
+            sb.append(this.getValidateRules()).append(",");
         }
         if (sb.length() == 0) {
             return "";

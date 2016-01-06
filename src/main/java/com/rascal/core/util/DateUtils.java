@@ -1,5 +1,12 @@
 package com.rascal.core.util;
 
+import com.rascal.core.service.Validation;
+import com.rascal.support.service.DynamicConfigService;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,14 +14,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import lab.s2jh.core.service.Validation;
-import lab.s2jh.support.service.DynamicConfigService;
-
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DateUtils {
 
@@ -34,8 +33,8 @@ public class DateUtils {
 
     public final static String FULL_SEQ_FORMAT = "yyyyMMddHHmmssSSS";
 
-    public final static String[] MULTI_FORMAT = { DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT, ISO_DATE_TIME_FORMAT, ISO_SHORT_DATE_TIME_FORMAT,
-            SHORT_TIME_FORMAT, "yyyy-MM" };
+    public final static String[] MULTI_FORMAT = {DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT, ISO_DATE_TIME_FORMAT, ISO_SHORT_DATE_TIME_FORMAT,
+            SHORT_TIME_FORMAT, "yyyy-MM"};
 
     public final static String FORMAT_YYYY = "yyyy";
 
@@ -145,11 +144,11 @@ public class DateUtils {
         long se = (diffMillis / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
         StringBuilder sb = new StringBuilder();
         if (day > 0) {
-            sb.append(day + "D");
+            sb.append(day).append("D");
         }
         DecimalFormat df = new DecimalFormat("00");
-        sb.append(df.format(hour) + ":");
-        sb.append(df.format(min) + ":");
+        sb.append(df.format(hour)).append(":");
+        sb.append(df.format(min)).append(":");
         sb.append(df.format(se));
         return sb.toString();
     }
@@ -179,14 +178,11 @@ public class DateUtils {
     }
 
     /**
-     *@Title:getDiffDay
-     *@Description:获取日期相差天数
-     *@param:@param beginDate  字符串类型开始日期
-     *@param:@param endDate    字符串类型结束日期
-     *@param:@return
-     *@return:Long             日期相差天数
-     *@author:谢
-     *@thorws:
+     * Description:获取日期相差天数
+     *
+     * @param beginDate 字符串类型开始日期
+     * @param endDate   字符串类型结束日期
+     *                  return:Long 日期相差天数
      */
     public static Long getDiffDay(String beginDate, String endDate) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -203,15 +199,12 @@ public class DateUtils {
     }
 
     /**
-    *@Title:getDiffDay
-    *@Description:获取日期相差天数
-    *@param:@param beginDate Date类型开始日期
-    *@param:@param endDate   Date类型结束日期
-    *@param:@return
-    *@return:Long            相差天数
-    *@author: 谢
-    *@thorws:
-    */
+     * Description:获取日期相差天数
+     *
+     * @param beginDate Date类型开始日期
+     * @param endDate   Date类型结束日期
+     *                  return:Long 相差天数
+     */
     public static Long getDiffDay(Date beginDate, Date endDate) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strBeginDate = format.format(beginDate);
@@ -222,9 +215,9 @@ public class DateUtils {
 
     /**
      * N天之后
-     * @param n
-     * @param date
-     * @return
+     *
+     * @param n    几天
+     * @param date 起始时间
      */
     public static Date nDaysAfter(Integer n, Date date) {
         Calendar cal = Calendar.getInstance();
@@ -235,9 +228,9 @@ public class DateUtils {
 
     /**
      * N天之前
-     * @param n
-     * @param date
-     * @return
+     *
+     * @param n    几天
+     * @param date 起始时间
      */
     public static Date nDaysAgo(Integer n, Date date) {
         Calendar cal = Calendar.getInstance();
@@ -261,7 +254,6 @@ public class DateUtils {
     /**
      * 为了便于在模拟数据程序中控制业务数据获取到的当前时间
      * 提供一个帮助类处理当前时间，为了避免误操作，只有在devMode开发模式才允许“篡改”当前时间
-     * @return
      */
     public static Date currentDate() {
         if (currentDate == null) {

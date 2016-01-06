@@ -3,11 +3,12 @@
  */
 package com.rascal.core.security;
 
-import java.io.Serializable;
 
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.security.SourceUsernamePasswordToken.AuthSourceEnum;
-import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.security.SourceUsernamePasswordToken.AuthSourceEnum;
+import com.rascal.module.auth.entity.User.AuthTypeEnum;
+
+import java.io.Serializable;
 
 /**
  * 存放在权限框架容器中的认证授权用户数据对象

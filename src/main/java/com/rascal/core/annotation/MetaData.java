@@ -1,17 +1,13 @@
 package com.rascal.core.annotation;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * 用于注解类或属性的元数据，这些元数据可用于代码生成或运行时动态内容生成
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PACKAGE })
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PACKAGE})
 public @interface MetaData {
 
     /**
@@ -31,7 +27,6 @@ public @interface MetaData {
 
     /**
      * 标识属性是否出现在版本比较列表
-     * @see PersistableController#getRevisionFields()
      */
     boolean comparable() default true;
 

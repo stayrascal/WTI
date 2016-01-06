@@ -1,19 +1,11 @@
 package com.rascal.core.web.exception;
 
-import java.lang.reflect.Method;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import lab.s2jh.core.exception.BaseRuntimeException;
-import lab.s2jh.core.exception.DuplicateTokenException;
-import lab.s2jh.core.exception.ValidationException;
-import lab.s2jh.core.web.util.ServletUtils;
-import lab.s2jh.core.web.view.OperationResult;
-
+import com.google.common.collect.Maps;
+import com.rascal.core.exception.BaseRuntimeException;
+import com.rascal.core.exception.DuplicateTokenException;
+import com.rascal.core.exception.ValidationException;
+import com.rascal.core.web.util.ServletUtils;
+import com.rascal.core.web.view.OperationResult;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.web.util.WebUtils;
@@ -33,7 +25,12 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import com.google.common.collect.Maps;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 全局的异常解析处理器
@@ -144,11 +141,11 @@ public class AnnotationHandlerMethodExceptionResolver implements HandlerExceptio
                 if (ex != null) {
                     continueProcess = false;
                     String sqlMessage = ex.getMessage();
-                    if (sqlMessage != null && (sqlMessage.indexOf("FK") > -1 || sqlMessage.startsWith("ORA-02292"))) {
+                    if (sqlMessage != null && (sqlMessage.contains("FK") || sqlMessage.startsWith("ORA-02292"))) {
                         errorMessage = "该数据已被关联使用：" + sqlMessage;
                         skipLog = true;
                     } else if (sqlMessage != null
-                            && (sqlMessage.indexOf("Duplicate") > -1 || sqlMessage.indexOf("UNIQUE") > -1 || sqlMessage.startsWith("ORA-02292"))) {
+                            && (sqlMessage.contains("Duplicate") || sqlMessage.contains("UNIQUE") || sqlMessage.startsWith("ORA-02292"))) {
                         errorMessage = "违反唯一性约束：" + sqlMessage;
                         skipLog = true;
                     }

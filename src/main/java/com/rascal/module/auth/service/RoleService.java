@@ -1,22 +1,20 @@
 package com.rascal.module.auth.service;
 
-import java.util.List;
-
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.module.auth.dao.PrivilegeDao;
-import lab.s2jh.module.auth.dao.RoleDao;
-import lab.s2jh.module.auth.dao.RoleR2PrivilegeDao;
-import lab.s2jh.module.auth.dao.UserR2RoleDao;
-import lab.s2jh.module.auth.entity.Role;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.UserR2Role;
-
+import com.google.common.collect.Lists;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.service.BaseService;
+import com.rascal.module.auth.dao.PrivilegeDao;
+import com.rascal.module.auth.dao.RoleDao;
+import com.rascal.module.auth.dao.RoleR2PrivilegeDao;
+import com.rascal.module.auth.dao.UserR2RoleDao;
+import com.rascal.module.auth.entity.Role;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.entity.UserR2Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
 @Service
 @Transactional

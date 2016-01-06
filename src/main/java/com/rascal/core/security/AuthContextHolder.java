@@ -3,11 +3,10 @@
  */
 package com.rascal.core.security;
 
-import lab.s2jh.core.context.SpringContextHolder;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
-import lab.s2jh.module.auth.service.UserService;
-
+import com.rascal.core.context.SpringContextHolder;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.entity.User.AuthTypeEnum;
+import com.rascal.module.auth.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.InvalidSessionException;
 import org.apache.shiro.subject.Subject;

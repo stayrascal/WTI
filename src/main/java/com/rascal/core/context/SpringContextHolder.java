@@ -5,11 +5,6 @@ import org.springframework.util.Assert;
 
 /**
  * Spring上下文容器
- * <p>
- * Date: 2015/11/28
- * Time: 23:55
- *
- * @author Rascal
  */
 public class SpringContextHolder {
 

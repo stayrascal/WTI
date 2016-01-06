@@ -1,16 +1,11 @@
 package com.rascal.module.sys.web;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.security.AuthContextHolder;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.sys.entity.UserProfileData;
-import lab.s2jh.module.sys.service.UserProfileDataService;
-
+import com.google.common.collect.Maps;
+import com.rascal.core.security.AuthContextHolder;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.sys.entity.UserProfileData;
+import com.rascal.module.sys.service.UserProfileDataService;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.collect.Maps;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/admin/sys/user-profile-data")

@@ -1,32 +1,24 @@
 package com.rascal.module.sys.entity;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseNativeEntity;
-import lab.s2jh.core.web.json.JsonViews;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseNativeEntity;
+import com.rascal.core.web.json.JsonViews;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonView;
+import javax.persistence.*;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "sys_ConfigProperty")
+@Table(name = "sys_config_property")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @MetaData(value = "配置属性")
 @Audited

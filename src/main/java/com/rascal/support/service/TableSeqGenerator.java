@@ -1,16 +1,7 @@
 package com.rascal.support.service;
 
-import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import javax.sql.DataSource;
-
-import lab.s2jh.core.context.SpringContextHolder;
-import lab.s2jh.core.exception.ServiceException;
-
+import com.rascal.core.context.SpringContextHolder;
+import com.rascal.core.exception.ServiceException;
 import org.apache.shiro.util.ClassUtils;
 import org.hibernate.LockMode;
 import org.hibernate.cfg.Environment;
@@ -23,9 +14,16 @@ import org.hibernate.id.enhanced.PooledLoOptimizer;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 
+import javax.sql.DataSource;
+import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 /**
  * 参考Hibernate的TableGenerator原理实现一个定制的业务流水号生成器
- * 
+ * <p>
  * TableSeqGenerator seqGenerator = new TableSeqGenerator("ORDER_ID", 1000, 100);
  * Long nextVal = seqGenerator.generate(dataSource);
  */
@@ -40,11 +38,7 @@ public class TableSeqGenerator {
     private TableStructure tableStructure;
 
     /**
-     * 
      * @param key 流水号类型唯一标识,如ORDER_ID
-     * @param dialect 数据库方言
-     * @param initialValue
-     * @param incrementSize
      */
     public TableSeqGenerator(final String key, int initialValue, int incrementSize) {
         this.key = key;
@@ -92,7 +86,6 @@ public class TableSeqGenerator {
 
     /**
      * @see org.hibernate.id.enhanced.TableStructure
-     *
      */
     private static class TableStructure {
         private final String tableName = "seq_generator_table";

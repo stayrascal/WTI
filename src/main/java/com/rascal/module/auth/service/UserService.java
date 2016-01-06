@@ -1,56 +1,60 @@
 package com.rascal.module.auth.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import lab.s2jh.aud.dao.UserLogonLogDao;
-import lab.s2jh.aud.entity.UserLogonLog;
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.security.PasswordService;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.service.Validation;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.util.UidUtils;
-import lab.s2jh.module.auth.dao.PrivilegeDao;
-import lab.s2jh.module.auth.dao.RoleDao;
-import lab.s2jh.module.auth.dao.UserDao;
-import lab.s2jh.module.auth.dao.UserExtDao;
-import lab.s2jh.module.auth.entity.Privilege;
-import lab.s2jh.module.auth.entity.Role;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
-import lab.s2jh.module.auth.entity.UserExt;
-import lab.s2jh.support.service.DynamicConfigService;
-import lab.s2jh.support.service.FreemarkerService;
-import lab.s2jh.support.service.MailService;
-
+import com.google.common.collect.Maps;
+import com.rascal.aud.dao.UserLogonLogDao;
+import com.rascal.aud.entity.UserLogonLog;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.security.PasswordService;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.service.Validation;
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.util.UidUtils;
+import com.rascal.module.auth.dao.PrivilegeDao;
+import com.rascal.module.auth.dao.RoleDao;
+import com.rascal.module.auth.dao.UserDao;
+import com.rascal.module.auth.dao.UserExtDao;
+import com.rascal.module.auth.entity.Privilege;
+import com.rascal.module.auth.entity.Role;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.entity.User.AuthTypeEnum;
+import com.rascal.module.auth.entity.UserExt;
+import com.rascal.support.service.DynamicConfigService;
+import com.rascal.support.service.FreemarkerService;
+import com.rascal.support.service.MailService;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @Transactional
 public class UserService extends BaseService<User, Long> {
 
+    @Qualifier("userDao")
     @Autowired
     private UserDao userDao;
 
+    @Qualifier("userExtDao")
     @Autowired
     private UserExtDao userExtDao;
 
+    @Qualifier("userLogonLogDao")
     @Autowired
     private UserLogonLogDao userLogonLogDao;
 
+    @Qualifier("privilegeDao")
     @Autowired
     private PrivilegeDao privilegeDao;
 
+    @Qualifier("roleDao")
     @Autowired
     private RoleDao roleDao;
 

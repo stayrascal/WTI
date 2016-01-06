@@ -1,17 +1,16 @@
 package com.rascal.aud.service;
 
-import java.util.List;
-import java.util.Map;
-
-import lab.s2jh.aud.dao.UserLogonLogDao;
-import lab.s2jh.aud.entity.UserLogonLog;
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.dao.mybatis.MyBatisDao;
-import lab.s2jh.core.service.BaseService;
-
+import com.rascal.aud.dao.UserLogonLogDao;
+import com.rascal.aud.entity.UserLogonLog;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.dao.mybatis.MyBatisDao;
+import com.rascal.core.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional

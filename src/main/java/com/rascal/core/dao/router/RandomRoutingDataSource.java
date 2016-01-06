@@ -1,16 +1,15 @@
 package com.rascal.core.dao.router;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jdbc.datasource.AbstractDataSource;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * @see org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource
@@ -33,15 +32,13 @@ public class RandomRoutingDataSource extends AbstractDataSource implements Initi
             //如果对应多个数据源，则随机挑选一个
             index = randomDataGenerator.nextInt(0, dataSources.size() - 1);
         }
-        DataSource dataSource = dataSources.get(index);
-        return dataSource;
+        return dataSources.get(index);
     }
 
     @Override
     public Connection getConnection() throws SQLException {
         DataSource dataSource = determineTargetDataSource();
-        Connection connection = dataSource.getConnection();
-        return connection;
+        return dataSource.getConnection();
     }
 
     @Override

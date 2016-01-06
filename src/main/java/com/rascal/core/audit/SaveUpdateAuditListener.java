@@ -1,8 +1,7 @@
 package com.rascal.core.audit;
 
-import lab.s2jh.core.entity.BaseEntity;
-import lab.s2jh.core.security.AuthContextHolder;
-import lab.s2jh.core.util.DateUtils;
+import com.rascal.core.security.AuthContextHolder;
+import com.rascal.core.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,8 +12,8 @@ import java.util.Date;
 
 /**
  * 审计记录记录创建和修改信息
- * @see AuditingEntityListener
  *
+ * @see AuditingEntityListener
  */
 public class SaveUpdateAuditListener {
 
@@ -24,9 +23,7 @@ public class SaveUpdateAuditListener {
     private boolean modifyOnCreation = false;
     private boolean skipUpdateAudit = false;
 
-    /**
-     * @see BaseEntity#dataGroup
-     */
+
     private static final ThreadLocal<String> DATA_GROUP = new ThreadLocal<String>();
 
     public static void setDataGroup(String dataGroup) {
@@ -44,8 +41,6 @@ public class SaveUpdateAuditListener {
     /**
      * Sets modification and creation date and auditor on the target object in
      * case it implements {@link DefaultAuditable} on persist events.
-     * 
-     * @param target
      */
     @PrePersist
     public void touchForCreate(Object target) {
@@ -55,8 +50,6 @@ public class SaveUpdateAuditListener {
     /**
      * Sets modification and creation date and auditor on the target object in
      * case it implements {@link DefaultAuditable} on update events.
-     * 
-     * @param target
      */
     @PreUpdate
     public void touchForUpdate(Object target) {
@@ -81,15 +74,12 @@ public class SaveUpdateAuditListener {
         Object defaultedNow = now == null ? "not set" : now;
         Object defaultedAuditor = auditor == null ? "unknown" : auditor;
 
-        logger.trace("Touched {} - Last modification at {} by {}", new Object[] { auditable, defaultedNow, defaultedAuditor });
+        logger.trace("Touched {} - Last modification at {} by {}", auditable, defaultedNow, defaultedAuditor);
     }
 
     /**
      * Sets modifying and creating auditioner. Creating auditioner is only set
      * on new auditables.
-     * 
-     * @param auditable
-     * @return
      */
     private String touchAuditor(final DefaultAuditable<String, ?> auditable, boolean isNew) {
 
@@ -113,9 +103,6 @@ public class SaveUpdateAuditListener {
     /**
      * Touches the auditable regarding modification and creation date. Creation
      * date is only set on new auditables.
-     * 
-     * @param auditable
-     * @return
      */
     private Date touchDate(final DefaultAuditable<String, ?> auditable, boolean isNew) {
 

@@ -1,6 +1,6 @@
 package com.rascal.core.exception;
 
-public class ServiceException extends BaseRuntimeException{
+public class ServiceException extends BaseRuntimeException {
 
     public ServiceException(String msg) {
         super(msg);

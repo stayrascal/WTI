@@ -1,18 +1,15 @@
 package com.rascal.module.sys.service;
 
-import java.util.Date;
-import java.util.List;
-
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.sys.dao.NotifyMessageDao;
-import lab.s2jh.module.sys.dao.NotifyMessageReadDao;
-import lab.s2jh.module.sys.entity.NotifyMessage;
-import lab.s2jh.module.sys.entity.NotifyMessageRead;
-import lab.s2jh.support.service.MessagePushService;
-
+import com.google.common.collect.Lists;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.util.DateUtils;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.sys.dao.NotifyMessageDao;
+import com.rascal.module.sys.dao.NotifyMessageReadDao;
+import com.rascal.module.sys.entity.NotifyMessage;
+import com.rascal.module.sys.entity.NotifyMessageRead;
+import com.rascal.support.service.MessagePushService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -22,7 +19,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Lists;
+import java.util.Date;
+import java.util.List;
+
 
 @Service
 @Transactional
@@ -46,6 +45,7 @@ public class NotifyMessageService extends BaseService<NotifyMessage, Long> {
 
     /**
      * 查询用户未读公告消息个数
+     *
      * @param user 当前登录用户
      */
     @Transactional(readOnly = true)
@@ -69,6 +69,7 @@ public class NotifyMessageService extends BaseService<NotifyMessage, Long> {
 
     /**
      * 查询公告消息
+     *
      * @param user 当前登录用户
      */
     @Transactional(readOnly = true)
@@ -123,7 +124,7 @@ public class NotifyMessageService extends BaseService<NotifyMessage, Long> {
         List<NotifyMessage> returnList = Lists.newArrayList();
         for (NotifyMessage notifyMessage : notifyMessages) {
             if (StringUtils.isBlank(notifyMessage.getPlatform()) || StringUtils.isBlank(platform)
-                    || notifyMessage.getPlatform().indexOf(platform) != -1) {
+                    || notifyMessage.getPlatform().contains(platform)) {
                 returnList.add(notifyMessage);
             }
         }
@@ -216,6 +217,7 @@ public class NotifyMessageService extends BaseService<NotifyMessage, Long> {
 
     /**
      * 查询公告消息
+     *
      * @param user 当前登录用户
      */
     @Transactional(readOnly = true)
@@ -301,7 +303,6 @@ public class NotifyMessageService extends BaseService<NotifyMessage, Long> {
 
     /**
      * 消息推送处理
-     * @param entity
      */
     public void pushMessage(NotifyMessage entity) {
         if (messagePushService != null) {

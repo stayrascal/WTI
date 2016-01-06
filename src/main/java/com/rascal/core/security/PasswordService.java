@@ -1,8 +1,7 @@
 package com.rascal.core.security;
 
-import lab.s2jh.core.util.Digests;
-import lab.s2jh.core.util.Encodes;
-
+import com.rascal.core.util.Digests;
+import com.rascal.core.util.Encodes;
 import org.springframework.stereotype.Service;
 
 @Service

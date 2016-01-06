@@ -1,31 +1,22 @@
 package com.rascal.core.security;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-
-import lab.s2jh.core.security.SourceUsernamePasswordToken.AuthSourceEnum;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.module.auth.entity.Privilege;
-import lab.s2jh.module.auth.entity.Role;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.service.UserService;
-
+import com.rascal.core.security.SourceUsernamePasswordToken.AuthSourceEnum;
+import com.rascal.core.util.DateUtils;
+import com.rascal.module.auth.entity.Privilege;
+import com.rascal.module.auth.entity.Role;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.service.UserService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authc.AccountException;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.DisabledAccountException;
-import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
-import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+
+import javax.annotation.PostConstruct;
+import java.util.Date;
+import java.util.List;
 
 public class ShiroJdbcRealm extends AuthorizingRealm {
 

@@ -1,45 +1,31 @@
 package com.rascal.support.web;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.security.AuthContextHolder;
-import lab.s2jh.core.security.AuthUserDetails;
-import lab.s2jh.core.service.Validation;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.service.UserService;
-import lab.s2jh.module.sys.entity.UserProfileData;
-import lab.s2jh.module.sys.service.NotifyMessageService;
-import lab.s2jh.module.sys.service.UserMessageService;
-import lab.s2jh.module.sys.service.UserProfileDataService;
-import lab.s2jh.support.service.MailService;
-
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.security.AuthContextHolder;
+import com.rascal.core.security.AuthUserDetails;
+import com.rascal.core.service.Validation;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.service.UserService;
+import com.rascal.module.sys.entity.UserProfileData;
+import com.rascal.module.sys.service.UserProfileDataService;
+import com.rascal.support.service.MailService;
 import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Controller
 public class UserProfileController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private NotifyMessageService notifyMessageService;
-
-    @Autowired
-    private UserMessageService userMessageService;
 
     @Autowired
     private MailService mailService;
@@ -50,7 +36,7 @@ public class UserProfileController {
     @MenuData("个人信息:个人配置")
     @RequiresRoles(value = AuthUserDetails.ROLE_MGMT_USER)
     @RequestMapping(value = "/admin/profile/edit", method = RequestMethod.GET)
-    public String profileLayoutShow(@ModelAttribute("user") User user, Model model) {
+    public String profileLayoutShow(@ModelAttribute("user") User user) {
         user.addExtraAttributes(userProfileDataService.findMapDataByUser(user));
         return "admin/profile/profile-edit";
     }

@@ -1,27 +1,21 @@
 package com.rascal.aud.web;
 
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.aud.entity.UserLogonLog;
-import lab.s2jh.aud.service.UserLogonLogService;
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.core.web.json.JsonViews;
-
+import com.fasterxml.jackson.annotation.JsonView;
+import com.rascal.aud.entity.UserLogonLog;
+import com.rascal.aud.service.UserLogonLogService;
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.web.BaseController;
+import com.rascal.core.web.json.JsonViews;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.annotation.JsonView;
+import javax.servlet.http.HttpServletRequest;
 
 @MetaData("配置管理:系统记录:账户登录记录管理")
 @Controller
@@ -44,7 +38,7 @@ public class UserLogonLogController extends BaseController<UserLogonLog, Long> {
     @MenuData("配置管理:系统记录:账户登录记录")
     @RequiresPermissions("配置管理:系统记录:账户登录记录")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index(Model model) {
+    public String index() {
         return "admin/aud/userLogonLog-index";
     }
 
@@ -58,7 +52,7 @@ public class UserLogonLogController extends BaseController<UserLogonLog, Long> {
 
     @RequiresPermissions("配置管理:系统记录:账户登录记录")
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public String editShow(Model model) {
+    public String editShow() {
         return "admin/aud/userLogonLog-inputBasic";
     }
 }

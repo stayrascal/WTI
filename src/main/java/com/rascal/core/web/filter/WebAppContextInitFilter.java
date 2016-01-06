@@ -3,23 +3,16 @@
  */
 package com.rascal.core.web.filter;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.context.SpringContextHolder;
-import lab.s2jh.support.service.DynamicConfigService;
-
+import com.rascal.core.context.SpringContextHolder;
+import com.rascal.support.service.DynamicConfigService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 /**
  * 通过过滤器基于request对象初始化并缓存记录当前应用上下文路径

@@ -1,8 +1,8 @@
 package com.rascal.module.schedule.job;
 
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.module.schedule.BaseQuartzJobBean;
 
+import com.rascal.core.annotation.MetaData;
+import com.rascal.module.schedule.BaseQuartzJobBean;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

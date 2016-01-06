@@ -1,6 +1,6 @@
 package com.rascal.support.test;
 
-import lab.s2jh.module.schedule.BaseQuartzJobBean;
+import com.rascal.module.schedule.BaseQuartzJobBean;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

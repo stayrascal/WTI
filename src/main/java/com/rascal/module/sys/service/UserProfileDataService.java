@@ -1,19 +1,17 @@
 package com.rascal.module.sys.service;
 
-import java.util.List;
-import java.util.Map;
-
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.sys.dao.UserProfileDataDao;
-import lab.s2jh.module.sys.entity.UserProfileData;
-
+import com.google.common.collect.Maps;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.service.BaseService;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.sys.dao.UserProfileDataDao;
+import com.rascal.module.sys.entity.UserProfileData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional

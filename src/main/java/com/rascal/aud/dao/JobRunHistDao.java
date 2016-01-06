@@ -1,8 +1,7 @@
 package com.rascal.aud.dao;
 
-import lab.s2jh.aud.entity.JobRunHist;
-import lab.s2jh.core.dao.jpa.BaseDao;
-
+import com.rascal.aud.entity.JobRunHist;
+import com.rascal.core.dao.jpa.BaseDao;
 import org.springframework.stereotype.Repository;
 
 @Repository

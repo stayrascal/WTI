@@ -1,9 +1,9 @@
 package com.rascal.support.test;
 
-import lab.s2jh.core.util.MockEntityUtils;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.UserExt;
-import lab.s2jh.module.auth.service.UserService;
+import com.rascal.core.util.MockEntityUtils;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.entity.UserExt;
+import com.rascal.module.auth.service.UserService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

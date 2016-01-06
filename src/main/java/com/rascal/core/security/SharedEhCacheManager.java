@@ -1,8 +1,5 @@
 package com.rascal.core.security;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.apache.shiro.cache.CacheManager;
@@ -13,6 +10,9 @@ import org.apache.shiro.util.Destroyable;
 import org.apache.shiro.util.Initializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 借鉴 @see org.springframework.cache.ehcache.EhCacheManagerFactoryBean实现方式
@@ -72,12 +72,12 @@ public class SharedEhCacheManager implements CacheManager, Initializable, Destro
      * Returns the resource location of the config file used to initialize a new
      * EhCache CacheManager instance.  The string can be any resource path supported by the
      * {@link ResourceUtils#getInputStreamForPath(String)} call.
-     * <p/>
+     * <p>
      * This property is ignored if the CacheManager instance is injected directly - that is, it is only used to
      * lazily create a CacheManager if one is not already provided.
      *
      * @return the resource location of the config file used to initialize the wrapped
-     *         EhCache CacheManager instance.
+     * EhCache CacheManager instance.
      */
     public String getCacheManagerConfigFile() {
         return this.cacheManagerConfigFile;
@@ -87,7 +87,7 @@ public class SharedEhCacheManager implements CacheManager, Initializable, Destro
      * Sets the resource location of the config file used to initialize the wrapped
      * EhCache CacheManager instance.  The string can be any resource path supported by the
      * {@link ResourceUtils#getInputStreamForPath(String)} call.
-     * <p/>
+     * <p>
      * This property is ignored if the CacheManager instance is injected directly - that is, it is only used to
      * lazily create a CacheManager if one is not already provided.
      *
@@ -152,21 +152,20 @@ public class SharedEhCacheManager implements CacheManager, Initializable, Destro
 
     /**
      * Initializes this instance.
-     * <p/>
+     * <p>
      * If a {@link #setCacheManager CacheManager} has been
      * explicitly set (e.g. via Dependency Injection or programatically) prior to calling this
      * method, this method does nothing.
-     * <p/>
+     * <p>
      * However, if no {@code CacheManager} has been set, the default Ehcache singleton will be initialized, where
      * Ehcache will look for an {@code ehcache.xml} file at the root of the classpath.  If one is not found,
      * Ehcache will use its own failsafe configuration file.
-     * <p/>
+     * <p>
      * Because Shiro cannot use the failsafe defaults (fail-safe expunges cached objects after 2 minutes,
      * something not desirable for Shiro sessions), this class manages an internal default configuration for
      * this case.
      *
-     * @throws CacheException
-     *          if there are any CacheExceptions thrown by EhCache.
+     * @throws CacheException if there are any CacheExceptions thrown by EhCache.
      * @see net.sf.ehcache.CacheManager#create
      */
     public final void init() throws CacheException {
@@ -206,7 +205,7 @@ public class SharedEhCacheManager implements CacheManager, Initializable, Destro
 
     /**
      * Shuts-down the wrapped Ehcache CacheManager <b>only if implicitly created</b>.
-     * <p/>
+     * <p>
      * If another component injected
      * a non-null CacheManager into this instace before calling {@link #init() init}, this instance expects that same
      * component to also destroy the CacheManager instance, and it will not attempt to do so.

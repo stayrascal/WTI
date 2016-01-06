@@ -1,9 +1,16 @@
 package com.rascal.core.util;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import com.google.common.collect.Maps;
+import com.google.zxing.*;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -11,22 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
-
-import com.google.common.collect.Maps;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.LuminanceSource;
-import com.google.zxing.Result;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.qrcode.QRCodeReader;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 public class QrcodeUtils {
 
@@ -36,9 +27,6 @@ public class QrcodeUtils {
 
     /**
      * 生成二维码
-     * @param str
-     * @param height
-     * @return
      */
     public static BufferedImage createQrcode(String content, Integer height) {
         return createQrcode(content, height, null);
@@ -100,11 +88,11 @@ public class QrcodeUtils {
 
     /**
      * 把传入的原始图像按高度和宽度进行缩放，生成符合要求的图片
+     *
      * @param srcImageFile 源文件地址
-     * @param height 目标高度
-     * @param width 目标宽度
-     * @param hasFiller 比例不对时是否需要补白：true补白；false不补白
-     * @return
+     * @param height       目标高度
+     * @param width        目标宽度
+     * @param hasFiller    比例不对时是否需要补白：true补白；false不补白
      * @throws IOException
      */
     private static BufferedImage scale(String srcImageFile, int height, int width, boolean hasFiller) throws IOException {
@@ -149,10 +137,11 @@ public class QrcodeUtils {
     }
 
     /**
-     * 生成二维码图片 
+     * 生成二维码图片
+     *
      * @param content 二维码内容
-     * @param height 二维码高度
-     * @param file 图片地址
+     * @param height  二维码高度
+     * @param file    图片地址
      * @throws IOException
      */
     public static void createQrcodeImage(String content, Integer height, File file) throws IOException {
@@ -162,13 +151,13 @@ public class QrcodeUtils {
 
     /**
      * 解析二维码内容
+     *
      * @param file 图片地址
-     * @return
      */
     public static String decodeQrcode(File file) {
         BufferedImage image;
         try {
-            if (file == null || file.exists() == false) {
+            if (file == null || !file.exists()) {
                 throw new Exception(" File not found:" + file.getPath());
             }
 
@@ -177,7 +166,7 @@ public class QrcodeUtils {
             LuminanceSource source = new BufferedImageLuminanceSource(image);
             BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
-            Map<DecodeHintType, String> hints = new HashMap<DecodeHintType, String>();
+            Map<DecodeHintType, String> hints = new HashMap<>();
             hints.put(DecodeHintType.CHARACTER_SET, "UTF-8");
             Result result = new QRCodeReader().decode(bitmap, hints);
 

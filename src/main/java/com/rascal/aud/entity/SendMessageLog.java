@@ -1,42 +1,29 @@
 package com.rascal.aud.entity;
 
-import java.util.Date;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.PersistableEntity;
-import lab.s2jh.core.util.ExtStringUtils;
-import lab.s2jh.core.util.WebFormatter;
-import lab.s2jh.core.web.json.JsonViews;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.PersistableEntity;
+import com.rascal.core.util.ExtStringUtils;
+import com.rascal.core.util.WebFormatter;
+import com.rascal.core.web.json.JsonViews;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
+import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "sys_SendMessageLog")
+@Table(name = "sys_send_message_log")
 @Cache(usage = CacheConcurrencyStrategy.NONE)
 @MetaData(value = "发送消息记录", comments = "包括电子邮件，短信，推送等消息流水记录")
 public class SendMessageLog extends PersistableEntity<Long> {

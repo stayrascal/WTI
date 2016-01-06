@@ -1,43 +1,32 @@
 package com.rascal.module.sys.entity;
 
-import java.util.Date;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseNativeEntity;
-import lab.s2jh.core.util.WebFormatter;
-import lab.s2jh.core.web.json.DateTimeJsonSerializer;
-import lab.s2jh.core.web.json.EntityIdDisplaySerializer;
-import lab.s2jh.core.web.json.JsonViews;
-import lab.s2jh.core.web.json.ShortDateTimeJsonSerializer;
-import lab.s2jh.module.auth.entity.User;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseNativeEntity;
+import com.rascal.core.util.WebFormatter;
+import com.rascal.core.web.json.DateTimeJsonSerializer;
+import com.rascal.core.web.json.EntityIdDisplaySerializer;
+import com.rascal.core.web.json.JsonViews;
+import com.rascal.core.web.json.ShortDateTimeJsonSerializer;
+import com.rascal.module.auth.entity.User;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "sys_UserMessage")
+@Table(name = "sys_user_message")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @MetaData(value = "用户消息", comments = "如果用户消息量担心影响查询效率，可以考虑引入定期归档处理把过期消息搬迁归档")
 public class UserMessage extends BaseNativeEntity {

@@ -1,24 +1,19 @@
 package com.rascal.module.sys.web;
 
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.module.sys.entity.UserMessage;
-import lab.s2jh.module.sys.service.UserMessageService;
-
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.web.BaseController;
+import com.rascal.module.sys.entity.UserMessage;
+import com.rascal.module.sys.service.UserMessageService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping(value = "/admin/sys/user-message")
@@ -41,7 +36,7 @@ public class UserMessageController extends BaseController<UserMessage, Long> {
     @MenuData("配置管理:系统管理:消息管理")
     @RequiresPermissions("配置管理:系统管理:消息管理")
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index(Model model) {
+    public String index() {
         return "admin/sys/userMessage-index";
     }
 
@@ -54,7 +49,7 @@ public class UserMessageController extends BaseController<UserMessage, Long> {
 
     @RequiresPermissions("配置管理:系统管理:消息管理")
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public String editShow(Model model) {
+    public String editShow() {
         return "admin/sys/userMessage-inputBasic";
     }
 }

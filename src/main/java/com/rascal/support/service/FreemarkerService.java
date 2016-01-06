@@ -1,13 +1,9 @@
 package com.rascal.support.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.Map;
-
-import lab.s2jh.core.exception.ServiceException;
-
+import com.rascal.core.exception.ServiceException;
+import freemarker.cache.StringTemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import freemarker.cache.StringTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.Map;
 
 @Service
 public class FreemarkerService extends Configuration {
@@ -56,9 +54,7 @@ public class FreemarkerService extends Configuration {
         try {
             this.getTemplate(templateName).process(dataMap, strWriter);
             strWriter.flush();
-        } catch (TemplateException e) {
-            throw new ServiceException("error.freemarker.template.process", e);
-        } catch (IOException e) {
+        } catch (TemplateException | IOException e) {
             throw new ServiceException("error.freemarker.template.process", e);
         }
         return strWriter.toString();

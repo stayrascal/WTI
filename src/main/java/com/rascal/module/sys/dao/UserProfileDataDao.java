@@ -1,12 +1,11 @@
 package com.rascal.module.sys.dao;
 
-import java.util.List;
-
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.sys.entity.UserProfileData;
-
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.sys.entity.UserProfileData;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface UserProfileDataDao extends BaseDao<UserProfileData, Long> {

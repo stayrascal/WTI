@@ -1,13 +1,11 @@
 package com.rascal.module.sys.service;
 
-import java.util.List;
-import java.util.Map;
-
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.module.sys.dao.DataDictDao;
-import lab.s2jh.module.sys.entity.DataDict;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.service.BaseService;
+import com.rascal.module.sys.dao.DataDictDao;
+import com.rascal.module.sys.entity.DataDict;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +13,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -42,8 +40,8 @@ public class DataDictService extends BaseService<DataDict, Long> {
 
     /**
      * 基于主键返回对应的数据字典子集合
+     *
      * @param id 主键
-     * @return
      */
     @Transactional(readOnly = true)
     public List<DataDict> findChildrenById(Long id) {
@@ -52,9 +50,9 @@ public class DataDictService extends BaseService<DataDict, Long> {
 
     /**
      * 基于主键返回对应的数据字典子集合
-     * @param id 主键
+     *
+     * @param id               主键
      * @param withFlatChildren 是否已扁平化结构关联返回子节点数据
-     * @return
      */
     @Transactional(readOnly = true)
     public List<DataDict> findChildrenById(Long id, boolean withFlatChildren) {
@@ -63,8 +61,8 @@ public class DataDictService extends BaseService<DataDict, Long> {
 
     /**
      * 直接基于根节点primaryKey返回对应的数据字典集合
+     *
      * @param primaryKey 根节点primaryKey
-     * @return
      */
     @Transactional(readOnly = true)
     public List<DataDict> findChildrenByRootPrimaryKey(String primaryKey) {
@@ -73,9 +71,9 @@ public class DataDictService extends BaseService<DataDict, Long> {
 
     /**
      * 直接基于根节点primaryKey返回对应的数据字典集合
-     * @param primaryKey 根节点primaryKey
+     *
+     * @param primaryKey       根节点primaryKey
      * @param withFlatChildren 是否已扁平化结构关联返回子节点数据
-     * @return
      */
     @Transactional(readOnly = true)
     public List<DataDict> findChildrenByRootPrimaryKey(String primaryKey, boolean withFlatChildren) {
@@ -102,8 +100,8 @@ public class DataDictService extends BaseService<DataDict, Long> {
     /**
      * 直接基于根节点primaryKey返回对应的Map结构key-value数据
      * 注意：如果关联返回子节点，请确保所有节点的primaryKey唯一性，否则出现数据不可预期的覆盖问题
+     *
      * @param primaryKey 根节点primaryKey
-     * @return
      */
     @Transactional(readOnly = true)
     public Map<String, String> findMapDataByRootPrimaryKey(String primaryKey) {
@@ -113,8 +111,8 @@ public class DataDictService extends BaseService<DataDict, Long> {
     /**
      * 基于主键返回对应的Map结构key-value数据
      * 注意：如果关联返回子节点，请确保所有节点的primaryKey唯一性，否则出现数据不可预期的覆盖问题
+     *
      * @param id 主键
-     * @return
      */
     @Transactional(readOnly = true)
     public Map<String, String> findMapDataById(Long id) {
@@ -124,9 +122,9 @@ public class DataDictService extends BaseService<DataDict, Long> {
     /**
      * 直接基于根节点primaryKey返回对应的Map结构key-value数据
      * 注意：如果关联返回子节点，请确保所有节点的primaryKey唯一性，否则出现数据不可预期的覆盖问题
-     * @param primaryKey 根节点primaryKey
+     *
+     * @param primaryKey       根节点primaryKey
      * @param withFlatChildren 是否已扁平化结构关联返回子节点数据
-     * @return
      */
     @Transactional(readOnly = true)
     public Map<String, String> findMapDataByRootPrimaryKey(String primaryKey, boolean withFlatChildren) {

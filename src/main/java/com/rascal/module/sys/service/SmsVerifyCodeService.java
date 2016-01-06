@@ -1,26 +1,23 @@
 package com.rascal.module.sys.service;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.cons.GlobalConstant;
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.exception.ServiceException;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.module.sys.dao.SmsVerifyCodeDao;
-import lab.s2jh.module.sys.entity.SmsVerifyCode;
-import lab.s2jh.support.service.DynamicConfigService;
-
+import com.rascal.core.cons.GlobalConstant;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.exception.ServiceException;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.util.DateUtils;
+import com.rascal.module.sys.dao.SmsVerifyCodeDao;
+import com.rascal.module.sys.entity.SmsVerifyCode;
+import com.rascal.support.service.DynamicConfigService;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 @Service
 @Transactional
@@ -43,6 +40,7 @@ public class SmsVerifyCodeService extends BaseService<SmsVerifyCode, Long> {
 
     /**
      * 基于手机号码生成6位随机验证码
+     *
      * @param mobileNum 手机号码
      * @return 6位随机数
      */
@@ -84,8 +82,9 @@ public class SmsVerifyCodeService extends BaseService<SmsVerifyCode, Long> {
 
     /**
      * 验证手机验证码有效性
+     *
      * @param mobileNum 手机号码
-     * @param code 验证码
+     * @param code      验证码
      * @return 布尔类型是否有效
      */
     public boolean verifySmsCode(HttpServletRequest request, String mobileNum, String code) {
@@ -118,7 +117,7 @@ public class SmsVerifyCodeService extends BaseService<SmsVerifyCode, Long> {
     }
 
     /**
-     * 定时把超时的验证码移除  
+     * 定时把超时的验证码移除
      */
     //@Scheduled(fixedRate = 60 * 60 * 1000)
     public void removeExpiredDataTimely() {

@@ -1,23 +1,8 @@
 package com.rascal.core.util;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.validation.constraints.Size;
-
-import lab.s2jh.core.audit.DefaultAuditable;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.rascal.core.audit.DefaultAuditable;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -29,8 +14,16 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.validation.constraints.Size;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * 模拟实体对象实例构造帮助类
@@ -43,7 +36,7 @@ public class MockEntityUtils {
 
     private final static Random random = new Random();
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <X> X buildMockObject(Class<X> clazz) {
         X x = null;
         try {
@@ -129,9 +122,9 @@ public class MockEntityUtils {
 
     /**
      * 返回区间段随机整数
+     *
      * @param lower 最小值
      * @param upper 最大值
-     * @return
      */
     public static int randomInt(int lower, int upper) {
         return randomDataGenerator.nextInt(lower, upper);
@@ -139,9 +132,9 @@ public class MockEntityUtils {
 
     /**
      * 返回区间段随机整数
+     *
      * @param lower 最小值
      * @param upper 最大值
-     * @return
      */
     public static long randomLong(int lower, int upper) {
         return randomDataGenerator.nextLong(lower, upper);
@@ -149,7 +142,6 @@ public class MockEntityUtils {
 
     /**
      * 返回0-1区间段随机小数
-     * @return
      */
     public static double randomDouble() {
         return random.nextDouble();
@@ -157,17 +149,16 @@ public class MockEntityUtils {
 
     /**
      * 返回区间段随机布尔值
-     * @return
      */
     public static boolean randomBoolean() {
-        return randomDataGenerator.nextInt(0, 100) > 50 ? true : false;
+        return randomDataGenerator.nextInt(0, 100) > 50;
     }
 
     /**
      * 返回区间段随机日期
+     *
      * @param daysBeforeNow 距离当前日期之前天数
-     * @param daysAfterNow 距离当前日期之后天数
-     * @return
+     * @param daysAfterNow  距离当前日期之后天数
      */
     public static Date randomDate(int daysBeforeNow, int daysAfterNow) {
         DateTime dt = new DateTime();
@@ -180,8 +171,8 @@ public class MockEntityUtils {
 
     /**
      * 数据持久化
+     *
      * @param entity 待持久化对象实例
-     * @return
      */
     private static void persistNew(EntityManager entityManager, Object entity) {
         entityManager.persist(entity);
@@ -193,9 +184,9 @@ public class MockEntityUtils {
 
     /**
      * 数据持久化
-     * @param entity 待持久化对象实例
+     *
+     * @param entity           待持久化对象实例
      * @param existCheckFields 可变参数，提供用于检查数据是否已存在的字段名称列表
-     * @return
      */
     public static boolean persistSilently(EntityManager entityManager, Object entity, String... existCheckFields) {
         try {
@@ -253,6 +244,6 @@ public class MockEntityUtils {
 
     public static void main(String[] args) {
         TestVO testVO = MockEntityUtils.buildMockObject(TestVO.class);
-        System.out.println("Mock Entity: " + ReflectionToStringBuilder.toString(testVO, ToStringStyle.MULTI_LINE_STYLE));
+        System.out.printf("Mock Entity: %s%n", ReflectionToStringBuilder.toString(testVO, ToStringStyle.MULTI_LINE_STYLE));
     }
 }

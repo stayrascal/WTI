@@ -1,17 +1,13 @@
 package com.rascal.module.schedule.web;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.service.Validation;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.schedule.ExtSchedulerFactoryBean;
-import lab.s2jh.module.schedule.service.JobBeanCfgService;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.service.Validation;
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.schedule.ExtSchedulerFactoryBean;
+import com.rascal.module.schedule.service.JobBeanCfgService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.quartz.CronTrigger;
 import org.quartz.Scheduler;
@@ -28,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping(value = "/admin/schedule/quartz-trigger")
@@ -50,7 +46,7 @@ public class QuartzTriggerController {
     @RequiresPermissions("配置管理:计划任务管理:任务实时控制")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public Object list(HttpServletRequest request) throws SchedulerException {
+    public Object list() throws SchedulerException {
         List<Map<String, Object>> triggerDatas = Lists.newArrayList();
         Map<Trigger, SchedulerFactoryBean> allTriggers = jobBeanCfgService.findAllTriggers();
         for (Map.Entry<Trigger, SchedulerFactoryBean> me : allTriggers.entrySet()) {
@@ -70,7 +66,7 @@ public class QuartzTriggerController {
             triggerMap.put("runWithinCluster", schedulerFactoryBean.isRunWithinCluster());
             triggerDatas.add(triggerMap);
         }
-        return new PageImpl<Map<String, Object>>(triggerDatas);
+        return new PageImpl<>(triggerDatas);
     }
 
     @RequiresPermissions("配置管理:计划任务管理:任务实时控制")

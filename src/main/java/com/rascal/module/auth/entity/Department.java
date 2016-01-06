@@ -1,34 +1,23 @@
 package com.rascal.module.auth.entity;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.Size;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.entity.BaseNativeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.entity.BaseNativeEntity;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "auth_Department")
+@Table(name = "auth_department")
 @MetaData(value = "部门")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Audited
@@ -73,7 +62,6 @@ public class Department extends BaseNativeEntity implements Comparable<Departmen
 
     /**
      * 计算节点所在层级，根节点以0开始
-     * @return
      */
     @Transient
     @JsonIgnore

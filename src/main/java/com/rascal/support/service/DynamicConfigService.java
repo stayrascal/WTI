@@ -1,14 +1,10 @@
 package com.rascal.support.service;
 
-import java.util.List;
-import java.util.Map;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.context.ExtPropertyPlaceholderConfigurer;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.module.sys.entity.ConfigProperty;
-import lab.s2jh.module.sys.service.ConfigPropertyService;
-
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.context.ExtPropertyPlaceholderConfigurer;
+import com.rascal.core.util.DateUtils;
+import com.rascal.module.sys.entity.ConfigProperty;
+import com.rascal.module.sys.service.ConfigPropertyService;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 基于数据库加载动态配置参数

@@ -1,18 +1,17 @@
 package com.rascal.core.util;
 
+import org.apache.commons.lang3.Validate;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 
-import org.apache.commons.lang3.Validate;
-
 /**
  * 支持SHA-1/MD5消息摘要的工具类.
- * 
+ * <p>
  * 返回ByteSource，可进一步被编码为Hex, Base64或UrlSafeBase64
- * 
  */
 public class Digests {
 
@@ -73,7 +72,7 @@ public class Digests {
 
     /**
      * 生成随机的Byte[]作为salt.
-     * 
+     *
      * @param numBytes byte数组的大小
      */
     public static byte[] generateSalt(int numBytes) {

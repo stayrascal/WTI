@@ -1,27 +1,16 @@
 package com.rascal.aud.entity;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import javax.persistence.*;
+
 /** 
  * 基于logback的DBAppender表结构规范对应的实体定义
- * @see http://logback.qos.ch/manual/configuration.html#DBAppender
+ * http://logback.qos.ch/manual/configuration.html#DBAppender
  */
 @Getter
 @Setter

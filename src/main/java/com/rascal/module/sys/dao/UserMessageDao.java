@@ -1,8 +1,8 @@
 package com.rascal.module.sys.dao;
 
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.module.sys.entity.UserMessage;
 
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.module.sys.entity.UserMessage;
 import org.springframework.stereotype.Repository;
 
 @Repository

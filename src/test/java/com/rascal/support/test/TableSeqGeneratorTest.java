@@ -1,6 +1,6 @@
 package com.rascal.support.test;
 
-import lab.s2jh.support.service.TableSeqGenerator;
+import com.rascal.support.service.TableSeqGenerator;
 import org.junit.Test;
 
 public class TableSeqGeneratorTest extends SpringTransactionalTestCase {

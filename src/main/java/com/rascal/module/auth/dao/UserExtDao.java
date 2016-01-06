@@ -1,8 +1,8 @@
 package com.rascal.module.auth.dao;
 
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.module.auth.entity.UserExt;
 
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.module.auth.entity.UserExt;
 import org.springframework.stereotype.Repository;
 
 @Repository

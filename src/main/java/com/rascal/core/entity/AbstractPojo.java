@@ -1,19 +1,20 @@
 package com.rascal.core.entity;
 
-import java.io.Serializable;
-import java.util.Map;
-
-import javax.persistence.Transient;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Maps;
+
+import javax.persistence.Transient;
+import java.io.Serializable;
+import java.util.Map;
 
 public abstract class AbstractPojo implements Serializable {
 
     private static final long serialVersionUID = 1404395927402847666L;
 
-    /** Entity本身无用，主要用于UI层辅助参数传递 */
+    /**
+     * Entity本身无用，主要用于UI层辅助参数传递
+     */
     @Transient
     @JsonProperty
     protected Map<String, Object> extraAttributes;

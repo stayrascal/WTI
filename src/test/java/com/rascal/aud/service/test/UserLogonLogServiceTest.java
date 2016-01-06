@@ -1,13 +1,12 @@
 package com.rascal.aud.service.test;
 
-import java.util.List;
-import java.util.Map;
-
-import lab.s2jh.aud.service.UserLogonLogService;
-import lab.s2jh.core.test.SpringTransactionalTestCase;
-
+import com.rascal.aud.service.UserLogonLogService;
+import com.rascal.support.test.SpringTransactionalTestCase;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Map;
 
 public class UserLogonLogServiceTest extends SpringTransactionalTestCase {
 

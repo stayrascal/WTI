@@ -3,23 +3,17 @@
  */
 package com.rascal.core.entity;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-
-import lab.s2jh.core.annotation.MetaData;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.rascal.core.annotation.MetaData;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.AuditOverrides;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.persistence.*;
 
 /**
  * 框架提供一个基础的Native方式的实体对象定义参考
@@ -31,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Access(AccessType.FIELD)
 @JsonInclude(Include.NON_EMPTY)
 @MappedSuperclass
-@AuditOverrides({ @AuditOverride(forClass = BaseNativeEntity.class) })
+@AuditOverrides({@AuditOverride(forClass = BaseNativeEntity.class)})
 public abstract class BaseNativeEntity extends BaseEntity<Long> {
 
     private static final long serialVersionUID = 693468696296687126L;

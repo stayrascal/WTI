@@ -3,40 +3,29 @@
  */
 package com.rascal.core.entity;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import javax.persistence.Version;
-
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.audit.DefaultAuditable;
-import lab.s2jh.core.audit.SaveUpdateAuditListener;
-import lab.s2jh.core.web.json.JsonViews;
-import lombok.Getter;
-import lombok.Setter;
-
-import org.hibernate.envers.AuditOverride;
-import org.hibernate.envers.AuditOverrides;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.audit.DefaultAuditable;
+import com.rascal.core.audit.SaveUpdateAuditListener;
+import com.rascal.core.web.json.JsonViews;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.AuditOverrides;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 @Getter
 @Setter
 @Access(AccessType.FIELD)
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "javassistLazyInitializer", "revisionEntity", "handler" }, ignoreUnknown = true)
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "javassistLazyInitializer", "revisionEntity", "handler"}, ignoreUnknown = true)
 @MappedSuperclass
-@EntityListeners({ SaveUpdateAuditListener.class })
-@AuditOverrides({ @AuditOverride(forClass = BaseEntity.class) })
+@EntityListeners({SaveUpdateAuditListener.class})
+@AuditOverrides({@AuditOverride(forClass = BaseEntity.class)})
 public abstract class BaseEntity<ID extends Serializable> extends PersistableEntity<ID> implements DefaultAuditable<String, ID> {
 
     private static final long serialVersionUID = 2476761516236455260L;
@@ -72,7 +61,7 @@ public abstract class BaseEntity<ID extends Serializable> extends PersistableEnt
     @JsonView(JsonViews.Admin.class)
     private String dataGroup;
 
-    private static final String[] PROPERTY_LIST = new String[] { "id", "version" };
+    private static final String[] PROPERTY_LIST = new String[]{"id", "version"};
 
     public String[] retriveCommonProperties() {
         return PROPERTY_LIST;

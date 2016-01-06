@@ -1,19 +1,18 @@
 package com.rascal.module.schedule;
 
+import com.rascal.aud.entity.JobRunHist;
+import com.rascal.aud.service.JobRunHistFacadeService;
+import com.rascal.core.context.SpringContextHolder;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.Trigger;
+import org.quartz.plugins.history.LoggingJobHistoryPlugin;
+
 import java.io.BufferedWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-
-import lab.s2jh.aud.entity.JobRunHist;
-import lab.s2jh.aud.service.JobRunHistFacadeService;
-import lab.s2jh.core.context.SpringContextHolder;
-
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.Trigger;
-import org.quartz.plugins.history.LoggingJobHistoryPlugin;
 
 /**
  * 扩展实现LoggingJobHistoryPlugin约定接口
@@ -45,7 +44,7 @@ public class ExtLoggingJobHistoryPlugin extends LoggingJobHistoryPlugin {
         jobRunHist.setFireTime(new java.util.Date());
         jobRunHist.setPreviousFireTime(trigger.getPreviousFireTime());
         jobRunHist.setNextFireTime(trigger.getNextFireTime());
-        jobRunHist.setRefireCount(new Integer(context.getRefireCount()));
+        jobRunHist.setRefireCount(context.getRefireCount());
         if (jobException != null) {
             jobRunHist.setExceptionFlag(Boolean.TRUE);
             jobRunHist.setResult(jobException.getMessage());

@@ -15,7 +15,7 @@ public class RoutingDataSourceAdvice {
     private static final Logger logger = LoggerFactory.getLogger(RoutingDataSourceAdvice.class);
 
     //以请求线程为分界
-    private static final ThreadLocal<String> datasourceHolder = new ThreadLocal<String>();
+    private static final ThreadLocal<String> datasourceHolder = new ThreadLocal<>();
 
     @Before("@annotation(lab.s2jh.core.dao.router.RoutingDataSource)")
     private void routingAdvice(JoinPoint point) {
@@ -32,7 +32,7 @@ public class RoutingDataSourceAdvice {
     }
 
     public static String getDatasource() {
-        String ds = (String) datasourceHolder.get();
+        String ds = datasourceHolder.get();
         //立即移除，避免共享线程池导致多线程数据干扰
         datasourceHolder.remove();
         return ds;

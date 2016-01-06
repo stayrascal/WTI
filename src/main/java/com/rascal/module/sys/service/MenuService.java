@@ -1,20 +1,17 @@
 package com.rascal.module.sys.service;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Set;
-
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.security.AuthUserDetails;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.module.auth.entity.Role;
-import lab.s2jh.module.auth.entity.RoleR2Privilege;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.UserR2Role;
-import lab.s2jh.module.sys.dao.MenuDao;
-import lab.s2jh.module.sys.entity.Menu;
-import lab.s2jh.module.sys.vo.NavMenuVO;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.security.AuthUserDetails;
+import com.rascal.core.service.BaseService;
+import com.rascal.module.auth.entity.Role;
+import com.rascal.module.auth.entity.RoleR2Privilege;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.entity.UserR2Role;
+import com.rascal.module.sys.dao.MenuDao;
+import com.rascal.module.sys.entity.Menu;
+import com.rascal.module.sys.vo.NavMenuVO;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.Logical;
@@ -26,8 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -96,7 +94,6 @@ public class MenuService extends BaseService<Menu, Long> {
 
     /**
      * 计算用户的有权限的菜单列表
-     * @return
      */
     public List<NavMenuVO> processUserMenu(User user) {
         //获取所有有效的菜单集合
@@ -146,7 +143,7 @@ public class MenuService extends BaseService<Menu, Long> {
                                         break;
                                     }
                                 }
-                                if (grantedOne == false) {
+                                if (!grantedOne) {
                                     granted = false;
                                     break;
                                 }
@@ -161,7 +158,7 @@ public class MenuService extends BaseService<Menu, Long> {
                                         break;
                                     }
                                 }
-                                if (grantedOne == true) {
+                                if (grantedOne) {
                                     granted = true;
                                     break;
                                 }
@@ -186,7 +183,7 @@ public class MenuService extends BaseService<Menu, Long> {
                                         break;
                                     }
                                 }
-                                if (grantedOne == false) {
+                                if (!grantedOne) {
                                     granted = false;
                                     break;
                                 }
@@ -201,7 +198,7 @@ public class MenuService extends BaseService<Menu, Long> {
                                         break;
                                     }
                                 }
-                                if (grantedOne == true) {
+                                if (grantedOne) {
                                     granted = true;
                                     break;
                                 }

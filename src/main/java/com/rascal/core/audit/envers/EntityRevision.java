@@ -28,14 +28,14 @@ public class EntityRevision {
     private Object entity;
 
     /**
-     * The second will be an entity containing revision data 
+     * The second will be an entity containing revision data
      * (if no custom entity is used, this will be an instance of DefaultRevisionEntity)
      */
     private ExtDefaultRevisionEntity revisionEntity;
 
     /**
-     * The third will be the type of the revision 
-     * (one of the values of the RevisionType enumeration: ADD, MOD, DEL). 
+     * The third will be the type of the revision
+     * (one of the values of the RevisionType enumeration: ADD, MOD, DEL).
      */
     private RevisionType revisionType;
 

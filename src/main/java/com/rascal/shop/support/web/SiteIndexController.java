@@ -1,45 +1,39 @@
 package com.rascal.shop.support.web;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.exception.ServiceException;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.util.ImageUtils;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.core.web.filter.WebAppContextInitFilter;
-import lab.s2jh.core.web.util.ServletUtils;
-import lab.s2jh.core.web.view.OperationResult;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
-import lab.s2jh.module.auth.service.UserService;
-import lab.s2jh.module.sys.service.SmsVerifyCodeService;
-import lab.s2jh.support.service.DynamicConfigService;
-
+import com.google.common.collect.Maps;
+import com.rascal.core.exception.ServiceException;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.util.ImageUtils;
+import com.rascal.core.web.BaseController;
+import com.rascal.core.web.filter.WebAppContextInitFilter;
+import com.rascal.core.web.util.ServletUtils;
+import com.rascal.core.web.view.OperationResult;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.entity.User.AuthTypeEnum;
+import com.rascal.module.auth.service.UserService;
+import com.rascal.module.sys.service.SmsVerifyCodeService;
+import com.rascal.shop.entity.SiteUser;
+import com.rascal.shop.service.SiteUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import s2jh.biz.shop.entity.SiteUser;
-import s2jh.biz.shop.service.SiteUserService;
-
-import com.google.common.collect.Maps;
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "/w")
@@ -56,28 +50,25 @@ public class SiteIndexController extends BaseController<SiteUser, Long> {
     @Autowired
     private SmsVerifyCodeService smsVerifyCodeService;
 
-    @Autowired
-    private DynamicConfigService dynamicConfigService;
-
     @Override
     protected BaseService<SiteUser, Long> getEntityService() {
         return siteUserService;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String wwwIndex(Model model) {
+    public String wwwIndex() {
         return "w/index";
     }
 
     @RequestMapping(value = "/password/reset", method = RequestMethod.GET)
-    public String restPasswordShow(Model model) {
+    public String restPasswordShow() {
         return "w/password-reset";
     }
 
     @RequestMapping(value = "/password/reset", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult passwordResetSmsValidate(HttpServletRequest request, SiteUser entity, Model model, @RequestParam("mobile") String mobile,
-            @RequestParam("smsCode") String smsCode, @RequestParam(value = "newpasswd", required = false) String newpasswd) {
+    public OperationResult passwordResetSmsValidate(HttpServletRequest request, @RequestParam("mobile") String mobile,
+                                                    @RequestParam("smsCode") String smsCode, @RequestParam(value = "newpasswd", required = false) String newpasswd) {
         if (smsVerifyCodeService.verifySmsCode(request, mobile, smsCode)) {
             User user = userService.findByAuthTypeAndAuthUid(AuthTypeEnum.SYS, mobile);
             if (user == null) {
@@ -105,7 +96,7 @@ public class SiteIndexController extends BaseController<SiteUser, Long> {
 
     @RequestMapping(value = "/image/upload/temp", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult imageUploadTemp(@RequestParam("photo") CommonsMultipartFile photo, HttpServletRequest request) {
+    public OperationResult imageUploadTemp(@RequestParam("photo") CommonsMultipartFile photo) {
         if (photo != null && !photo.isEmpty()) {
             try {
                 String rootDir = WebAppContextInitFilter.getInitedWebContextRealPath();
@@ -137,10 +128,10 @@ public class SiteIndexController extends BaseController<SiteUser, Long> {
 
     @RequestMapping(value = "/image/crop", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult imageCrop(HttpServletRequest request, @RequestParam("bigImage") String bigImage,
-            @RequestParam(value = "x", required = false) Integer x, @RequestParam(value = "y", required = false) Integer y,
-            @RequestParam(value = "w", required = false) Integer w, @RequestParam(value = "h", required = false) Integer h,
-            @RequestParam(value = "size", required = false) Integer size) throws IOException {
+    public OperationResult imageCrop(@RequestParam("bigImage") String bigImage,
+                                     @RequestParam(value = "x", required = false) Integer x, @RequestParam(value = "y", required = false) Integer y,
+                                     @RequestParam(value = "w", required = false) Integer w, @RequestParam(value = "h", required = false) Integer h,
+                                     @RequestParam(value = "size", required = false) Integer size) throws IOException {
         try {
             String rootDir = WebAppContextInitFilter.getInitedWebContextRealPath();
             String bigImagePath = rootDir + bigImage;
@@ -166,7 +157,7 @@ public class SiteIndexController extends BaseController<SiteUser, Long> {
 
     @RequestMapping(value = "/image/upload/kind-editor", method = RequestMethod.POST)
     @ResponseBody
-    public Map<String, Object> imageUpload(HttpServletRequest request, @RequestParam("imgFile") CommonsMultipartFile fileUpload) {
+    public Map<String, Object> imageUpload(@RequestParam("imgFile") CommonsMultipartFile fileUpload) {
         Map<String, Object> retMap = Maps.newHashMap();
         try {
             if (fileUpload != null && !fileUpload.isEmpty()) {
@@ -189,7 +180,7 @@ public class SiteIndexController extends BaseController<SiteUser, Long> {
 
     @RequestMapping(value = "/file/upload/single", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult singleFileUpload(HttpServletRequest request, @RequestParam("fileUpload") CommonsMultipartFile fileUpload) {
+    public OperationResult singleFileUpload(@RequestParam("fileUpload") CommonsMultipartFile fileUpload) {
         try {
             if (fileUpload != null && !fileUpload.isEmpty()) {
                 String path = ServletUtils.writeUploadFile(fileUpload.getInputStream(), fileUpload.getOriginalFilename(), fileUpload.getSize());

@@ -1,30 +1,24 @@
 package com.rascal.aud.web;
 
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.aud.entity.LoggingEvent;
-import lab.s2jh.aud.entity.LoggingEvent.LoggingHandleStateEnum;
-import lab.s2jh.aud.service.LoggingEventService;
-import lab.s2jh.core.annotation.MenuData;
-import lab.s2jh.core.annotation.MetaData;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.util.EnumUtils;
-import lab.s2jh.core.web.BaseController;
-import lab.s2jh.core.web.json.JsonViews;
-import lab.s2jh.core.web.view.OperationResult;
-
+import com.fasterxml.jackson.annotation.JsonView;
+import com.rascal.aud.entity.LoggingEvent;
+import com.rascal.aud.entity.LoggingEvent.LoggingHandleStateEnum;
+import com.rascal.aud.service.LoggingEventService;
+import com.rascal.core.annotation.MenuData;
+import com.rascal.core.annotation.MetaData;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.util.EnumUtils;
+import com.rascal.core.web.BaseController;
+import com.rascal.core.web.json.JsonViews;
+import com.rascal.core.web.view.OperationResult;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import com.fasterxml.jackson.annotation.JsonView;
+import javax.servlet.http.HttpServletRequest;
 
 @MetaData("日志事件管理")
 @Controller
@@ -70,7 +64,7 @@ public class LoggingEventController extends BaseController<LoggingEvent, Long> {
     @RequiresPermissions("配置管理:系统记录:异常日志记录")
     @RequestMapping(value = "/edit", method = RequestMethod.POST)
     @ResponseBody
-    public OperationResult editSave(@ModelAttribute("entity") LoggingEvent entity, Model model) {
+    public OperationResult editSave(@ModelAttribute("entity") LoggingEvent entity) {
         return super.editSave(entity);
     }
 }

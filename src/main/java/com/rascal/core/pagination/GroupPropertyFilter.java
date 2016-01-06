@@ -3,22 +3,19 @@
  */
 package com.rascal.core.pagination;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.exception.ServiceException;
-import lab.s2jh.core.pagination.PropertyFilter.MatchType;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.rascal.core.exception.ServiceException;
+import com.rascal.core.pagination.PropertyFilter.MatchType;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 用于jqGrid自定义高级查询条件封装条件组合
@@ -30,16 +27,24 @@ public class GroupPropertyFilter {
     public static final String GROUP_OPERATION_AND = "and";
     public static final String GROUP_OPERATION_OR = "or";
 
-    /** 组合类型:AND/OR */
+    /**
+     * 组合类型:AND/OR
+     */
     private String groupType = GROUP_OPERATION_AND;
 
-    /** 组合条件列表 */
+    /**
+     * 组合条件列表
+     */
     private List<PropertyFilter> filters = Lists.newArrayList();
 
-    /** 强制追加AND条件列表 */
+    /**
+     * 强制追加AND条件列表
+     */
     private List<PropertyFilter> forceAndFilters = Lists.newArrayList();
 
-    /** 组合条件组 */
+    /**
+     * 组合条件组
+     */
     private List<GroupPropertyFilter> groups = Lists.newArrayList();
 
     public List<GroupPropertyFilter> getGroups() {
@@ -247,7 +252,6 @@ public class GroupPropertyFilter {
     /**
      * 判断当前是没有提供任何参数的默认查询
      * 一般用于父子结构类型数据根据无参数判断追加parent==null的查询条件
-     * @return
      */
     public boolean isEmptySearch() {
         if (CollectionUtils.isEmpty(filters) && CollectionUtils.isEmpty(groups)) {
@@ -270,7 +274,6 @@ public class GroupPropertyFilter {
 
     /**
      * 转换为Key-Value的Map结构数据
-     * @return
      */
     public Map<String, Object> convertToMapParameters() {
         Map<String, Object> parameters = Maps.newHashMap();
@@ -296,7 +299,6 @@ public class GroupPropertyFilter {
     /**
      * 转换为PropertyFilter查询集合，用于传递给MyBatis作为动态查询参数
      * 注意限制：仅考虑最常用的一个层次的查询调整合并处理，暂不支持复杂的多级嵌套层次查询
-     * @return 
      */
     public List<PropertyFilter> convertToPropertyFilters() {
         List<PropertyFilter> propertyFilters = Lists.newArrayList();

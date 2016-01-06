@@ -3,28 +3,14 @@
  */
 package com.rascal.core.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 public class ExtStringUtils {
@@ -32,13 +18,13 @@ public class ExtStringUtils {
 
     public static final String WIN_ENTER = "\r\n";
 
-    private final static char CHARS[] = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C',
+    private final static char CHARS[] = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C',
             'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-            'Y', 'Z' };
+            'Y', 'Z'};
 
     /**
      * 右省略的方式表示字符串，len长度后的字符串表示为“...”
-     * 
+     *
      * @param oldStr
      * @param len
      * @return
@@ -58,7 +44,7 @@ public class ExtStringUtils {
 
     /**
      * 左省略，len长度前的字符串表示为“...”
-     * 
+     *
      * @param oldStr
      * @param len
      * @return
@@ -186,7 +172,7 @@ public class ExtStringUtils {
      * return the parameter list.
      * findParam("Ther versionId is {versionId}, created by {userId}.",'{','}')
      * will return ["{versionId}","{userId}"]
-     * 
+     *
      * @param src
      * @param patternFrom
      * @param patternTo
@@ -271,15 +257,12 @@ public class ExtStringUtils {
     }
 
     /**
-     * @author zyb
-     * @date 2004/6/8
-     * 
-     * @note : convert a date to string with format as YYYY-MM-DD
-     * 
-     * 
      * @param value
      * @return
      * @throws Exception
+     * @author zyb
+     * @date 2004/6/8
+     * @note : convert a date to string with format as YYYY-MM-DD
      */
     public static String toYMDString(Date value) throws Exception {
         SimpleDateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -287,14 +270,12 @@ public class ExtStringUtils {
     }
 
     /**
-     * @author zyb
-     * @date 2004/6/8
-     * 
-     * @note : convert a string to date with YYYY-MM-dd
-     * 
      * @param value
      * @return
      * @throws Exception
+     * @author zyb
+     * @date 2004/6/8
+     * @note : convert a string to date with YYYY-MM-dd
      */
     public static Date toYMDDate(String value) throws Exception {
         try {
@@ -308,13 +289,12 @@ public class ExtStringUtils {
     }
 
     /**
-     * @author zyb
-     * @date 2004/6/8
-     * @note :
-     * 
      * @param beginDate
      * @param endDate
      * @return
+     * @author zyb
+     * @date 2004/6/8
+     * @note :
      */
     public static long compareDate(String beginDate, String endDate) throws Exception {
         try {
@@ -425,21 +405,17 @@ public class ExtStringUtils {
     /**
      * Find the index of the searchStr in the string array strs.
      * Return -1, if not found.
-     * 
+     * <p>
      * <pre>
      * StringUtil.indexOf(["s1", "s2"], "s1", true) = 0
      * StringUtil.indexOf(["s1", "s2"], "S1", true) = -1
      * </pre>
-     * 
-     * @param strs
-     *            the string array to check, maybe null.
-     * @param searchStr
-     *            the string to search for, maybe null.
-     * @param caseSensive
-     *            is it case sensive while finding the searchStr
-     *            in the searchStr.
+     *
+     * @param strs        the string array to check, maybe null.
+     * @param searchStr   the string to search for, maybe null.
+     * @param caseSensive is it case sensive while finding the searchStr
+     *                    in the searchStr.
      * @return index of the searchStr found in the strs, -1 if not found.
-     * 
      * @author chenke
      */
     public static int indexOf(String[] strs, String searchStr, boolean caseSensive) {
@@ -472,13 +448,10 @@ public class ExtStringUtils {
     /**
      * Returns a string array contains all the String object in the
      * Collection c.
-     * 
-     * @param c
-     *            Collection of String object.
-     * @throws ClassCastException
-     *             if the object in the Collection is
-     *             not a String object.
-     * 
+     *
+     * @param c Collection of String object.
+     * @throws ClassCastException if the object in the Collection is
+     *                            not a String object.
      * @author chenke
      */
     public static String[] toArray(Collection c) {
@@ -487,7 +460,7 @@ public class ExtStringUtils {
         }
         String[] result = new String[c.size()];
         int i = 0;
-        for (Iterator iter = c.iterator(); iter.hasNext();) {
+        for (Iterator iter = c.iterator(); iter.hasNext(); ) {
             result[i++] = (String) iter.next();
         }
         return result;
@@ -495,12 +468,12 @@ public class ExtStringUtils {
 
     /**
      * Return the result of left minus right.
-     * 
+     * <p>
      * <pre>
      * StringUtil.minus(["s1", "s2"], ["s1"], true) = ["s2"]
      * StringUtil.minus(["s1", "s2"], ["S1"], false) = ["s2"]
      * </pre>
-     * 
+     *
      * @author chenke
      */
     public static String[] minus(String[] left, String[] right, boolean caseSensive) {
@@ -528,14 +501,13 @@ public class ExtStringUtils {
      * Return a String object join all String object in param c, and add
      * param left and param right to every String object on the left side
      * and right side, separaing with param separator.
-     * 
+     * <p>
      * <pre>
      * join(["s1", "s2"], "left", "right", ",") = "lefts1right,lefts2right"
      * </pre>
-     * 
-     * @throws ClassCastException
-     *             if the object in the Collection is
-     *             not a String object.
+     *
+     * @throws ClassCastException if the object in the Collection is
+     *                            not a String object.
      */
     public static String join(Collection c, String left, String right, String separator) {
 
@@ -544,7 +516,7 @@ public class ExtStringUtils {
         }
         StringBuffer sb = new StringBuffer();
         boolean firstFlag = true;
-        for (Iterator it = c.iterator(); it.hasNext();) {
+        for (Iterator it = c.iterator(); it.hasNext(); ) {
             if (firstFlag) {
                 firstFlag = false;
             } else if (separator != null) {
@@ -586,9 +558,8 @@ public class ExtStringUtils {
      * the token is a char ','. if <code>array</code> is <code>null</code> or zeor length,
      * return an empty <code>String</code>; if the element in the <code>array</code> is <code>null</code> or empty
      * <code>String</code>, ignores this element.
-     * 
-     * @param array
-     *            to be converted array
+     *
+     * @param array to be converted array
      * @return converted token <code>String</code>
      * @author sunf
      * @since AP.308
@@ -622,13 +593,11 @@ public class ExtStringUtils {
     /**
      * if str starts with a prefix which is included in prefixes collection
      * return true, otherwise return false.
-     * 
+     *
      * @param str
-     * @param prefixes
-     *            a collection of String objects
-     * 
+     * @param prefixes a collection of String objects
      * @return if str starts with a prefix which is included in prefixes collection
-     *         return true, otherwise return false.
+     * return true, otherwise return false.
      */
     public static boolean containsPrefix(String str, Collection prefixes) {
         if (str != null && prefixes != null) {
@@ -647,7 +616,7 @@ public class ExtStringUtils {
      * Get the next order id according to the order id of current version id
      * order id is last two characters, they indicate a order numeber
      * eg. 00, 01, 02, ...10, 11, ... 99
-     * 
+     *
      * @param pattern
      * @return next order id - String
      */
@@ -674,7 +643,7 @@ public class ExtStringUtils {
 
     /**
      * If code value in range [-64, -17], it's a character header with enconding UTF-8
-     * 
+     *
      * @param codeValue
      * @return boolean
      */
@@ -687,7 +656,7 @@ public class ExtStringUtils {
 
     /**
      * If code value in range [-128, -65], it's a character body with enconding UTF-8
-     * 
+     *
      * @param codeValue
      * @return boolean
      */
@@ -701,19 +670,16 @@ public class ExtStringUtils {
     /**
      * cut off string which consists of chinese characters and ascii characters
      * with UTF-8 encoding way
-     * 
+     * <p>
      * UTF-8 encoding mode
      * 0xxx xxxx [0, 127] for ascii
      * 110x xxxx 10xx xxxx [-33, -64] [-65, -128] for chinese character
      * 1110 xxxx 10xx xxxx 10xx xxxx [-32, -17] [-65, -128] [-65, -128] for chinese character
-     * 
-     * @param originalStr
-     *            - original string
-     * @param length
-     *            - desired length to shape this character
-     * 
+     *
+     * @param originalStr - original string
+     * @param length      - desired length to shape this character
      * @return string which has been cut off redundant characters
-     *         or null if length given is illegal
+     * or null if length given is illegal
      * @throws UnsupportedEncodingException
      */
     public static String cutStringWithUTF8(String originalStr, int length) throws UnsupportedEncodingException {
@@ -772,7 +738,7 @@ public class ExtStringUtils {
 
     /**
      * 拼装适合SQL IN的字符串语句
-     * 
+     *
      * @param str
      * @return
      * @author niez
@@ -797,9 +763,8 @@ public class ExtStringUtils {
 
     /**
      * 防止中文乱码.
-     * 
-     * @param string
-     *            the string
+     *
+     * @param string the string
      * @return the string
      */
     public static String encodeUTF8(String string) {
@@ -816,6 +781,7 @@ public class ExtStringUtils {
 
     /**
      * 判断字符是否包含中文
+     *
      * @param str
      * @return
      */
@@ -828,10 +794,11 @@ public class ExtStringUtils {
         return false;
     }
 
-    /**  
-     * 对象属性转换为字段  例如：userName to user_name  
-     * @param property 字段名  
-     * @return  
+    /**
+     * 对象属性转换为字段  例如：userName to user_name
+     *
+     * @param property 字段名
+     * @return
      */
     public static String propertyToField(String property) {
         if (null == property) {
@@ -849,10 +816,11 @@ public class ExtStringUtils {
         return sb.toString().toUpperCase();
     }
 
-    /**  
-     * 字段转换成对象属性 例如：user_name to userName  
-     * @param field  
-     * @return  
+    /**
+     * 字段转换成对象属性 例如：user_name to userName
+     *
+     * @param field
+     * @return
      */
     public static String fieldToProperty(String field) {
         if (null == field) {
@@ -874,8 +842,8 @@ public class ExtStringUtils {
         }
         return sb.toString();
     }
- 
-    public static String parseExceptionStackString(Throwable e){
+
+    public static String parseExceptionStackString(Throwable e) {
         //处理异常堆栈字符串
         StringWriter strWriter = new StringWriter();
         if (e != null) {
@@ -887,5 +855,5 @@ public class ExtStringUtils {
         String exceptionStack = strWriter.getBuffer().toString();
         return exceptionStack;
     }
-  
+
 }

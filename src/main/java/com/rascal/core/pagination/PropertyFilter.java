@@ -3,26 +3,8 @@
  */
 package com.rascal.core.pagination;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.util.reflection.ConvertUtils;
-
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.util.reflection.ConvertUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -33,6 +15,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.util.Assert;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * 与具体ORM实现无关的属性过滤条件封装类, 主要记录页面中简单的搜索过滤条件. 用于页面表单传入字符串形式条件，然后转换处理为DAO层面识别的SQL条件
@@ -61,36 +51,58 @@ public class PropertyFilter {
 
     private static final int DEFAULT_PAGE_ROWS = 20;
 
-    /** 多个属性间OR关系的分隔符. */
+    /**
+     * 多个属性间OR关系的分隔符.
+     */
     public static final String OR_SEPARATOR = "_OR_";
 
-    /** 属性匹配比较类型. */
+    /**
+     * 属性匹配比较类型.
+     */
     public enum MatchType {
-        /** "name": "bk", "description": "is blank", "operator":"IS NULL OR ==''" */
+        /**
+         * "name": "bk", "description": "is blank", "operator":"IS NULL OR ==''"
+         */
         BK,
 
-        /** "name": "nb", "description": "is not blank", "operator":"IS NOT NULL AND !=''" */
+        /**
+         * "name": "nb", "description": "is not blank", "operator":"IS NOT NULL AND !=''"
+         */
         NB,
 
-        /** "name": "nu", "description": "is null", "operator":"IS NULL" */
+        /**
+         * "name": "nu", "description": "is null", "operator":"IS NULL"
+         */
         NU,
 
-        /** "name": "nn", "description": "is not null", "operator":"IS NOT NULL" */
+        /**
+         * "name": "nn", "description": "is not null", "operator":"IS NOT NULL"
+         */
         NN,
 
-        /** "name": "in", "description": "in", "operator":"IN" */
+        /**
+         * "name": "in", "description": "in", "operator":"IN"
+         */
         IN,
 
-        /** "name": "ni", "description": "not in", "operator":"NOT IN" */
+        /**
+         * "name": "ni", "description": "not in", "operator":"NOT IN"
+         */
         NI,
 
-        /** "name": "ne", "description": "not equal", "operator":"<>" */
+        /**
+         * "name": "ne", "description": "not equal", "operator":"<>"
+         */
         NE,
 
-        /** "name": "eq", "description": "equal", "operator":"=" */
+        /**
+         * "name": "eq", "description": "equal", "operator":"="
+         */
         EQ,
 
-        /** "name": "cn", "description": "contains", "operator":"LIKE %abc%" */
+        /**
+         * "name": "cn", "description": "contains", "operator":"LIKE %abc%"
+         */
         CN,
 
         /**
@@ -99,7 +111,9 @@ public class PropertyFilter {
          */
         NC,
 
-        /** "name": "bw", "description": "begins with", "operator":"LIKE abc%" */
+        /**
+         * "name": "bw", "description": "begins with", "operator":"LIKE abc%"
+         */
         BW,
 
         /**
@@ -108,7 +122,9 @@ public class PropertyFilter {
          */
         BN,
 
-        /** "name": "ew", "description": "ends with", "operator":"LIKE %abc" */
+        /**
+         * "name": "ew", "description": "ends with", "operator":"LIKE %abc"
+         */
         EW,
 
         /**
@@ -117,37 +133,57 @@ public class PropertyFilter {
          */
         EN,
 
-        /** "name": "bt", "description": "between", "operator":"BETWEEN 1 AND 2" */
+        /**
+         * "name": "bt", "description": "between", "operator":"BETWEEN 1 AND 2"
+         */
         BT,
 
-        /** "name": "lt", "description": "less", "operator":"小于" */
+        /**
+         * "name": "lt", "description": "less", "operator":"小于"
+         */
         LT,
 
-        /** "name": "gt", "description": "greater", "operator":"大于" */
+        /**
+         * "name": "gt", "description": "greater", "operator":"大于"
+         */
         GT,
 
-        /** "name": "le", "description": "less or equal","operator":"<=" */
+        /**
+         * "name": "le", "description": "less or equal","operator":"<="
+         */
         LE,
 
-        /** "name": "ge", "description": "greater or equal", "operator":">=" */
+        /**
+         * "name": "ge", "description": "greater or equal", "operator":">="
+         */
         GE,
 
-        /** @see javax.persistence.criteria.Fetch */
+        /**
+         * @see javax.persistence.criteria.Fetch
+         */
         FETCH,
 
-        /** Property Less Equal: <= */
+        /**
+         * Property Less Equal: <=
+         */
         PLE,
 
-        /** Property Less Than: < */
+        /**
+         * Property Less Than: <
+         */
         PLT,
 
-        ACLPREFIXS;
+        ACLPREFIXS
     }
 
-    /** 匹配类型 */
+    /**
+     * 匹配类型
+     */
     private MatchType matchType = null;
 
-    /** 匹配值 */
+    /**
+     * 匹配值
+     */
     private Object matchValue = null;
 
     /**
@@ -156,10 +192,12 @@ public class PropertyFilter {
      */
     private Class propertyClass = null;
 
-    /** 属性名称数组, 一般是单个属性,如果有_OR_则为多个 */
+    /**
+     * 属性名称数组, 一般是单个属性,如果有_OR_则为多个
+     */
     private String[] propertyNames = null;
     /**
-     * 集合类型子查询,如查询包含某个商品的所有订单列表,如order上面有个List集合products对象，则可以类似这样:search['EQ_products.code'] 
+     * 集合类型子查询,如查询包含某个商品的所有订单列表,如order上面有个List集合products对象，则可以类似这样:search['EQ_products.code']
      * 限制说明：框架只支持当前主对象直接定义的集合对象集合查询，不支持再多层嵌套
      */
     private Class subQueryCollectionPropetyType;
@@ -168,15 +206,13 @@ public class PropertyFilter {
     }
 
     /**
-     * @param filterName
-     *            比较属性字符串,含待比较的比较类型、属性值类型及属性列表.
-     * @param values
-     *            待比较的值.
+     * @param filterName 比较属性字符串,含待比较的比较类型、属性值类型及属性列表.
+     * @param values     待比较的值.
      */
     public PropertyFilter(Class<?> entityClass, String filterName, String... values) {
 
         String matchTypeCode = StringUtils.substringBefore(filterName, "_");
-        if (matchTypeCode.indexOf("@") > -1) {
+        if (matchTypeCode.contains("@")) {
             String[] matchTypeCodes = matchTypeCode.split("@");
             matchTypeCode = matchTypeCodes[0];
 
@@ -200,13 +236,13 @@ public class PropertyFilter {
         Assert.isTrue(StringUtils.isNotBlank(propertyNameStr), "filter名称" + filterName + "没有按规则编写,无法得到属性名称.");
         propertyNames = StringUtils.splitByWholeSeparator(propertyNameStr, PropertyFilter.OR_SEPARATOR);
         //计算属性对应Class类型
-        if (propertyNameStr.indexOf("count(") > -1) {
+        if (propertyNameStr.contains("count(")) {
             propertyClass = Integer.class;
-        } else if (propertyNameStr.indexOf("(") > -1) {
+        } else if (propertyNameStr.contains("(")) {
             propertyClass = BigDecimal.class;
         } else {
             String firstPropertyName = propertyNames[0];
-            if (firstPropertyName.indexOf("@") > -1) {
+            if (firstPropertyName.contains("@")) {
                 String propertyType = firstPropertyName.split("@")[1];
                 if (Date.class.getSimpleName().equalsIgnoreCase(propertyType)) {
                     propertyClass = Date.class;
@@ -251,7 +287,7 @@ public class PropertyFilter {
             } else if (propertyClass.equals(Date.class) || propertyClass.equals(DateTime.class)) {
                 String value = values[0].trim();
                 value = value.replace("～", "~");
-                if (value.indexOf(" ") > -1) {
+                if (value.contains(" ")) {
                     values = StringUtils.split(value, "~");
                     if (matchType.equals(MatchType.BT)) {
                         values[0] = values[0].trim();
@@ -264,7 +300,7 @@ public class PropertyFilter {
                             values[1] = DateUtils.formatDate(dateTo.plusDays(1).toDate());
                         }
                     } else {
-                        values = new String[] { values[0].trim() };
+                        values = new String[]{values[0].trim()};
                     }
                 }
             }
@@ -288,7 +324,7 @@ public class PropertyFilter {
         if (Enum.class.isAssignableFrom(propertyClass)) {
             return Enum.valueOf(propertyClass, value);
         } else if (propertyClass.equals(Boolean.class) || matchType.equals(MatchType.NN) || matchType.equals(MatchType.NU)) {
-            return new Boolean(BooleanUtils.toBoolean(value));
+            return BooleanUtils.toBoolean(value);
         } else if (propertyClass.equals(Date.class)) {
             return DateUtils.parseMultiFormatDate((String) value);
         } else {
@@ -297,12 +333,7 @@ public class PropertyFilter {
     }
 
     /**
-     * Java程序层直接构造过滤器对象, 如filters.add(new PropertyFilter(MatchType.EQ, "code",
-     * code));
-     * 
-     * @param matchType
-     * @param propertyName
-     * @param matchValue
+     * Java程序层直接构造过滤器对象, 如filters.add(new PropertyFilter(MatchType.EQ, "code", code));
      */
     public PropertyFilter(final MatchType matchType, final String propertyName, final Object matchValue) {
         this.matchType = matchType;
@@ -313,10 +344,6 @@ public class PropertyFilter {
     /**
      * Java程序层直接构造过滤器对象, 如filters.add(new PropertyFilter(MatchType.LIKE, new
      * String[]{"code","name"}, value));
-     * 
-     * @param matchType
-     * @param propertyName
-     * @param matchValue
      */
     public PropertyFilter(final MatchType matchType, final String[] propertyNames, final Object matchValue) {
         this.matchType = matchType;
@@ -330,7 +357,7 @@ public class PropertyFilter {
      */
     public static List<PropertyFilter> buildFiltersFromHttpRequest(Class<?> entityClass, ServletRequest request) {
 
-        List<PropertyFilter> filterList = new ArrayList<PropertyFilter>();
+        List<PropertyFilter> filterList = new ArrayList<>();
 
         // 从request中获取含属性前缀名的参数,构造去除前缀名后的参数Map.
         Map<String, String[]> filterParamMap = getParametersStartingWith(request, "search['", "']");
@@ -384,9 +411,9 @@ public class PropertyFilter {
      * start 起始记录顺序号，从1开始，用于一些需要精确控制从start到start+size的场景；可选参数，未提供则取值等于page*size
      * sidx 排序属性名称
      * sord 排序规则，asc=升序，desc=降序，默认asc
-     * @param request  HttpServletRequest对象
-     * @param defaultRows  如果request中未提供rows参数时默认记录数
-     * @return 
+     *
+     * @param request     HttpServletRequest对象
+     * @param defaultRows 如果request中未提供rows参数时默认记录数
      */
     public static Pageable buildPageableFromHttpRequest(HttpServletRequest request, int defaultRows) {
         return buildPageableFromHttpRequest(request, null, defaultRows);
@@ -399,8 +426,8 @@ public class PropertyFilter {
      * start 起始记录顺序号，从1开始，用于一些需要精确控制从start到start+size的场景；可选参数，未提供则取值等于page*size
      * sidx 排序属性名称
      * sord 排序规则，asc=升序，desc=降序，默认asc
-     * @param request  HttpServletRequest对象
-     * @return 
+     *
+     * @param request HttpServletRequest对象
      */
     public static Pageable buildPageableFromHttpRequest(HttpServletRequest request) {
         return buildPageableFromHttpRequest(request, null, DEFAULT_PAGE_ROWS);
@@ -413,10 +440,9 @@ public class PropertyFilter {
      * start 起始记录顺序号，从1开始，用于一些需要精确控制从start到start+size的场景；可选参数，未提供则取值等于page*size
      * sidx 排序属性名称
      * sord 排序规则，asc=升序，desc=降序，默认asc
-     * @param request 
-     * @param sort 如果传入参数为null，则从request构建，否则直接取输入sort参数
-     * @param defaultRows  如果request中未提供rows参数时默认记录数
-     * @return
+     *
+     * @param sort        如果传入参数为null，则从request构建，否则直接取输入sort参数
+     * @param defaultRows 如果request中未提供rows参数时默认记录数
      */
     public static Pageable buildPageableFromHttpRequest(HttpServletRequest request, Sort sort, int defaultRows) {
         int rows = defaultRows;
@@ -434,7 +460,7 @@ public class PropertyFilter {
         String strStart = request.getParameter("start");
         if (StringUtils.isNotBlank(strStart)) {
             offset = Integer.valueOf(strStart) - 1;
-            page = (offset + 1) / Integer.valueOf(rows);
+            page = (offset + 1) / rows;
             if (page <= 0) {
                 page = 1;
             }
@@ -448,7 +474,7 @@ public class PropertyFilter {
         if (sort == null) {
             sort = buildSortFromHttpRequest(request);
         }
-        return new ExtPageRequest(offset, page - 1, Integer.valueOf(rows), sort);
+        return new ExtPageRequest(offset, page - 1, rows, sort);
     }
 
     /**
@@ -458,10 +484,8 @@ public class PropertyFilter {
      * start 起始记录顺序号，从1开始，用于一些需要精确控制从start到start+size的场景；可选参数，未提供则取值等于page*size
      * sidx 排序属性名称
      * sord 排序规则，asc=升序，desc=降序，默认asc
-     * @param request 
+     *
      * @param sort 如果传入参数为null，则从request构建，否则直接取输入sort参数
-     * @param defaultRows  如果request中未提供rows参数时默认记录数
-     * @return
      */
     public static Pageable buildPageableFromHttpRequest(HttpServletRequest request, Sort sort) {
         return buildPageableFromHttpRequest(request, sort, DEFAULT_PAGE_ROWS);
@@ -471,8 +495,6 @@ public class PropertyFilter {
      * 从request对象中提取组装排序对象，参数列表：
      * sidx 排序属性名称
      * sord 排序规则，asc=升序，desc=降序，默认asc
-     * @param request
-     * @return
      */
     public static Sort buildSortFromHttpRequest(HttpServletRequest request) {
         String sidx = StringUtils.isBlank(request.getParameter("sidx")) ? "id" : request.getParameter("sidx");
@@ -559,7 +581,7 @@ public class PropertyFilter {
      * 构造一个缺省过滤集合.
      */
     public static List<PropertyFilter> buildDefaultFilterList() {
-        return new ArrayList<PropertyFilter>();
+        return new ArrayList<>();
     }
 
     public Class getPropertyClass() {
@@ -574,7 +596,7 @@ public class PropertyFilter {
         Assert.notNull(request, "Request must not be null");
         @SuppressWarnings("rawtypes")
         Enumeration paramNames = request.getParameterNames();
-        Map<String, String[]> params = new TreeMap<String, String[]>();
+        Map<String, String[]> params = new TreeMap<>();
         if (prefix == null) {
             prefix = "";
         }
@@ -591,7 +613,7 @@ public class PropertyFilter {
                 } else if (values.length > 1) {
                     params.put(unprefixed, values);
                 } else {
-                    params.put(unprefixed, new String[] { values[0] });
+                    params.put(unprefixed, new String[]{values[0]});
                 }
             }
         }

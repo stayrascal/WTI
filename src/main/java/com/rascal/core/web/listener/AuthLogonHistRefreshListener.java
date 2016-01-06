@@ -1,26 +1,24 @@
 package com.rascal.core.web.listener;
 
-import java.util.Date;
-import java.util.List;
+import com.rascal.aud.entity.UserLogonLog;
+import com.rascal.aud.service.UserLogonLogService;
+import com.rascal.core.context.SpringContextHolder;
+import com.rascal.core.pagination.GroupPropertyFilter;
+import com.rascal.core.pagination.PropertyFilter;
+import com.rascal.core.pagination.PropertyFilter.MatchType;
+import com.rascal.core.util.DateUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-
-import lab.s2jh.aud.entity.UserLogonLog;
-import lab.s2jh.aud.service.UserLogonLogService;
-import lab.s2jh.core.context.SpringContextHolder;
-import lab.s2jh.core.pagination.GroupPropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter;
-import lab.s2jh.core.pagination.PropertyFilter.MatchType;
-import lab.s2jh.core.util.DateUtils;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 通过监听器更新相关登录记录的登录时间

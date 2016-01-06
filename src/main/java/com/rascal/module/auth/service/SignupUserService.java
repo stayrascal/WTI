@@ -1,27 +1,25 @@
 package com.rascal.module.auth.service;
 
-import java.util.List;
-
-import lab.s2jh.core.dao.jpa.BaseDao;
-import lab.s2jh.core.security.PasswordService;
-import lab.s2jh.core.service.BaseService;
-import lab.s2jh.core.util.DateUtils;
-import lab.s2jh.core.util.UidUtils;
-import lab.s2jh.module.auth.dao.RoleDao;
-import lab.s2jh.module.auth.dao.SignupUserDao;
-import lab.s2jh.module.auth.dao.UserDao;
-import lab.s2jh.module.auth.dao.UserExtDao;
-import lab.s2jh.module.auth.entity.SignupUser;
-import lab.s2jh.module.auth.entity.User;
-import lab.s2jh.module.auth.entity.UserExt;
-import lab.s2jh.module.auth.entity.UserR2Role;
-
+import com.google.common.collect.Lists;
+import com.rascal.core.dao.jpa.BaseDao;
+import com.rascal.core.security.PasswordService;
+import com.rascal.core.service.BaseService;
+import com.rascal.core.util.DateUtils;
+import com.rascal.core.util.UidUtils;
+import com.rascal.module.auth.dao.RoleDao;
+import com.rascal.module.auth.dao.SignupUserDao;
+import com.rascal.module.auth.dao.UserDao;
+import com.rascal.module.auth.dao.UserExtDao;
+import com.rascal.module.auth.entity.SignupUser;
+import com.rascal.module.auth.entity.User;
+import com.rascal.module.auth.entity.UserExt;
+import com.rascal.module.auth.entity.UserR2Role;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Lists;
+import java.util.List;
 
 @Service
 @Transactional

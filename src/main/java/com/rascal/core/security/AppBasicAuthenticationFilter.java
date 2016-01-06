@@ -1,18 +1,17 @@
 package com.rascal.core.security;
 
-import java.util.Properties;
-
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.web.filter.PathMatchingFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Properties;
 
 public class AppBasicAuthenticationFilter extends PathMatchingFilter {
 
@@ -46,9 +45,9 @@ public class AppBasicAuthenticationFilter extends PathMatchingFilter {
 
     /**
      * Returns the {@link #AUTHORIZATION_HEADER AUTHORIZATION_HEADER} from the specified ServletRequest.
-     * <p/>
+     * <p>
      * This implementation merely casts the request to an <code>HttpServletRequest</code> and returns the header:
-     * <p/>
+     * <p>
      * <code>HttpServletRequest httpRequest = {@link WebUtils#toHttp(ServletRequest) toHttp(reaquest)};<br/>
      * return httpRequest.getHeader({@link #AUTHORIZATION_HEADER AUTHORIZATION_HEADER});</code>
      *
@@ -63,21 +62,21 @@ public class AppBasicAuthenticationFilter extends PathMatchingFilter {
     /**
      * Returns the username and password pair based on the specified <code>encoded</code> String obtained from
      * the request's authorization header.
-     * <p/>
+     * <p>
      * Per RFC 2617, the default implementation first Base64 decodes the string and then splits the resulting decoded
      * string into two based on the ":" character.  That is:
-     * <p/>
+     * <p>
      * <code>String decoded = Base64.decodeToString(encoded);<br/>
      * return decoded.split(":");</code>
      *
-     * @param scheme  the {@link #getAuthcScheme() authcScheme} found in the request
+     * @param scheme  the {link #getAuthcScheme() authcScheme} found in the request
      *                {@link #getAuthzHeader(ServletRequest) authzHeader}.  It is ignored by this implementation,
      *                but available to overriding implementations should they find it useful.
      * @param encoded the Base64-encoded username:password value found after the scheme in the header
      * @return the username (index 0)/password (index 1) pair obtained from the encoded header data.
      */
     protected String[] getPrincipalsAndCredentials(String scheme, String encoded) {
-        if (encoded.indexOf(" ") > -1) {
+        if (encoded.contains(" ")) {
             encoded = encoded.split(" ")[1];
         }
         String decoded = Base64.decodeToString(encoded);
