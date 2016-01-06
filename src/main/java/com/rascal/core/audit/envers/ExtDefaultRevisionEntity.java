@@ -2,7 +2,13 @@ package com.rascal.core.audit.envers;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.rascal.core.web.json.DateTimeJsonSerializer;
+import lab.s2jh.core.annotation.MetaData;
+import lab.s2jh.core.entity.PersistableEntity;
+import lab.s2jh.core.web.json.DateTimeJsonSerializer;
+import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.envers.RevisionEntity;
 import org.hibernate.envers.RevisionNumber;
 import org.hibernate.envers.RevisionTimestamp;
@@ -12,104 +18,90 @@ import java.util.Date;
 
 /**
  * 扩展默认的Hibernate Envers审计表对象定义
- * http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html/ch15.html
- * Date: 2015/11/28
- * Time: 22:03
- *
- * @author Rascal
+ * 
+ * @see http://docs.jboss.org/hibernate/orm/4.2/devguide/en-US/html/ch15.html
  */
+@Getter
+@Setter
+@Access(AccessType.FIELD)
 @Entity
-@Table(name = "aud_revision_entity")
+@Table(name = "aud_RevisionEntity")
 @RevisionEntity(ExtRevisionListener.class)
-@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "javassistLazyInitializer", "revisionEntity", "handler"}, ignoreUnknown = true)
-public class ExtDefaultRevisionEntity {
-    /**
-     * 记录版本
-     */
-    private Long rev;
+@JsonIgnoreProperties(value = { "hibernateLazyInitializer", "javassistLazyInitializer", "revisionEntity", "handler" }, ignoreUnknown = true)
+public class ExtDefaultRevisionEntity extends PersistableEntity<Long> {
 
-    /**
-     * 记录时间
-     */
-    private Date revstmp;
+    private static final long serialVersionUID = -2946153158442502361L;
 
-    /**
-     * 请求执行的Web Controller类名
-     */
-    private String controllerClassName;
-
-    /**
-     * 请求执行的Web Controller方法名
-     */
-    private String controllerMethodName;
-
-    /**
-     * 全局唯一的用户ID，确保明确与唯一操作用户关联
-     */
-    private String authGuid;
-
-    /**
-     * 用户信息友好显示字符
-     */
-    private String authDisplay;
-
+    /** 记录版本 */
     @Id
     @GeneratedValue
     @RevisionNumber
-    public Long getRev() {
-        return rev;
-    }
+    private Long rev;
 
-    public void setRev(Long rev) {
-        this.rev = rev;
-    }
-
+    /** 记录时间 */
     @RevisionTimestamp
     @Temporal(TemporalType.TIMESTAMP)
     @JsonSerialize(using = DateTimeJsonSerializer.class)
-    public Date getRevstmp() {
-        return revstmp;
-    }
+    private Date revstmp;
 
-    public void setRevstmp(Date revstmp) {
-        this.revstmp = revstmp;
-    }
+    private String entityClassName;
 
+    /** Controller注解定义的requestMapping */
+    private String requestMappingUri;
+
+    /** 请求执行的Web Controller类名 */
+    private String controllerClassName;
+
+    /** 请求执行的Web Controller类MetaData中文注解 */
+    private String controllerClassLabel;
+
+    /** 请求执行的Web Controller方法名 */
+    private String controllerMethodName;
+
+    /** 请求执行的Web Controller方法的MetaData中文注解 */
+    private String controllerMethodLabel;
+
+    /** 请求执行的Web Controller方法RequestMethod: POST */
+    private String controllerMethodType;
+
+    /** 全局唯一的用户ID，确保明确与唯一操作用户关联 */
     @Column(length = 128)
-    public String getAuthGuid() {
-        return authGuid;
+    private String authGuid;
+
+    @MetaData(value = "账号类型所对应唯一标识")
+    @Column(length = 128)
+    private String authUid;
+
+    @MetaData(value = "账号类型")
+    @Column(length = 32)
+    @Enumerated(EnumType.STRING)
+    private AuthTypeEnum authType;
+
+    @Override
+    @Transient
+    public Long getId() {
+        return rev;
     }
 
-    public void setAuthGuid(String authGuid) {
-        this.authGuid = authGuid;
+    @Override
+    @Transient
+    public boolean isNew() {
+        return rev == null;
     }
 
-    @Column(length = 256)
-    public String getAuthDisplay() {
-        return authDisplay;
+    @Override
+    @Transient
+    public String getDisplay() {
+        return String.valueOf(rev);
     }
 
-    public void setAuthDisplay(String authDisplay) {
-        this.authDisplay = authDisplay;
+    @Transient
+    public String getControllerClassDisplay() {
+        return controllerClassName + (StringUtils.isBlank(controllerClassLabel) ? "" : "(" + controllerClassLabel + ")");
     }
 
-    @Column(length = 256)
-    public String getControllerClassName() {
-        return controllerClassName;
+    @Transient
+    public String getControllerMethodDisplay() {
+        return controllerMethodName + (StringUtils.isBlank(controllerMethodLabel) ? "" : "(" + controllerMethodLabel + ")");
     }
-
-    public void setControllerClassName(String controllerClassName) {
-        this.controllerClassName = controllerClassName;
-    }
-
-    @Column(length = 256)
-    public String getControllerMethodName() {
-        return controllerMethodName;
-    }
-
-    public void setControllerMethodName(String controllerMethodName) {
-        this.controllerMethodName = controllerMethodName;
-    }
-
 }
-

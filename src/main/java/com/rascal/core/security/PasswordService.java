@@ -1,7 +1,8 @@
 package com.rascal.core.security;
 
-import com.rascal.core.util.Digests;
-import com.rascal.core.util.Encodes;
+import lab.s2jh.core.util.Digests;
+import lab.s2jh.core.util.Encodes;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,10 +25,9 @@ public class PasswordService {
         if (salt == null) {
             hashPassword = Digests.md5(rawPassword.getBytes());
         } else {
-            hashPassword = Digests.md5(injectPasswordSalt(rawPassword, salt).getBytes());
+            hashPassword = Digests.md5((injectPasswordSalt(rawPassword, salt)).getBytes());
         }
         return Encodes.encodeHex(hashPassword);
-
     }
 
     /**
@@ -37,5 +37,12 @@ public class PasswordService {
         return "{" + salt + "}" + rawPassword;
     }
 
+    public static void main(String args[]) {
+        PasswordService ps = new PasswordService();
 
+        System.out.println(ps.entryptPassword("123456", "7db5ace1b3a97edb"));
+
+        System.out.println(ps.entryptPassword("123456", null));
+
+    }
 }

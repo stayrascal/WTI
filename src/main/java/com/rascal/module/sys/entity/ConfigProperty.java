@@ -1,35 +1,38 @@
 package com.rascal.module.sys.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rascal.core.annotation.MetaData;
-import com.rascal.core.entity.BaseNativeEntity;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import lab.s2jh.core.annotation.MetaData;
+import lab.s2jh.core.entity.BaseNativeEntity;
+import lab.s2jh.core.web.json.JsonViews;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonView;
 
-/**
- * Date: 2015/11/28
- * Time: 22:18
- *
- * @author Rascal
- */
 @Getter
 @Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "sys_config_property")
+@Table(name = "sys_ConfigProperty")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @MetaData(value = "配置属性")
 @Audited
 public class ConfigProperty extends BaseNativeEntity {
 
-    private static final long serialVersionUID = -5682018193396399434L;
+    private static final long serialVersionUID = 8136580659799847607L;
 
     @MetaData(value = "代码")
     @Column(length = 64, unique = true, nullable = false)
@@ -45,7 +48,7 @@ public class ConfigProperty extends BaseNativeEntity {
 
     @MetaData(value = "HTML属性值")
     @Lob
-    @JsonIgnore
+    @JsonView(JsonViews.AppDetail.class)
     private String htmlValue;
 
     @MetaData(value = "参数属性用法说明")

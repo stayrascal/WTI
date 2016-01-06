@@ -1,12 +1,7 @@
 package com.rascal.core.exception;
 
-/**
- * Date: 2015/11/20
- * Time: 12:01
- *
- * @author Rascal
- */
-public class DuplicateTokenException extends BaseRuntimeException {
+public class DuplicateTokenException extends BaseRuntimeException{
+
     public DuplicateTokenException(String msg) {
         super(msg);
     }

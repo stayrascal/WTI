@@ -1,42 +1,45 @@
 package com.rascal.module.auth.entity;
 
-import com.rascal.core.cons.GlobalConstant;
-import com.rascal.core.entity.BaseNativeEntity;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
+
+import lab.s2jh.core.annotation.MetaData;
+import lab.s2jh.core.entity.BaseNativeEntity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.envers.Audited;
 
-/**
- * Date: 2015/11/22
- * Time: 23:38
- *
- * @author Rascal
- */
-@Setter
 @Getter
+@Setter
 @Accessors(chain = true)
 @Access(AccessType.FIELD)
 @Entity
-@Table(name = "auth_roler_to_privilege", schema = "", catalog = "knight", uniqueConstraints = @UniqueConstraint(columnNames = {"privilege_id", "role_id"}))
-//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Table(name = "auth_RoleR2Privilege", uniqueConstraints = @UniqueConstraint(columnNames = { "privilege_id", "role_id" }))
+@MetaData(value = "角色与权限关联")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Audited
 public class RoleR2Privilege extends BaseNativeEntity {
 
-    private static final long serialVersionUID = -7075497481859250155L;
+    private static final long serialVersionUID = -4312077296555510354L;
 
-    /**
-     * 关联权限对象
-     */
+    /** 关联权限对象 */
     @ManyToOne
-    @JoinColumn(name = "privilege_id", nullable = false, foreignKey = @ForeignKey(name = GlobalConstant.GlobalForeignKeyName))
+    @JoinColumn(name = "privilege_id", nullable = false)
     private Privilege privilege;
 
-    /**
-     * 关联角色对象
-     */
+    /** 关联角色对象 */
     @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false, foreignKey = @ForeignKey(name = GlobalConstant.GlobalForeignKeyName))
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     @Transient
@@ -44,5 +47,4 @@ public class RoleR2Privilege extends BaseNativeEntity {
     public String getDisplay() {
         return privilege.getDisplay() + "_" + role.getDisplay();
     }
-
 }

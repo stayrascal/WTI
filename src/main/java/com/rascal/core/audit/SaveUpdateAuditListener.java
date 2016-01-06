@@ -1,55 +1,62 @@
 package com.rascal.core.audit;
 
-import com.rascal.core.security.AuthContextHolder;
+import lab.s2jh.core.entity.BaseEntity;
+import lab.s2jh.core.security.AuthContextHolder;
+import lab.s2jh.core.util.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import java.util.Date;
 
 /**
- * 审计记录创建和修改信息
- * <p>
- * Date: 2015/11/21
- * Time: 23:05
+ * 审计记录记录创建和修改信息
+ * @see AuditingEntityListener
  *
- * @author Rascal
  */
-@Component
 public class SaveUpdateAuditListener {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private boolean dateTimeForNow = true;
+    private boolean modifyOnCreation = false;
+    private boolean skipUpdateAudit = false;
 
-    //考虑到效率影响和实际作用不大，默认关闭update更新记录处理
-    private boolean modifyOnceCreation = false;
+    /**
+     * @see BaseEntity#dataGroup
+     */
+    private static final ThreadLocal<String> DATA_GROUP = new ThreadLocal<String>();
 
-    //如果需要记录变更过程，可以考虑使用专门的hibernate envers机制
-    private boolean skipUpdateAudit = true;
+    public static void setDataGroup(String dataGroup) {
+        SaveUpdateAuditListener.DATA_GROUP.set(dataGroup);
+    }
 
     public void setDateTimeForNow(boolean dateTimeForNow) {
         this.dateTimeForNow = dateTimeForNow;
     }
 
-    public void setModifyOnceCreation(boolean modifyOnceCreation) {
-        this.modifyOnceCreation = modifyOnceCreation;
-    }
-
-    /**
-     * Sets modification abd creation date and auditor on the target object in
-     * case it implement DefaultAuditable on persist events.
-     */
-    @PrePersist
-    public void touchForCreate(Object target) {
-        touch(target, false);
+    public void setModifyOnCreation(final boolean modifyOnCreation) {
+        this.modifyOnCreation = modifyOnCreation;
     }
 
     /**
      * Sets modification and creation date and auditor on the target object in
-     * case it implements DefaultAuditable on uodate events
+     * case it implements {@link DefaultAuditable} on persist events.
+     * 
+     * @param target
+     */
+    @PrePersist
+    public void touchForCreate(Object target) {
+        touch(target, true);
+    }
+
+    /**
+     * Sets modification and creation date and auditor on the target object in
+     * case it implements {@link DefaultAuditable} on update events.
+     * 
+     * @param target
      */
     @PreUpdate
     public void touchForUpdate(Object target) {
@@ -60,48 +67,72 @@ public class SaveUpdateAuditListener {
     }
 
     private void touch(Object target, boolean isNew) {
+
         if (!(target instanceof DefaultAuditable)) {
             return;
         }
 
+        @SuppressWarnings("unchecked")
         DefaultAuditable<String, ?> auditable = (DefaultAuditable<String, ?>) target;
 
         String auditor = touchAuditor(auditable, isNew);
         Date now = dateTimeForNow ? touchDate(auditable, isNew) : null;
 
-        Object defaultedNow = now == null ? "Not Set" : now;
+        Object defaultedNow = now == null ? "not set" : now;
         Object defaultedAuditor = auditor == null ? "unknown" : auditor;
 
-        logger.trace("Touch {} - Last modification at {} by {}", auditable, defaultedNow, defaultedAuditor);
+        logger.trace("Touched {} - Last modification at {} by {}", new Object[] { auditable, defaultedNow, defaultedAuditor });
     }
 
     /**
-     * Touches the auditable regarding modification and creation date. Creation date is only set on new auditables.
+     * Sets modifying and creating auditioner. Creating auditioner is only set
+     * on new auditables.
+     * 
+     * @param auditable
+     * @return
      */
-    private Date touchDate(DefaultAuditable<String, ?> auditable, boolean isNew) {
-        Date now = new Date();
-        if (isNew) {
-            auditable.setCreatedDate(now);
-            if (!modifyOnceCreation) {
-                return now;
-            }
-        }
-        auditable.setLastModifiedDate(now);
-        return now;
-    }
+    private String touchAuditor(final DefaultAuditable<String, ?> auditable, boolean isNew) {
 
-    /**
-     * Sets modifying and creating auditioner. Creating auditioner is only set on new auditables.
-     */
-    private String touchAuditor(DefaultAuditable<String, ?> auditable, boolean isNew) {
-        String auditor = AuthContextHolder.getUserDisplay();
+        String auditor = AuthContextHolder.getAuthUserDisplay();
+
         if (isNew) {
+
             auditable.setCreatedBy(auditor);
-            if (!modifyOnceCreation) {
+
+            if (!modifyOnCreation) {
                 return auditor;
             }
         }
+
         auditable.setLastModifiedBy(auditor);
+        auditable.setDataGroup(DATA_GROUP.get());
+
         return auditor;
+    }
+
+    /**
+     * Touches the auditable regarding modification and creation date. Creation
+     * date is only set on new auditables.
+     * 
+     * @param auditable
+     * @return
+     */
+    private Date touchDate(final DefaultAuditable<String, ?> auditable, boolean isNew) {
+
+        Date now = DateUtils.currentDate();
+
+        if (isNew) {
+            if (auditable.getCreatedDate() == null) {
+                auditable.setCreatedDate(now);
+            }
+
+            if (!modifyOnCreation) {
+                return now;
+            }
+        }
+
+        auditable.setLastModifiedDate(now);
+
+        return now;
     }
 }

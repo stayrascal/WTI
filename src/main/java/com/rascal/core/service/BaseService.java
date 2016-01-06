@@ -1,71 +1,89 @@
 package com.rascal.core.service;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.rascal.core.annotation.MetaData;
-import com.rascal.core.audit.envers.EntityRevision;
-import com.rascal.core.audit.envers.ExtDefaultRevisionEntity;
-import com.rascal.core.dao.jpa.BaseDao;
-import com.rascal.core.pagination.GroupPropertyFilter;
-import com.rascal.core.pagination.PropertyFilter;
-import net.sf.ehcache.search.expression.Criteria;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.Case;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Fetch;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
+import javax.persistence.criteria.Subquery;
+
+import lab.s2jh.core.annotation.MetaData;
+import lab.s2jh.core.dao.jpa.BaseDao;
+import lab.s2jh.core.exception.ServiceException;
+import lab.s2jh.core.pagination.GroupPropertyFilter;
+import lab.s2jh.core.pagination.PropertyFilter;
+import lab.s2jh.core.pagination.PropertyFilter.MatchType;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
+import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.RevisionType;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
 import org.hibernate.internal.CriteriaImpl;
 import org.hibernate.loader.criteria.CriteriaJoinWalker;
 import org.hibernate.loader.criteria.CriteriaQueryTranslator;
 import org.hibernate.persister.entity.OuterJoinLoadable;
-import org.hibernate.service.spi.ServiceException;
 import org.hibernate.transform.Transformers;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import javax.persistence.*;
-import javax.persistence.criteria.*;
-import javax.persistence.criteria.CriteriaBuilder.Case;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.math.BigDecimal;
-import java.util.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
-/**
- * Date: 2015/11/26
- * Time: 23:35
- *
- * @author Rascal
- */
 public abstract class BaseService<T extends Persistable<? extends Serializable>, ID extends Serializable> {
 
-    private static final Logger logger = LoggerFactory.getLogger(BaseService.class);
+    private final Logger logger = LoggerFactory.getLogger(BaseService.class);
 
-    /*泛型对应的Class定义*/
+    /** 泛型对应的Class定义 */
     private Class<T> entityClass;
-    @PersistenceContext(unitName = "entityManagerApp")
-    private EntityManager entityManager;
 
-    /*子类设置具体的DAO对象实例*/
+    /** 子类设置具体的DAO对象实例 */
     abstract protected BaseDao<T, ID> getEntityDao();
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     protected Class<T> getEntityClass() {
         if (entityClass == null) {
             try {
-                //通过反射取得Entity的Class.
+                // 通过反射取得Entity的Class.
                 Object genericClz = getClass().getGenericSuperclass();
                 if (genericClz instanceof ParameterizedType) {
                     entityClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -82,23 +100,39 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
     }
 
     /**
+     * 强制从数据库刷新加载实体对象
+     * 主要用于Spring DATA JPA Modifying操作后强制refresh重新从数据库加载数据
+     * @param entity
+     */
+    protected void foreceRefreshEntity(Object entity) {
+        entityManager.refresh(entity);
+    }
+
+    /**
      * 创建数据保存数据之前额外操作回调方法 默认为空逻辑，子类根据需要覆写添加逻辑即可
-     *
-     * @param entity 待创建数据对象
+     * 
+     * @param entity
+     *            待创建数据对象
      */
     protected void preInsert(T entity) {
+
     }
 
     /**
      * 更新数据保存数据之前额外操作回调方法 默认为空逻辑，子类根据需要覆写添加逻辑即可
-     *
-     * @param entity 待更新数据对象
+     * 
+     * @param entity
+     *            待更新数据对象
      */
     protected void preUpdate(T entity) {
+
     }
 
     /**
      * 数据保存操作
+     * 
+     * @param entity
+     * @return
      */
     public T save(T entity) {
         if (entity.isNew()) {
@@ -106,23 +140,35 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
         } else {
             preUpdate(entity);
         }
-        return getEntityDao().save(entity);
+        getEntityDao().save(entity);
+        logger.debug("Saved entity id is {}", entity.getId());
+        return entity;
     }
 
     /**
-     * 批量数据保存操作 其实现只是简单循环集合每个元素调用，因此并没有实际的Batch批量处理
+     * 批量数据保存操作 其实现只是简单循环集合每个元素调用 {@link #save(Persistable)}
+     * 因此并无实际的Batch批量处理，如果需要数据库底层批量支持请自行实现
+     * 
+     * @param entities
+     *            待批量操作数据集合
+     * @return
      */
     public List<T> save(Iterable<T> entities) {
-        List<T> result = new ArrayList<>();
+        List<T> result = new ArrayList<T>();
         if (entities == null) {
             return result;
         }
-        entities.forEach(entity -> result.add(save(entity)));
+        for (T entity : entities) {
+            result.add(save(entity));
+        }
         return result;
     }
 
     /**
      * 基于主键查询单一数据对象
+     * 
+     * @param id
+     * @return
      */
     @Transactional(readOnly = true)
     public T findOne(ID id) {
@@ -132,10 +178,12 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
     /**
      * 基于主键查询单一数据对象
-     *
-     * @param id                    主键
+     * 
+     * @param id 主键
      * @param initLazyPropertyNames 需要预先初始化的lazy集合属性名称
+     * @return
      */
+    @Transactional(readOnly = true)
     public T findDetachedOne(ID id, String... initLazyPropertyNames) {
         Assert.notNull(id);
         T entity = getEntityDao().findOne(id);
@@ -159,46 +207,72 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
     /**
      * 基于主键集合查询集合数据对象
-     *
+     * 
      * @param ids 主键集合
+     * @return
      */
+    @Transactional(readOnly = true)
     public List<T> findAll(final ID... ids) {
         Assert.isTrue(ids != null && ids.length > 0, "必须提供有效查询主键集合");
-        Specification<T> spec = (root, criteriaQuery, criteriaBuilder) -> {
-            Path expression = root.get("id");
-            return expression.in(ids);
+        Specification<T> spec = new Specification<T>() {
+            @Override
+            public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+                @SuppressWarnings("rawtypes")
+                Path expression = root.get("id");
+                return expression.in(ids);
+            }
         };
         return this.getEntityDao().findAll(spec);
     }
 
     /**
      * 数据删除操作
-     *
-     * @param entity 待操作数据
+     * 
+     * @param entity
+     *            待操作数据
      */
     public void delete(T entity) {
         getEntityDao().delete(entity);
     }
 
     /**
+     * 批量数据删除操作 其实现只是简单循环集合每个元素调用 {@link #delete(Persistable)}
+     * 因此并无实际的Batch批量处理，如果需要数据库底层批量支持请自行实现
+     * 
+     * @param entities
+     *            待批量操作数据集合
+     * @return
+     */
+    public void delete(Iterable<T> entities) {
+        for (T entity : entities) {
+            delete(entity);
+        }
+    }
+
+    /**
      * 根据泛型对象属性和值查询集合对象
-     *
+     * 
      * @param property 属性名，即对象中数量变量名称
-     * @param value    参数值
+     * @param value 参数值
      */
     public List<T> findListByProperty(final String property, final Object value) {
-        Specification<T> spec = (root, criteriaQuery, criteriaBuilder) -> {
-            Path expression = root.get(property);
-            return criteriaBuilder.equal(expression, value);
+        Specification<T> spec = new Specification<T>() {
+            @Override
+            public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+                @SuppressWarnings("rawtypes")
+                Path expression = root.get(property);
+                return builder.equal(expression, value);
+            }
         };
+
         return this.getEntityDao().findAll(spec);
     }
 
     /**
      * 根据泛型对象属性和值查询唯一对象
-     *
+     * 
      * @param property 属性名，即对象中数量变量名称
-     * @param value    参数值
+     * @param value 参数值
      * @return 未查询到返回null，如果查询到多条数据则抛出异常
      */
     public T findByProperty(final String property, final Object value) {
@@ -213,10 +287,10 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
     /**
      * 根据泛型对象属性和值查询唯一对象
-     *
+     * 
      * @param property 属性名，即对象中数量变量名称
-     * @param value    参数值
-     * @return 未查询到返回null，如果查询到多条数据则返回每一条
+     * @param value 参数值
+     * @return 未查询到返回null，如果查询到多条数据则返回第一条
      */
     public T findFirstByProperty(final String property, final Object value) {
         List<T> entities = findListByProperty(property, value);
@@ -228,21 +302,28 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
     }
 
     /**
-     * 通用的对象属性和值查询接口， 根据泛型参数确定返回类型数据
-     *
-     * @param baseDao  泛型参数对象DAO接口
-     * @param property 属性名，即对象中数量变量名称
-     * @param value    参数值
+     * 通用的对象属性和值查询接口，根据泛型参数确定返回类型数据
+     * 
+     * @param baseDao
+     *            泛型参数对象DAO接口
+     * @param property
+     *            属性名，即对象中数量变量名称
+     * @param value
+     *            参数值
      * @return 未查询到返回null，如果查询到多条数据则抛出异常
      */
     public <X> X findByProperty(BaseDao<X, ID> baseDao, final String property, final Object value) {
-        Specification<X> spec = (root, criteriaQuery, criteriaBuilder) -> {
-            String[] names = StringUtils.split(property, ".");
-            Path expression = root.get(names[0]);
-            for (int i = 1; i < names.length; i++) {
-                expression = expression.get(names[i]);
+        Specification<X> spec = new Specification<X>() {
+            @Override
+            public Predicate toPredicate(Root<X> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+                String[] names = StringUtils.split(property, ".");
+                @SuppressWarnings("rawtypes")
+                Path expression = root.get(names[0]);
+                for (int i = 1; i < names.length; i++) {
+                    expression = expression.get(names[i]);
+                }
+                return builder.equal(expression, value);
             }
-            return criteriaBuilder.equal(expression, value);
         };
         List<X> entities = baseDao.findAll(spec);
         if (CollectionUtils.isEmpty(entities)) {
@@ -255,6 +336,9 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
     /**
      * 单一条件对象查询数据集合
+     * 
+     * @param propertyFilter
+     * @return
      */
     @Transactional(readOnly = true)
     public List<T> findByFilter(PropertyFilter propertyFilter) {
@@ -265,6 +349,9 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
     /**
      * 基于查询条件count记录数据
+     * 
+     * @param groupPropertyFilter
+     * @return
      */
     @Transactional(readOnly = true)
     public long count(GroupPropertyFilter groupPropertyFilter) {
@@ -274,6 +361,9 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
     /**
      * 基于动态组合条件对象查询数据集合
+     * 
+     * @param groupPropertyFilter
+     * @return
      */
     @Transactional(readOnly = true)
     public List<T> findByFilters(GroupPropertyFilter groupPropertyFilter) {
@@ -283,6 +373,10 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
     /**
      * 基于动态组合条件对象和排序定义查询数据集合
+     * 
+     * @param groupPropertyFilter
+     * @param sort
+     * @return
      */
     @Transactional(readOnly = true)
     public List<T> findByFilters(GroupPropertyFilter groupPropertyFilter, Sort sort) {
@@ -297,16 +391,24 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
     }
 
     /**
-     * 基于动态组合条件对象和排序定义，限制查询数查询数据集合
-     * 主要用于Autocomplete这样的查询避免返回太多数据
-     */
+    * 基于动态组合条件对象和排序定义，限制查询数查询数据集合
+    * 主要用于Autocomplete这样的查询避免返回太多数据
+    * @param groupPropertyFilter
+    * @param sort
+    * @return
+    */
+    @Transactional(readOnly = true)
     public List<T> findByFilters(GroupPropertyFilter groupPropertyFilter, Sort sort, int limit) {
         Pageable pageable = new PageRequest(0, limit, sort);
         return findByPage(groupPropertyFilter, pageable).getContent();
     }
 
     /**
-     * 基于动态组合条件对象和分页（含排序）对象查询数据集合
+     * 基于动态组合条件对象和分页(含排序)对象查询数据集合
+     * 
+     * @param groupPropertyFilter
+     * @param pageable
+     * @return
      */
     @Transactional(readOnly = true)
     public Page<T> findByPage(GroupPropertyFilter groupPropertyFilter, Pageable pageable) {
@@ -315,31 +417,80 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
     }
 
     public String toSql(Criteria criteria) {
-        CriteriaImpl criterialImpl = (CriteriaImpl) criteria;
-        SessionImplementor session = criterialImpl.getSession();
+        CriteriaImpl criteriaImpl = (CriteriaImpl) criteria;
+        SessionImplementor session = criteriaImpl.getSession();
         SessionFactoryImplementor factory = session.getFactory();
-        CriteriaQueryTranslator translator = new CriteriaQueryTranslator(factory, criterialImpl,
-                criterialImpl.getEntityOrClassName(), CriteriaQueryTranslator.ROOT_SQL_ALIAS);
-        String[] implementors = factory.getImplementors(criterialImpl.getEntityOrClassName());
+        CriteriaQueryTranslator translator = new CriteriaQueryTranslator(factory, criteriaImpl, criteriaImpl.getEntityOrClassName(),
+                CriteriaQueryTranslator.ROOT_SQL_ALIAS);
+        String[] implementors = factory.getImplementors(criteriaImpl.getEntityOrClassName());
 
-        CriteriaJoinWalker walker = new CriteriaJoinWalker((OuterJoinLoadable) factory.getEntityPersister(
-                implementors[0]), translator, factory, criterialImpl, criterialImpl.getEntityOrClassName(),
-                session.getLoadQueryInfluencers());
+        CriteriaJoinWalker walker = new CriteriaJoinWalker((OuterJoinLoadable) factory.getEntityPersister(implementors[0]), translator, factory,
+                criteriaImpl, criteriaImpl.getEntityOrClassName(), session.getLoadQueryInfluencers());
+
         String sql = walker.getSQLString();
         return sql;
     }
 
+    private class GroupAggregateProperty {
+        @MetaData(value = "字面属性", comments = "最后用于前端JSON输出的key")
+        private String label;
+        @MetaData(value = "JPA表达式", comments = "传入JPA CriteriaBuilder组装的内容")
+        private String name;
+        @MetaData(value = "JPA表达式alias", comments = "用于获取聚合值的别名")
+        private String alias;
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getAlias() {
+            return alias;
+        }
+
+        public void setAlias(String alias) {
+            this.alias = alias;
+        }
+
+    }
+
+    /**
+     * 分组聚合统计，常用于类似按账期时间段统计商品销售利润，按会计科目总帐统计等
+     * 
+     * @param clazz  ROOT实体类型
+     * @param groupFilter 过滤参数对象
+     * @param pageable 分页排序参数对象，TODO：目前有个限制未实现总记录数处理，直接返回一个固定大数字
+     * @param properties 属性集合，判断规则：属性名称包含"("则标识为聚合属性，其余为分组属性 
+     * 属性语法规则：sum = + , diff = - , prod = * , quot = / , case(condition,when,else)
+     * 示例：
+     *     sum(amount)
+     *     sum(diff(amount,costAmount))
+     *     min(case(equal(amount,0),-1,quot(diff(amount,costAmount),amount)))
+     *     case(equal(sum(amount),0),-1,quot(sum(diff(amount,costAmount)),sum(amount)))
+     * @return Map结构的集合分页对象
+     */
     public Page<Map<String, Object>> findByGroupAggregate(Class clazz, GroupPropertyFilter groupFilter, Pageable pageable, String... properties) {
         CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
         Root<?> root = criteriaQuery.from(clazz);
 
-        //挑出分组和聚合属性组，以是否存在'('作为标识
+        //挑出分组和聚合属性组，以是否存在“(”作为标识
         List<GroupAggregateProperty> groupProperties = Lists.newArrayList();
         List<GroupAggregateProperty> aggregateProperties = Lists.newArrayList();
         for (String prop : properties) {
             GroupAggregateProperty groupAggregateProperty = new GroupAggregateProperty();
-            //聚合表达式
+            //聚合类型表达式
             if (prop.indexOf("(") > -1) {
                 //处理as别名
                 prop = prop.replace(" AS ", " as ").replace(" As ", " as ").replace(" aS ", " as ");
@@ -356,10 +507,10 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
                     name = splits[0].trim();
                     alias = fixCleanAlias(name);
                     groupAggregateProperty.setAlias(alias);
-                    groupAggregateProperty.setLabel(alias);
+                    groupAggregateProperty.setLabel(name);
                     groupAggregateProperty.setName(name);
                 }
-                aggregateProperties.addAll(groupProperties);
+                aggregateProperties.add(groupAggregateProperty);
             } else {
                 //直接的属性表达式
                 groupAggregateProperty.setAlias(fixCleanAlias(prop));
@@ -372,10 +523,10 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
         //构建JPA Expression
         Expression<?>[] groupExpressions = buildExpressions(root, criteriaBuilder, groupProperties);
         Expression<?>[] aggregateExpressions = buildExpressions(root, criteriaBuilder, aggregateProperties);
-        Expression<?>[] selectExpression = ArrayUtils.addAll(groupExpressions, aggregateExpressions);
-        CriteriaQuery<Tuple> select = criteriaQuery.multiselect(selectExpression);
+        Expression<?>[] selectExpressions = ArrayUtils.addAll(groupExpressions, aggregateExpressions);
+        CriteriaQuery<Tuple> select = criteriaQuery.multiselect(selectExpressions);
 
-        //基于前端动态条件dui'x对象动态where条件组装
+        //基于前端动态条件对象动态where条件组装
         Predicate where = buildPredicatesFromFilters(groupFilter, root, criteriaQuery, criteriaBuilder, false);
         if (where != null) {
             select.where(where);
@@ -388,16 +539,16 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
         //分页和排序处理
         if (pageable != null && pageable.getSort() != null) {
-            Iterator<Sort.Order> orders = pageable.getSort().iterator();
-            List<Order> jpaOrders = Lists.newArrayList();
+            Iterator<Order> orders = pageable.getSort().iterator();
+            List<javax.persistence.criteria.Order> jpaOrders = Lists.newArrayList();
             while (orders.hasNext()) {
-                Sort.Order order = orders.next();
+                Order order = orders.next();
                 String prop = order.getProperty();
                 String alias = fixCleanAlias(prop);
-                //目前发现JPA不支持传入alias作为排序属性，因为只能基于alias找到匹配的Expression表达式作为排序参数
+                //目前发现JPA不支持传入alias作为排序属性，因此只能基于alias找到匹配的Expression表达式作为排序参数
                 List<Selection<?>> selections = select.getSelection().getCompoundSelectionItems();
                 for (Selection<?> selection : selections) {
-                    if (selection.getAlias().endsWith(alias)) {
+                    if (selection.getAlias().equals(alias)) {
                         if (order.isAscending()) {
                             jpaOrders.add(criteriaBuilder.asc((Expression<?>) selection));
                         } else {
@@ -434,22 +585,26 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
             mapDatas.add(data);
         }
 
-        //TODO: 目前有个限制未实现总记录数处理，直接返回一个固定大数字
-        return new PageImpl<Map<String, Object>>(mapDatas, pageable, Integer.MAX_VALUE);
+        //TODO：目前有个限制未实现总记录数处理，直接返回一个固定大数字
+        return new PageImpl(mapDatas, pageable, Integer.MAX_VALUE);
     }
 
     /**
      * 基于当前泛型实体对象类型，调用分组统计接口
+     * @param groupFilter
+     * @param pageable
+     * @param properties
+     * @return
      */
     public Page<Map<String, Object>> findByGroupAggregate(GroupPropertyFilter groupFilter, Pageable pageable, String... properties) {
         return findByGroupAggregate(getEntityClass(), groupFilter, pageable, properties);
     }
 
     /**
-     * 基于Native SQL和分页（不含排序，排序直接在native SQL中定义）对象查询数据集合
-     *
-     * @param pageable 分页（不含排序，排序直接在native SQL中定义）对象
-     * @param sql      Native SQL（自行组装好动态条件和排序的原生SQL语句，不含order by部分）
+     * 基于Native SQL和分页(不含排序，排序直接在native sql中定义)对象查询数据集合
+     * 
+     * @param pageable 分页(不含排序，排序直接在native sql中定义)对象
+     * @param sql Native SQL(自行组装好动态条件和排序的原生SQL语句，不含order by部分)
      * @return Map结构的集合分页对象
      */
     @Transactional(readOnly = true)
@@ -458,17 +613,18 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
     }
 
     /**
-     * 基于Native SQL和分页（不含排序，排序直接在native SQL中定义）对象查询数据集合
-     *
-     * @param pageable 分页（不含排序，排序直接在native SQL中定义）对象
-     * @param sql      Native SQL（自行组装好动态条件和排序的原生SQL语句，不含order by部分）
+     * 基于Native SQL和分页(不含排序，排序直接在native sql中定义)对象查询数据集合
+     * 
+     * @param pageable 分页(不含排序，排序直接在native sql中定义)对象
+     * @param sql Native SQL(自行组装好动态条件和排序的原生SQL语句，不含order by部分)
+     * @param orderby order by部分
      * @return Map结构的集合分页对象
      */
     @Transactional(readOnly = true)
-    public Page<Map> findByPageNativeSQL(Pageable pageable, String sql, String orderBy) {
+    public Page<Map> findByPageNativeSQL(Pageable pageable, String sql, String orderby) {
         Query query = null;
-        if (StringUtils.isNotBlank(orderBy)) {
-            query = getEntityManager().createNativeQuery(sql + " " + orderBy);
+        if (StringUtils.isNotBlank(orderby)) {
+            query = getEntityManager().createNativeQuery(sql + " " + orderby);
         } else {
             query = getEntityManager().createNativeQuery(sql);
         }
@@ -477,29 +633,32 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
         query.setFirstResult(pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
         Object count = queryCount.getSingleResult();
-        return new PageImpl<Map>(query.getResultList(), pageable, Long.valueOf(count.toString()));
+        return new PageImpl(query.getResultList(), pageable, Long.valueOf(count.toString()));
     }
 
     /**
      * 基于JPA通用的查询条件count记录数据
+     * 
+     * @param spec
+     * @return
      */
     @Transactional(readOnly = true)
-    private Long count(Specification<T> spec) {
+    private long count(Specification<T> spec) {
         return getEntityDao().count(spec);
     }
 
-    private <X> Predicate buildPredicate(String propertyName, PropertyFilter filter, Root<X> root,
-                                         CriteriaQuery<?> query, CriteriaBuilder builder, Boolean having) {
+    private <X> Predicate buildPredicate(String propertyName, PropertyFilter filter, Root<X> root, CriteriaQuery<?> query, CriteriaBuilder builder,
+            Boolean having) {
         Object matchValue = filter.getMatchValue();
         String[] names = StringUtils.split(propertyName, ".");
 
         if (matchValue == null) {
             return null;
         }
-        if (having && !propertyName.contains("(")) {
+        if (having && propertyName.indexOf("(") == -1) {
             return null;
         }
-        if (!having && propertyName.contains("(")) {
+        if (!having && propertyName.indexOf("(") > -1) {
             return null;
         }
         if (matchValue instanceof String) {
@@ -508,7 +667,7 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
             }
         }
 
-        if (filter.getMatchType().equals(PropertyFilter.MatchType.FETCH)) {
+        if (filter.getMatchType().equals(MatchType.FETCH)) {
             if (names.length == 1) {
                 JoinType joinType = JoinType.INNER;
                 if (matchValue instanceof String) {
@@ -551,24 +710,26 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
                     }
                 }
             }
+
             return null;
         }
+
         Predicate predicate = null;
         Expression expression = null;
 
         // 处理集合子查询
         Subquery<Long> subquery = null;
         Root subQueryFrom = null;
-        if (filter.getSubQueryCollectionPropertyType() != null) {
+        if (filter.getSubQueryCollectionPropetyType() != null) {
             subquery = query.subquery(Long.class);
-            subQueryFrom = subquery.from(filter.getSubQueryCollectionPropertyType());
+            subQueryFrom = subquery.from(filter.getSubQueryCollectionPropetyType());
             Path path = subQueryFrom.get(names[1]);
             if (names.length > 2) {
                 for (int i = 2; i < names.length; i++) {
                     path = path.get(names[i]);
                 }
             }
-            expression = path;
+            expression = (Expression) path;
         } else {
             expression = buildExpression(root, builder, propertyName, null);
         }
@@ -585,152 +746,144 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
         // logic operator
         switch (filter.getMatchType()) {
-            case EQ:
-                // 对日期特殊处理：一般用于区间日期的结束时间查询,如查询2012-01-01之前,一般需要显示2010-01-01当天及以前的数据,
-                // 而数据库一般存有时分秒,因此需要特殊处理把当前日期+1天,转换为<2012-01-02进行查询
-                if (matchValue instanceof Date) {
-                    DateTime dateTime = new DateTime(((Date) matchValue).getTime());
-                    if (dateTime.getHourOfDay() == 0 && dateTime.getMinuteOfHour() == 0 && dateTime.getSecondOfMinute() == 0) {
-                        return builder.and(builder.greaterThanOrEqualTo(expression, dateTime.toDate()),
-                                builder.lessThan(expression, dateTime.plusDays(1).toDate()));
-                    }
+        case EQ:
+            // 对日期特殊处理：一般用于区间日期的结束时间查询,如查询2012-01-01之前,一般需要显示2010-01-01当天及以前的数据,
+            // 而数据库一般存有时分秒,因此需要特殊处理把当前日期+1天,转换为<2012-01-02进行查询
+            if (matchValue instanceof Date) {
+                DateTime dateTime = new DateTime(((Date) matchValue).getTime());
+                if (dateTime.getHourOfDay() == 0 && dateTime.getMinuteOfHour() == 0 && dateTime.getSecondOfMinute() == 0) {
+                    return builder.and(builder.greaterThanOrEqualTo(expression, dateTime.toDate()),
+                            builder.lessThan(expression, dateTime.plusDays(1).toDate()));
                 }
+            }
+            predicate = builder.equal(expression, matchValue);
+            break;
+        case NE:
+            // 对日期特殊处理：一般用于区间日期的结束时间查询,如查询2012-01-01之前,一般需要显示2010-01-01当天及以前的数据,
+            // 而数据库一般存有时分秒,因此需要特殊处理把当前日期+1天,转换为<2012-01-02进行查询
+            if (matchValue instanceof Date) {
+                DateTime dateTime = new DateTime(((Date) matchValue).getTime());
+                if (dateTime.getHourOfDay() == 0 && dateTime.getMinuteOfHour() == 0 && dateTime.getSecondOfMinute() == 0) {
+                    return builder.or(builder.lessThan(expression, dateTime.toDate()),
+                            builder.greaterThanOrEqualTo(expression, dateTime.plusDays(1).toDate()));
+                }
+            }
+            predicate = builder.notEqual(expression, matchValue);
+            break;
+        case BK:
+            predicate = builder.or(builder.isNull(expression), builder.equal(expression, ""));
+            break;
+        case NB:
+            predicate = builder.and(builder.isNotNull(expression), builder.notEqual(expression, ""));
+            break;
+        case NU:
+            if (matchValue instanceof Boolean && (Boolean) matchValue == false) {
+                predicate = builder.isNotNull(expression);
+            } else {
+                predicate = builder.isNull(expression);
+            }
+            break;
+        case NN:
+            if (matchValue instanceof Boolean && (Boolean) matchValue == false) {
+                predicate = builder.isNull(expression);
+            } else {
+                predicate = builder.isNotNull(expression);
+            }
+            break;
+        case CN:
+            predicate = builder.like(expression, "%" + matchValue + "%");
+            break;
+        case NC:
+            predicate = builder.notLike(expression, "%" + matchValue + "%");
+            break;
+        case BW:
+            predicate = builder.like(expression, matchValue + "%");
+            break;
+        case BN:
+            predicate = builder.notLike(expression, matchValue + "%");
+            break;
+        case EW:
+            predicate = builder.like(expression, "%" + matchValue);
+            break;
+        case EN:
+            predicate = builder.notLike(expression, "%" + matchValue);
+            break;
+        case BT:
+            Assert.isTrue(matchValue.getClass().isArray(), "Match value must be array");
+            Object[] matchValues = (Object[]) matchValue;
+            Assert.isTrue(matchValues.length == 2, "Match value must have two value");
+            if (matchValues[0] instanceof Date) {
+                DateTime dateFrom = new DateTime(((Date) matchValues[0]).getTime());
+                return builder.and(builder.greaterThanOrEqualTo(expression, (Date) matchValues[0]),
+                        builder.lessThan(expression, (Date) matchValues[1]));
+            } else {
+                return builder.between(expression, (Comparable) matchValues[0], (Comparable) matchValues[1]);
+            }
+        case GT:
+            predicate = builder.greaterThan(expression, (Comparable) matchValue);
+            break;
+        case GE:
+            predicate = builder.greaterThanOrEqualTo(expression, (Comparable) matchValue);
+            break;
+        case LT:
+            // 对日期特殊处理：一般用于区间日期的结束时间查询,如查询2012-01-01之前,一般需要显示2010-01-01当天及以前的数据,
+            // 而数据库一般存有时分秒,因此需要特殊处理把当前日期+1天,转换为<2012-01-02进行查询
+            if (matchValue instanceof Date) {
+                DateTime dateTime = new DateTime(((Date) matchValue).getTime());
+                if (dateTime.getHourOfDay() == 0 && dateTime.getMinuteOfHour() == 0 && dateTime.getSecondOfMinute() == 0) {
+                    return builder.lessThan(expression, dateTime.plusDays(1).toDate());
+                }
+            }
+            predicate = builder.lessThan(expression, (Comparable) matchValue);
+            break;
+        case LE:
+            // 对日期特殊处理：一般用于区间日期的结束时间查询,如查询2012-01-01之前,一般需要显示2010-01-01当天及以前的数据,
+            // 而数据库一般存有时分秒,因此需要特殊处理把当前日期+1天,转换为<2012-01-02进行查询
+            if (matchValue instanceof Date) {
+                DateTime dateTime = new DateTime(((Date) matchValue).getTime());
+                if (dateTime.getHourOfDay() == 0 && dateTime.getMinuteOfHour() == 0 && dateTime.getSecondOfMinute() == 0) {
+                    return builder.lessThan(expression, dateTime.plusDays(1).toDate());
+                }
+            }
+            predicate = builder.lessThanOrEqualTo(expression, (Comparable) matchValue);
+            break;
+        case IN:
+            if (matchValue.getClass().isArray()) {
+                predicate = expression.in((Object[]) matchValue);
+            } else if (matchValue instanceof Collection) {
+                predicate = expression.in((Collection) matchValue);
+            } else {
                 predicate = builder.equal(expression, matchValue);
-                break;
-            case NE:
-                // 对日期特殊处理：一般用于区间日期的结束时间查询,如查询2012-01-01之前,一般需要显示2010-01-01当天及以前的数据,
-                // 而数据库一般存有时分秒,因此需要特殊处理把当前日期+1天,转换为<2012-01-02进行查询
-                if (matchValue instanceof Date) {
-                    DateTime dateTime = new DateTime(((Date) matchValue).getTime());
-                    if (dateTime.getHourOfDay() == 0 && dateTime.getMinuteOfHour() == 0 && dateTime.getSecondOfMinute() == 0) {
-                        return builder.or(builder.lessThan(expression, dateTime.toDate()),
-                                builder.greaterThanOrEqualTo(expression, dateTime.plusDays(1).toDate()));
-                    }
+            }
+            break;
+        case ACLPREFIXS:
+            List<Predicate> aclPredicates = Lists.newArrayList();
+            Collection<String> aclCodePrefixs = (Collection<String>) matchValue;
+            for (String aclCodePrefix : aclCodePrefixs) {
+                if (StringUtils.isNotBlank(aclCodePrefix)) {
+                    aclPredicates.add(builder.like(expression, aclCodePrefix + "%"));
                 }
-                predicate = builder.notEqual(expression, matchValue);
-                break;
-            case BK:
-                predicate = builder.or(builder.isNull(expression), builder.equal(expression, ""));
-                break;
-            case NB:
-                predicate = builder.and(builder.isNotNull(expression), builder.notEqual(expression, ""));
-                break;
-            case NU:
-                if (matchValue instanceof Boolean && (Boolean) matchValue == false) {
-                    predicate = builder.isNotNull(expression);
-                } else {
-                    predicate = builder.isNull(expression);
-                }
-                break;
-            case NN:
-                if (matchValue instanceof Boolean && (Boolean) matchValue == false) {
-                    predicate = builder.isNull(expression);
-                } else {
-                    predicate = builder.isNotNull(expression);
-                }
-                break;
-            case CN:
-                predicate = builder.like(expression, "%" + matchValue + "%");
-                break;
-            case NC:
-                predicate = builder.notLike(expression, "%" + matchValue + "%");
-                break;
-            case BW:
-                predicate = builder.like(expression, matchValue + "%");
-                break;
-            case BN:
-                predicate = builder.notLike(expression, matchValue + "%");
-                break;
-            case EW:
-                predicate = builder.like(expression, "%" + matchValue);
-                break;
-            case EN:
-                predicate = builder.notLike(expression, "%" + matchValue);
-                break;
-            case BT:
-                Assert.isTrue(matchValue.getClass().isArray(), "Match value must be array");
-                Object[] matchValues = (Object[]) matchValue;
-                Assert.isTrue(matchValues.length == 2, "Match value must have two value");
-                // 对日期特殊处理：一般用于区间日期的结束时间查询,如查询2012-01-01之前,一般需要显示2010-01-01当天及以前的数据,
-                // 而数据库一般存有时分秒,因此需要特殊处理把当前日期+1天,转换为<2012-01-02进行查询
-                if (matchValues[0] instanceof Date) {
-                    DateTime dateFrom = new DateTime(((Date) matchValues[0]).getTime());
-                    DateTime dateTo = new DateTime(((Date) matchValues[1]).getTime());
-                    if (dateFrom.getHourOfDay() == 0 && dateFrom.getMinuteOfHour() == 0 && dateFrom.getSecondOfMinute() == 0) {
-                        return builder.and(builder.greaterThanOrEqualTo(expression, dateFrom.toDate()),
-                                builder.lessThan(expression, dateTo.plusDays(1).toDate()));
 
-                    }
-                } else {
-                    return builder.between(expression, (Comparable) matchValues[0], (Comparable) matchValues[1]);
-                }
-                predicate = builder.equal(expression, matchValue);
-                break;
-            case GT:
-                predicate = builder.greaterThan(expression, (Comparable) matchValue);
-                break;
-            case GE:
-                predicate = builder.greaterThanOrEqualTo(expression, (Comparable) matchValue);
-                break;
-            case LT:
-                // 对日期特殊处理：一般用于区间日期的结束时间查询,如查询2012-01-01之前,一般需要显示2010-01-01当天及以前的数据,
-                // 而数据库一般存有时分秒,因此需要特殊处理把当前日期+1天,转换为<2012-01-02进行查询
-                if (matchValue instanceof Date) {
-                    DateTime dateTime = new DateTime(((Date) matchValue).getTime());
-                    if (dateTime.getHourOfDay() == 0 && dateTime.getMinuteOfHour() == 0 && dateTime.getSecondOfMinute() == 0) {
-                        return builder.lessThan(expression, dateTime.plusDays(1).toDate());
-                    }
-                }
-                predicate = builder.lessThan(expression, (Comparable) matchValue);
-                break;
-            case LE:
-                // 对日期特殊处理：一般用于区间日期的结束时间查询,如查询2012-01-01之前,一般需要显示2010-01-01当天及以前的数据,
-                // 而数据库一般存有时分秒,因此需要特殊处理把当前日期+1天,转换为<2012-01-02进行查询
-                if (matchValue instanceof Date) {
-                    DateTime dateTime = new DateTime(((Date) matchValue).getTime());
-                    if (dateTime.getHourOfDay() == 0 && dateTime.getMinuteOfHour() == 0 && dateTime.getSecondOfMinute() == 0) {
-                        return builder.lessThan(expression, dateTime.plusDays(1).toDate());
-                    }
-                }
-                predicate = builder.lessThanOrEqualTo(expression, (Comparable) matchValue);
-                break;
-            case IN:
-                if (matchValue.getClass().isArray()) {
-                    predicate = expression.in((Object[]) matchValue);
-                } else if (matchValue instanceof Collection) {
-                    predicate = expression.in((Collection) matchValue);
-                } else {
-                    predicate = builder.equal(expression, matchValue);
-                }
-                break;
-            case ACLPREFIXS:
-                List<Predicate> aclPredicates = Lists.newArrayList();
-                Collection<String> aclCodePrefixs = (Collection<String>) matchValue;
-                for (String aclCodePrefix : aclCodePrefixs) {
-                    if (StringUtils.isNotBlank(aclCodePrefix)) {
-                        aclPredicates.add(builder.like(expression, aclCodePrefix + "%"));
-                    }
-
-                }
-                if (aclPredicates.size() == 0) {
-                    return null;
-                }
-                predicate = builder.or(aclPredicates.toArray(new Predicate[aclPredicates.size()]));
-                break;
-            case PLT:
-                Expression expressionPLT = buildExpression(root, builder, (String) matchValue, null);
-                predicate = builder.lessThan(expression, expressionPLT);
-                break;
-            case PLE:
-                Expression expressionPLE = buildExpression(root, builder, (String) matchValue, null);
-                predicate = builder.lessThanOrEqualTo(expression, expressionPLE);
-                break;
-            default:
-                break;
+            }
+            if (aclPredicates.size() == 0) {
+                return null;
+            }
+            predicate = builder.or(aclPredicates.toArray(new Predicate[aclPredicates.size()]));
+            break;
+        case PLT:
+            Expression expressionPLT = buildExpression(root, builder, (String) matchValue, null);
+            predicate = builder.lessThan(expression, expressionPLT);
+            break;
+        case PLE:
+            Expression expressionPLE = buildExpression(root, builder, (String) matchValue, null);
+            predicate = builder.lessThanOrEqualTo(expression, expressionPLE);
+            break;
+        default:
+            break;
         }
 
         //处理集合子查询
-        if (filter.getSubQueryCollectionPropertyType() != null) {
+        if (filter.getSubQueryCollectionPropetyType() != null) {
             String owner = StringUtils.uncapitalize(getEntityClass().getSimpleName());
             subQueryFrom.join(owner);
             subquery.select(subQueryFrom.get(owner)).where(predicate);
@@ -744,9 +897,15 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
     /**
      * 根据条件集合对象组装JPA规范条件查询集合对象，基类默认实现进行条件封装组合
      * 子类可以调用此方法在返回的List<Predicate>额外追加其他PropertyFilter不易表单的条件如exist条件处理等
+     * 
+     * @param filters
+     * @param root
+     * @param query
+     * @param builder
+     * @return
      */
     private <X> List<Predicate> buildPredicatesFromFilters(final Collection<PropertyFilter> filters, Root<X> root, CriteriaQuery<?> query,
-                                                           CriteriaBuilder builder, Boolean having) {
+            CriteriaBuilder builder, Boolean having) {
         List<Predicate> predicates = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(filters)) {
             for (PropertyFilter filter : filters) {
@@ -772,12 +931,25 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
         return predicates;
     }
 
+    private <X extends Persistable> Specification<X> buildSpecification(final GroupPropertyFilter groupPropertyFilter) {
+        return new Specification<X>() {
+            @Override
+            public Predicate toPredicate(Root<X> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+                if (groupPropertyFilter != null) {
+                    return buildPredicatesFromFilters(groupPropertyFilter, root, query, builder);
+                } else {
+                    return null;
+                }
+            }
+        };
+    }
+
     protected Predicate buildPredicatesFromFilters(GroupPropertyFilter groupPropertyFilter, Root root, CriteriaQuery<?> query, CriteriaBuilder builder) {
         return buildPredicatesFromFilters(groupPropertyFilter, root, query, builder, false);
     }
 
     protected Predicate buildPredicatesFromFilters(GroupPropertyFilter groupPropertyFilter, Root root, CriteriaQuery<?> query,
-                                                   CriteriaBuilder builder, Boolean having) {
+            CriteriaBuilder builder, Boolean having) {
         if (groupPropertyFilter == null) {
             return null;
         }
@@ -817,19 +989,10 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
         return predicate;
     }
 
-
-    private <X extends Persistable> Specification<X> buildSpecification(final GroupPropertyFilter groupPropertyFilter) {
-        return (root, query, builder) -> {
-            if (groupPropertyFilter != null) {
-                return buildPredicatesFromFilters(groupPropertyFilter, root, query, builder);
-            } else {
-                return null;
-            }
-        };
-    }
-
     /**
      * 子类额外追加过滤限制条件的入口方法，一般基于当前登录用户强制追加过滤条件
+     * 
+     * @param filters
      */
     protected List<Predicate> appendPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
         return null;
@@ -840,7 +1003,7 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
             parsedExprMap = Maps.newHashMap();
         }
         Expression<?> expression = null;
-        if (expr.contains("(")) {
+        if (expr.indexOf("(") > -1) {
             int left = 0;
             char[] chars = expr.toCharArray();
             for (int i = 0; i < chars.length; i++) {
@@ -893,7 +1056,7 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
                         String name = args[i];
                         try {
                             Path<?> item = null;
-                            if (name.contains(".")) {
+                            if (name.indexOf(".") > -1) {
                                 String[] props = StringUtils.split(name, ".");
                                 item = root.get(props[0]);
                                 for (int j = 1; j < props.length; j++) {
@@ -921,13 +1084,13 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
             expr = expr.replace(exprPart, exprPartConvert);
             parsedExprMap.put(exprPartConvert, expression);
 
-            if (expr.contains("(")) {
+            if (expr.indexOf("(") > -1) {
                 expression = parseExpr(root, criteriaBuilder, expr, parsedExprMap);
             }
         } else {
             String name = expr;
             Path<?> item = null;
-            if (name.contains(".")) {
+            if (name.indexOf(".") > -1) {
                 String[] props = StringUtils.split(name, ".");
                 item = root.get(props[0]);
                 for (int j = 1; j < props.length; j++) {
@@ -975,71 +1138,21 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
     }
 
     /**
-     * 查询对象历史记录版本集合
-     *
-     * @param id       实体主键
-     * @param property 过滤属性
-     * @param changed  过滤方式，有无变更
-     */
-    @Transactional(readOnly = true)
-    public List<EntityRevision> findEntityRevisions(final Object id, String property, Boolean changed) {
-        List<EntityRevision> entityRevisions = Lists.newArrayList();
-        AuditQuery auditQuery = AuditReaderFactory.get(getEntityManager()).createQuery().forRevisionsOfEntity(getEntityClass(), false, true);
-        auditQuery.add(AuditEntity.id().eq(id)).addOrder(AuditEntity.revisionNumber().desc());
-        if (StringUtils.isNotBlank(property) && changed != null) {
-            if (changed) {
-                auditQuery.add(AuditEntity.property(property).hasChanged());
-            } else {
-                auditQuery.add(AuditEntity.property(property).hasNotChanged());
-            }
-        }
-        List list = auditQuery.getResultList();
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (Object obj : list) {
-                Object[] itemArray = (Object[]) obj;
-                EntityRevision entityRevision = new EntityRevision();
-                entityRevision.setEntity(itemArray[0]);
-                entityRevision.setRevisionEntity((ExtDefaultRevisionEntity) itemArray[1]);
-                entityRevision.setRevisionType((RevisionType) itemArray[2]);
-                entityRevisions.add(entityRevision);
-            }
-        }
-        return entityRevisions;
-    }
-
-    /**
-     * 查询对象历史记录版本集合
-     */
-    @Transactional(readOnly = true)
-    public List<EntityRevision> findEntityRevisions(final ID id, Number... revs) {
-        List<EntityRevision> entityRevisions = Lists.newArrayList();
-        AuditQuery auditQuery = AuditReaderFactory.get(getEntityManager()).createQuery().forRevisionsOfEntity(getEntityClass(), false, true);
-        auditQuery.add(AuditEntity.id().eq(id)).add(AuditEntity.revisionNumber().in(revs));
-        List list = auditQuery.getResultList();
-        if (CollectionUtils.isNotEmpty(list)) {
-            for (Object obj : list) {
-                Object[] itemArray = (Object[]) obj;
-                EntityRevision entityRevision = new EntityRevision();
-                entityRevision.setEntity(itemArray[0]);
-                entityRevision.setRevisionEntity((ExtDefaultRevisionEntity) itemArray[1]);
-                entityRevision.setRevisionType((RevisionType) itemArray[2]);
-                entityRevisions.add(entityRevision);
-            }
-        }
-        return entityRevisions;
-    }
-
-    /**
      * 供子类调用的关联对象关联关系操作辅助方法
-     *
-     * @param id                   当前关联主对象主键，如User对象主键
-     * @param r2EntityIds          关联对象的主键集合，如用户关联角色的Role对象集合的主键
-     * @param r2PropertyName       主对象中关联集合对象属性的名称，如User对象中定义的userR2Roles属性名
-     * @param r2EntityPropertyName 被关联对象在R2关联对象定义中的属性名称，如UserR2Role中定义的role属性名
-     * @param op                   关联操作类型，如add、del等， @see #R2OperationEnum
+     * 
+     * @param id
+     *            当前关联主对象主键，如User对象主键
+     * @param r2EntityIds
+     *            关联对象的主键集合，如用户关联角色的Role对象集合的主键
+     * @param r2PropertyName
+     *            主对象中关联集合对象属性的名称，如User对象中定义的userR2Roles属性名
+     * @param r2EntityPropertyName
+     *            被关联对象在R2关联对象定义中的属性名称，如UserR2Role中定义的role属性名
+     * @param op
+     *            关联操作类型，如add、del等， @see #R2OperationEnum
      */
     protected void updateRelatedR2s(ID id, Collection<? extends Serializable> r2EntityIds, String r2PropertyName, String r2EntityPropertyName,
-                                    R2OperationEnum op) {
+            R2OperationEnum op) {
         try {
             T entity = findOne(id);
             List oldR2s = (List) FieldUtils.readDeclaredField(entity, r2PropertyName, true);
@@ -1133,11 +1246,15 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
     /**
      * 供子类调用的关联对象关联关系操作辅助方法
-     *
-     * @param entity               当前关联主对象主键，如User对象主键
-     * @param r2EntityIds          关联目标对象的主键集合，如用户关联角色的Role对象集合的主键
-     * @param r2PropertyName       主对象中关联集合对象属性的名称，如User对象中定义的userR2Roles属性名
-     * @param r2EntityPropertyName 被关联对象在R2关联对象定义中的属性名称，如UserR2Role中定义的role属性名
+     * 
+     * @param id
+     *            当前关联主对象主键，如User对象主键
+     * @param r2EntityIds
+     *            关联目标对象的主键集合，如用户关联角色的Role对象集合的主键
+     * @param r2PropertyName
+     *            主对象中关联集合对象属性的名称，如User对象中定义的userR2Roles属性名
+     * @param r2EntityPropertyName
+     *            被关联对象在R2关联对象定义中的属性名称，如UserR2Role中定义的role属性名
      */
     protected void updateRelatedR2s(T entity, Serializable[] r2EntityIds, String r2PropertyName, String r2EntityPropertyName) {
         try {
@@ -1209,8 +1326,7 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
         }
     }
 
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Transactional(readOnly = true)
     public Object findEntity(Class entityClass, Serializable id) {
         return getEntityManager().find(entityClass, id);
@@ -1218,42 +1334,5 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
     public void detach(Object entity) {
         getEntityManager().detach(entity);
-    }
-
-    private class GroupAggregateProperty {
-
-        @MetaData(value = "字面属性", comments = "最后用于前端JSON输出的key")
-        private String label;
-
-        @MetaData(value = "JPA表达式", comments = "传入JPA CriteriaBuilderzu'z组装的内容")
-        private String name;
-
-        @MetaData(value = "JPA表达式alias", comments = "用于获取聚合值得别名")
-        private String alias;
-
-        public String getLabel() {
-            return label;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getAlias() {
-            return alias;
-        }
-
-        public void setAlias(String alias) {
-            this.alias = alias;
-        }
-
     }
 }

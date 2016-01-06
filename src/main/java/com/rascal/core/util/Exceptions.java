@@ -4,13 +4,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /**
- * 关于异常的工具类
- * 参考guava的Throwables
- * <p>
- * Date: 2015/11/23
- * Time: 15:03
- *
- * @author Rascal
+ * 关于异常的工具类.
+ * 
+ * 参考了guava的Throwables。
+ * 
  */
 public class Exceptions {
 
@@ -35,16 +32,17 @@ public class Exceptions {
     }
 
     /**
-     * 获取组合本异常信息与底层异常信息的异常描述，适用于本异常为统一包装异常类，底层异常才是最根本原因的情况.
+     * 获取组合本异常信息与底层异常信息的异常描述, 适用于本异常为统一包装异常类，底层异常才是根本原因的情况。
      */
-    public static String getErrorMessageWithNestException(Throwable ex) {
+    public static String getErrorMessageWithNestedException(Throwable ex) {
         Throwable nestedException = ex.getCause();
         return new StringBuilder().append(ex.getMessage()).append(" nested exception is ")
-                .append(nestedException.getClass().getName()).append(":").append(nestedException.getMessage()).toString();
+                .append(nestedException.getClass().getName()).append(":").append(nestedException.getMessage())
+                .toString();
     }
 
     /**
-     * 获取异常的Root Cause
+     * 获取异常的Root Cause.
      */
     public static Throwable getRootCause(Throwable ex) {
         Throwable cause;
@@ -55,12 +53,12 @@ public class Exceptions {
     }
 
     /**
-     * 判断异常是否由底层的异常引起
+     * 判断异常是否由某些底层的异常引起.
      */
-    public static boolean isCausedBy(Exception ex, Class<? extends Exception>... causeExceprionClasses) {
+    public static boolean isCausedBy(Exception ex, Class<? extends Exception>... causeExceptionClasses) {
         Throwable cause = ex;
         while (cause != null) {
-            for (Class<? extends Exception> causeClass : causeExceprionClasses) {
+            for (Class<? extends Exception> causeClass : causeExceptionClasses) {
                 if (causeClass.isInstance(cause)) {
                     return true;
                 }

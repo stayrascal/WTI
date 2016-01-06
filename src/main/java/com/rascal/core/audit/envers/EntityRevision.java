@@ -18,12 +18,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Date: 2015/11/28
- * Time: 22:02
- *
- * @author Rascal
- */
 public class EntityRevision {
 
     private static Logger logger = LoggerFactory.getLogger(EntityRevision.class);
@@ -34,14 +28,14 @@ public class EntityRevision {
     private Object entity;
 
     /**
-     * The second will be an entity containing revision data
+     * The second will be an entity containing revision data 
      * (if no custom entity is used, this will be an instance of DefaultRevisionEntity)
      */
     private ExtDefaultRevisionEntity revisionEntity;
 
     /**
-     * The third will be the type of the revision
-     * (one of the values of the RevisionType enumeration: ADD, MOD, DEL).
+     * The third will be the type of the revision 
+     * (one of the values of the RevisionType enumeration: ADD, MOD, DEL). 
      */
     private RevisionType revisionType;
 
@@ -149,5 +143,4 @@ public class EntityRevision {
         }
 
     }
-
 }

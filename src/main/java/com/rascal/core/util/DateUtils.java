@@ -1,38 +1,41 @@
 package com.rascal.core.util;
 
-import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-/**
- * Date: 2015/11/18
- * Time: 19:19
- *
- * @author Rascal
- */
+import lab.s2jh.core.service.Validation;
+import lab.s2jh.support.service.DynamicConfigService;
+
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DateUtils {
+
+    private final static Logger logger = LoggerFactory.getLogger(DateUtils.class);
+
+    public final static String DEFAULT_TIMEZONE = "GMT+8";
+
+    public final static String ISO_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+    public final static String ISO_SHORT_DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     public final static String DEFAULT_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    public final static String DEFAUlT_DATE_FORMAT = "yyyy-MM-dd";
+    public final static String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
 
     public final static String SHORT_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
-    public final static String FULL_SEQ_FORMAT = "yyyyMMddHHmmss";
+    public final static String FULL_SEQ_FORMAT = "yyyyMMddHHmmssSSS";
 
-    public final static String[] MULTI_FORMAT = {"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM"};
-
-    public final static DateFormat DEFAULT_TIME_FORMATER = new SimpleDateFormat(DEFAULT_TIME_FORMAT);
-
-    public final static DateFormat DEFAULT_DATE_FORMATER = new SimpleDateFormat(DEFAUlT_DATE_FORMAT);
-
-    public final static DateFormat SHORT_TIME_FORMATER = new SimpleDateFormat(SHORT_TIME_FORMAT);
+    public final static String[] MULTI_FORMAT = { DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT, ISO_DATE_TIME_FORMAT, ISO_SHORT_DATE_TIME_FORMAT,
+            SHORT_TIME_FORMAT, "yyyy-MM" };
 
     public final static String FORMAT_YYYY = "yyyy";
 
@@ -40,17 +43,13 @@ public class DateUtils {
 
     public final static String FORMAT_YYYYMMDD = "yyyyMMdd";
 
-    public final static DateFormat FORMAT_YYYY_FORMATER = new SimpleDateFormat(FORMAT_YYYY);
-
-    public final static DateFormat FORMAT_YYYYMM_FORMATER = new SimpleDateFormat(FORMAT_YYYYMM);
-
-    public final static DateFormat FROMAT_YYYYMMDD_FORMATER = new SimpleDateFormat(FORMAT_YYYYMMDD);
+    public final static String FORMAT_YYYYMMDDHH = "yyyyMMddHH";
 
     public static String formatDate(Date date) {
         if (date == null) {
-            return null;
+            return "";
         }
-        return DEFAULT_DATE_FORMATER.format(date);
+        return new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(date);
     }
 
     public static String formatDate(Date date, String format) {
@@ -67,56 +66,63 @@ public class DateUtils {
         return Integer.valueOf(new SimpleDateFormat(format).format(date));
     }
 
+    public static Long formatDateToLong(Date date, String format) {
+        if (date == null) {
+            return null;
+        }
+        return Long.valueOf(new SimpleDateFormat(format).format(date));
+    }
+
     public static String formatTime(Date date) {
         if (date == null) {
             return null;
         }
-        return DEFAULT_TIME_FORMATER.format(date);
+        return new SimpleDateFormat(DEFAULT_TIME_FORMAT).format(date);
     }
 
     public static String formatShortTime(Date date) {
         if (date == null) {
             return null;
         }
-        return SHORT_TIME_FORMATER.format(date);
+        return new SimpleDateFormat(SHORT_TIME_FORMAT).format(date);
     }
 
     public static String formatDateNow() {
-        return formatDate(new Date());
+        return formatDate(DateUtils.currentDate());
     }
 
     public static String formatTimeNow() {
-        return formatTime(new Date());
+        return formatTime(DateUtils.currentDate());
     }
 
-    public static Date parseDate(String date, DateFormat df) {
+    public static Date parseDate(String date, String format) {
         if (date == null) {
             return null;
         }
         try {
-            return df.parse(date);
+            return new SimpleDateFormat(format).parse(date);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Date parseTime(String date, DateFormat df) {
+    public static Date parseTime(String date, String format) {
         if (date == null) {
             return null;
         }
         try {
-            return df.parse(date);
+            return new SimpleDateFormat(format).parse(date);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static Date parseDate(String date) {
-        return parseDate(date, DEFAULT_DATE_FORMATER);
+        return parseDate(date, DEFAULT_DATE_FORMAT);
     }
 
     public static Date parseTime(String date) {
-        return parseTime(date, DEFAULT_TIME_FORMATER);
+        return parseTime(date, DEFAULT_TIME_FORMAT);
     }
 
     public static String plusOneDay(String date) {
@@ -131,25 +137,25 @@ public class DateUtils {
 
     public static String getHumanDisplayForTimediff(Long diffMillis) {
         if (diffMillis == null) {
-            return null;
+            return "";
         }
         long day = diffMillis / (24 * 60 * 60 * 1000);
         long hour = (diffMillis / (60 * 60 * 1000) - day * 24);
         long min = ((diffMillis / (60 * 1000)) - day * 24 * 60 - hour * 60);
         long se = (diffMillis / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (day > 0) {
-            sb.append(day).append("D");
+            sb.append(day + "D");
         }
         DecimalFormat df = new DecimalFormat("00");
-        sb.append(df.format(hour)).append(":");
-        sb.append(df.format(min)).append(":");
+        sb.append(df.format(hour) + ":");
+        sb.append(df.format(min) + ":");
         sb.append(df.format(se));
         return sb.toString();
     }
 
     /**
-     * 把类似2014-01-01 ~ 2014-01-30格式的单一字符转换为两个元素数组
+     * 把类似2014-01-01 ~ 2014-01-30格式的单一字符串转换为两个元素数组
      */
     public static Date[] parseBetweenDates(String date) {
         if (StringUtils.isBlank(date)) {
@@ -173,18 +179,23 @@ public class DateUtils {
     }
 
     /**
-     * 获取日期相差天数
-     *
-     * @param beginDate 字符串类型开始日期
-     * @param endDate   字符串类型结束日期
-     * @return 日期相差天数
+     *@Title:getDiffDay
+     *@Description:获取日期相差天数
+     *@param:@param beginDate  字符串类型开始日期
+     *@param:@param endDate    字符串类型结束日期
+     *@param:@return
+     *@return:Long             日期相差天数
+     *@author:谢
+     *@thorws:
      */
     public static Long getDiffDay(String beginDate, String endDate) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Long checkday = 0l;
+        //开始结束相差天数
         try {
             checkday = (formatter.parse(endDate).getTime() - formatter.parse(beginDate).getTime()) / (1000 * 24 * 60 * 60);
         } catch (ParseException e) {
+
             e.printStackTrace();
             checkday = null;
         }
@@ -192,21 +203,28 @@ public class DateUtils {
     }
 
     /**
-     * 获取日期相差天数
-     *
-     * @param beginDate Date类型开始日期
-     * @param endDate   Date类型结束日期
-     * @return 相差天数
-     */
+    *@Title:getDiffDay
+    *@Description:获取日期相差天数
+    *@param:@param beginDate Date类型开始日期
+    *@param:@param endDate   Date类型结束日期
+    *@param:@return
+    *@return:Long            相差天数
+    *@author: 谢
+    *@thorws:
+    */
     public static Long getDiffDay(Date beginDate, Date endDate) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String strBeginDate = formatDate(beginDate);
-        String strEndDate = formatDate(endDate);
+        String strBeginDate = format.format(beginDate);
+
+        String strEndDate = format.format(endDate);
         return getDiffDay(strBeginDate, strEndDate);
     }
 
     /**
      * N天之后
+     * @param n
+     * @param date
+     * @return
      */
     public static Date nDaysAfter(Integer n, Date date) {
         Calendar cal = Calendar.getInstance();
@@ -217,12 +235,72 @@ public class DateUtils {
 
     /**
      * N天之前
+     * @param n
+     * @param date
+     * @return
      */
     public static Date nDaysAgo(Integer n, Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.DAY_OF_MONTH, cal.get(Calendar.DAY_OF_MONTH) - n);
         return cal.getTime();
+    }
+
+    private static Date currentDate;
+
+    public static Date setCurrentDate(Date date) {
+        Validation.isTrue(DynamicConfigService.isDevMode(), "当前操作只能在开发测试运行模式才可用");
+        if (date == null) {
+            currentDate = null;
+        } else {
+            currentDate = date;
+        }
+        return currentDate;
+    }
+
+    /**
+     * 为了便于在模拟数据程序中控制业务数据获取到的当前时间
+     * 提供一个帮助类处理当前时间，为了避免误操作，只有在devMode开发模式才允许“篡改”当前时间
+     * @return
+     */
+    public static Date currentDate() {
+        if (currentDate == null) {
+            return new Date();
+        }
+        if (DynamicConfigService.isDevMode()) {
+            return currentDate;
+        } else {
+            return new Date();
+        }
+    }
+
+    public static Integer getWeekOfYear(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        return Integer.valueOf(formatDate(date, FORMAT_YYYY) + c.get(Calendar.WEEK_OF_YEAR));
+    }
+
+    public static void main(String[] args) {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, 0);
+        c.set(Calendar.DAY_OF_MONTH, 1);
+        System.out.println(DateUtils.formatDate(c.getTime(), DateUtils.FORMAT_YYYYMMDD));
+
+        DateUtils.formatDate(new Date(), DEFAULT_DATE_FORMAT);
+
+        Pattern p = Pattern.compile("(\\d{4})-(\\d{1,2})-(\\d{1,2})");
+        Matcher m = p.matcher(DateUtils.formatDate(new Date(), DEFAULT_DATE_FORMAT));
+
+        if (m.find()) {
+            System.out.println("日期:" + m.group());
+            System.out.println("年:" + m.group(1));
+            System.out.println("月:" + m.group(2));
+            System.out.println("日:" + m.group(3));
+        }
+
+        String time = "2015/11/02 ";
+
+        System.out.println(parseDate(time, "yyyy/MM/dd"));
     }
 
 }

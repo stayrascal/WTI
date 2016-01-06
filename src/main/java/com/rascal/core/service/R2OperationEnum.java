@@ -1,7 +1,7 @@
 package com.rascal.core.service;
 
 public enum R2OperationEnum {
-
+    
     add("添加关联"),
 
     delete("删除关联"),
@@ -10,7 +10,7 @@ public enum R2OperationEnum {
 
     private String label;
 
-    R2OperationEnum(String label) {
+    private R2OperationEnum(String label) {
         this.label = label;
     }
 

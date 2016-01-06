@@ -1,32 +1,34 @@
+/**
+ * Copyright (c) 2012
+ */
 package com.rascal.core.security;
 
-import com.rascal.core.context.SpringContextHolder;
-import com.rascal.module.auth.entity.User;
-import com.rascal.module.auth.service.UserService;
+import lab.s2jh.core.context.SpringContextHolder;
+import lab.s2jh.module.auth.entity.User;
+import lab.s2jh.module.auth.entity.User.AuthTypeEnum;
+import lab.s2jh.module.auth.service.UserService;
+
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.InvalidSessionException;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.rascal.module.auth.entity.User.AuthTypeEnum;
-
-
 /**
- * 以ThreadLocal方式实现Web端登陆信息传递到业务的存取
- * <p>
- * Date: 2015/11/20
- * Time: 13:19
- *
- * @author Rascal
+ * 以ThreadLocal方式实现Web端登录信息传递到业务层的存取
  */
 public class AuthContextHolder {
 
-    public static final String DEFAULT_UNKNOWN_PIN = "N/A";
     private static final Logger logger = LoggerFactory.getLogger(AuthContextHolder.class);
 
+    public static final String DEFAULT_UNKNOWN_PIN = "N/A";
+
+    /**
+     * 获取SYS类型账户登录账号
+     */
     public static String getAuthSysUserUid() {
         AuthUserDetails authUserDetails = getAuthUserDetails();
-        if ((authUserDetails == null) || AuthTypeEnum.SYS.equals(authUserDetails.getAuthType())) {
+        if (authUserDetails == null || !AuthTypeEnum.SYS.equals(authUserDetails.getAuthType())) {
             return null;
         }
         return authUserDetails.getAuthUid();
@@ -35,9 +37,12 @@ public class AuthContextHolder {
     /**
      * 获取登录用户的友好显示字符串
      */
-    public static String getUserDisplay() {
+    public static String getAuthUserDisplay() {
         AuthUserDetails authUserDetails = getAuthUserDetails();
-        return authUserDetails != null ? authUserDetails.getAuthDisplay() : DEFAULT_UNKNOWN_PIN;
+        if (authUserDetails != null) {
+            return authUserDetails.getAuthDisplay();
+        }
+        return DEFAULT_UNKNOWN_PIN;
     }
 
     /**
@@ -48,13 +53,22 @@ public class AuthContextHolder {
         try {
             subject = SecurityUtils.getSubject();
         } catch (Exception e) {
-            logger.debug(e.getMessage());
+            logger.trace(e.getMessage());
         }
         if (subject == null) {
             return null;
         }
-        Object princiapl = subject.getPrincipal();
-        return princiapl == null ? null : (AuthUserDetails) princiapl;
+        Object principal = null;
+        try {
+            principal = subject.getPrincipal();
+        } catch (InvalidSessionException e) {
+            //如果是没有有效的Shiro Session则直接返回null，避免在后台处理时相关审计处理逻辑代码异常
+            logger.trace(e.getMessage());
+        }
+        if (principal == null) {
+            return null;
+        }
+        return (AuthUserDetails) principal;
     }
 
     /**

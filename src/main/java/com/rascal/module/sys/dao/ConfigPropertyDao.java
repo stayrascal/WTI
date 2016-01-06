@@ -1,21 +1,23 @@
 package com.rascal.module.sys.dao;
 
-import com.rascal.core.dao.jpa.BaseDao;
-import com.rascal.module.sys.entity.ConfigProperty;
-import org.springframework.data.jpa.repository.QueryHints;
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
 import javax.persistence.QueryHint;
 
-/**
- * Date: 2015/11/28
- * Time: 22:23
- *
- * @author Rascal
- */
+import lab.s2jh.core.dao.jpa.BaseDao;
+import lab.s2jh.module.sys.entity.ConfigProperty;
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
+import org.springframework.stereotype.Repository;
+
 @Repository
 public interface ConfigPropertyDao extends BaseDao<ConfigProperty, Long> {
 
-    @QueryHints({@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true")})
-    ConfigProperty findByPropKey(String propkey);
+    @Query("from ConfigProperty")
+    @QueryHints({ @QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true") })
+    List<ConfigProperty> findAllCached();
+
+    @QueryHints({ @QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true") })
+    ConfigProperty findByPropKey(String propKey);
 }
