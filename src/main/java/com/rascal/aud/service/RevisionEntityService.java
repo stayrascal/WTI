@@ -13,6 +13,7 @@ import org.hibernate.envers.RevisionType;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ public class RevisionEntityService extends BaseService<ExtDefaultRevisionEntity,
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Qualifier("revisionEntityDao")
     @Autowired
     private RevisionEntityDao revisionEntityDao;
 

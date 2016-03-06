@@ -3,6 +3,7 @@ package com.rascal.module.sys.web;
 import com.rascal.core.annotation.MenuData;
 import com.rascal.core.service.BaseService;
 import com.rascal.core.web.BaseController;
+import com.rascal.core.web.view.OperationResult;
 import com.rascal.module.sys.entity.UserMessage;
 import com.rascal.module.sys.service.UserMessageService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -51,5 +52,22 @@ public class UserMessageController extends BaseController<UserMessage, Long> {
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String editShow() {
         return "admin/sys/userMessage-inputBasic";
+    }
+
+    @RequiresPermissions("配置管理:系统管理:消息管理")
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    @ResponseBody
+    public OperationResult editSave(@ModelAttribute("entity") UserMessage entity) {
+        return super.editSave(entity);
+    }
+
+    @RequiresPermissions("配置管理:系统管理:消息管理")
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @ResponseBody
+    public OperationResult delete(@ModelAttribute("entity") UserMessage entity) {
+       /* Integer readCount = userMessageService.countByUserMessage(entity);
+        Validation.isTrue(readCount <=0, "该消息已经被阅读，不能被删除");*/
+        userMessageService.delete(entity);
+        return OperationResult.buildSuccessResult();
     }
 }

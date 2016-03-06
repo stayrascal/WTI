@@ -38,7 +38,7 @@ import java.util.Map;
  */
 public class AnnotationHandlerMethodExceptionResolver implements HandlerExceptionResolver, Ordered {
 
-    private static final Logger logger = LoggerFactory.getLogger("lab.s2jh.errors");
+    private static final Logger logger = LoggerFactory.getLogger(AnnotationHandlerMethodExceptionResolver.class);
 
     private ContentNegotiationManager contentNegotiationManager;
 
@@ -64,7 +64,7 @@ public class AnnotationHandlerMethodExceptionResolver implements HandlerExceptio
 
             //此时还未到Controller方法，无法基于ResponseBody注解判断响应类型，则基于contentNegotiationManager进行判断
             try {
-                //先处理特定类型相应
+                //先处理特定类型响应
                 ServletWebRequest webRequest = new ServletWebRequest(request);
                 List<MediaType> mediaTypes = contentNegotiationManager.resolveMediaTypes(webRequest);
                 for (MediaType mediaType : mediaTypes) {
@@ -95,7 +95,6 @@ public class AnnotationHandlerMethodExceptionResolver implements HandlerExceptio
             errorMessage = "访问未授权";
             httpStatus = HttpStatus.FORBIDDEN;
         } else {
-
             //构建和记录友好和详细的错误信息及消息
             //生成一个异常流水号，追加到错误消息上显示到前端用户，用户反馈问题时给出此流水号给运维或开发人员快速定位对应具体异常细节
             String exceptionCode = BaseRuntimeException.buildExceptionCode();
@@ -139,7 +138,6 @@ public class AnnotationHandlerMethodExceptionResolver implements HandlerExceptio
                 //对一些数据库异常进行友好转义处理，以便前端用户可以理解
                 SQLException ex = parseSpecException(e, SQLException.class);
                 if (ex != null) {
-                    continueProcess = false;
                     String sqlMessage = ex.getMessage();
                     if (sqlMessage != null && (sqlMessage.contains("FK") || sqlMessage.startsWith("ORA-02292"))) {
                         errorMessage = "该数据已被关联使用：" + sqlMessage;

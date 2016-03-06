@@ -62,8 +62,7 @@ public class ExtPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigu
             Set<BeanDefinition> beanDefinitions = Sets.newHashSet();
             ClassPathScanningCandidateComponentProvider scan = new ClassPathScanningCandidateComponentProvider(false);
             scan.addIncludeFilter(new AnnotationTypeFilter(org.hibernate.annotations.Cache.class));
-            beanDefinitions.addAll(scan.findCandidateComponents("lab.s2jh.**.entity"));
-            beanDefinitions.addAll(scan.findCandidateComponents("s2jh.biz.**.entity"));
+            beanDefinitions.addAll(scan.findCandidateComponents("com.rascal.**.entity"));
 
             //取当前主机名，后续添加RMI Manual列表把当前主机排除掉，否则会导致当前缓存同时也被remove清空导致缓存数据访问丢失
             String hostName = null;

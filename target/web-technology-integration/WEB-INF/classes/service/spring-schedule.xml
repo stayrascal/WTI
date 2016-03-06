@@ -46,6 +46,7 @@
                             <property name="durability" value="true"/>
                         </bean>
                     </property>
+                    <!--每月23号上午七点执行-->
                     <property name="cronExpression" value="0 0 7-23 * * ?"/>
                 </bean>
             </list>

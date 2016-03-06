@@ -43,7 +43,8 @@ import java.util.*;
 public abstract class BaseService<T extends Persistable<? extends Serializable>, ID extends Serializable> {
 
     private final Logger logger = LoggerFactory.getLogger(BaseService.class);
-
+    @PersistenceContext
+    protected EntityManager entityManager;
     /**
      * 泛型对应的Class定义
      */
@@ -53,9 +54,6 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
      * 子类设置具体的DAO对象实例
      */
     abstract protected BaseDao<T, ID> getEntityDao();
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     protected Class<T> getEntityClass() {
         if (entityClass == null) {
@@ -369,40 +367,6 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
         return sql;
     }
 
-    private class GroupAggregateProperty {
-        @MetaData(value = "字面属性", comments = "最后用于前端JSON输出的key")
-        private String label;
-        @MetaData(value = "JPA表达式", comments = "传入JPA CriteriaBuilder组装的内容")
-        private String name;
-        @MetaData(value = "JPA表达式alias", comments = "用于获取聚合值的别名")
-        private String alias;
-
-        public String getLabel() {
-            return label;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getAlias() {
-            return alias;
-        }
-
-        public void setAlias(String alias) {
-            this.alias = alias;
-        }
-
-    }
-
     /**
      * 分组聚合统计，常用于类似按账期时间段统计商品销售利润，按会计科目总帐统计等
      *
@@ -660,7 +624,7 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
                     path = path.get(names[i]);
                 }
             }
-            expression = (Expression) path;
+            expression = path;
         } else {
             expression = buildExpression(root, builder, propertyName, null);
         }
@@ -1241,5 +1205,39 @@ public abstract class BaseService<T extends Persistable<? extends Serializable>,
 
     public void detach(Object entity) {
         getEntityManager().detach(entity);
+    }
+
+    private class GroupAggregateProperty {
+        @MetaData(value = "字面属性", comments = "最后用于前端JSON输出的key")
+        private String label;
+        @MetaData(value = "JPA表达式", comments = "传入JPA CriteriaBuilder组装的内容")
+        private String name;
+        @MetaData(value = "JPA表达式alias", comments = "用于获取聚合值的别名")
+        private String alias;
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getAlias() {
+            return alias;
+        }
+
+        public void setAlias(String alias) {
+            this.alias = alias;
+        }
+
     }
 }

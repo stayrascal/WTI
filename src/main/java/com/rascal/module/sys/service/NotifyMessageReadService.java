@@ -7,6 +7,7 @@ import com.rascal.module.sys.dao.NotifyMessageReadDao;
 import com.rascal.module.sys.entity.NotifyMessage;
 import com.rascal.module.sys.entity.NotifyMessageRead;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class NotifyMessageReadService extends BaseService<NotifyMessageRead, Long> {
 
+    @Qualifier("notifyMessageReadDao")
     @Autowired
     private NotifyMessageReadDao notifyMessageReadDao;
 

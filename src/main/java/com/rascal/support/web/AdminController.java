@@ -67,7 +67,8 @@ public class AdminController {
 
     @RequiresRoles(AuthUserDetails.ROLE_MGMT_USER)
     @RequestMapping(value = "/admin/dashboard", method = RequestMethod.GET)
-    public String dashboard() {
+    public String dashboard(Model model) {
+        model.addAttribute("signCount", signupUserService.count());
         return "admin/dashboard";
     }
 
@@ -172,10 +173,7 @@ public class AdminController {
         if (!CollectionUtils.isEmpty(userService.findByMobile(mobile))) {
             return false;
         }
-        if (!CollectionUtils.isEmpty(signupUserService.findByMobile(mobile))) {
-            return false;
-        }
-        return true;
+        return CollectionUtils.isEmpty(signupUserService.findByMobile(mobile));
     }
 
     /**
@@ -194,10 +192,7 @@ public class AdminController {
         if (!CollectionUtils.isEmpty(userService.findByEmail(email))) {
             return false;
         }
-        if (!CollectionUtils.isEmpty(signupUserService.findByEmail(email))) {
-            return false;
-        }
-        return true;
+        return CollectionUtils.isEmpty(signupUserService.findByEmail(email));
     }
 
     /**
@@ -216,10 +211,7 @@ public class AdminController {
         if (userService.findByAuthUid(authUid) != null) {
             return false;
         }
-        if (signupUserService.findByAuthUid(authUid) != null) {
-            return false;
-        }
-        return true;
+        return signupUserService.findByAuthUid(authUid) == null;
     }
 
     @MenuData("个人信息:公告消息")

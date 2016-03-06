@@ -33,7 +33,7 @@ public class ActivitiDatabaseDataInitialize {
             } catch (Exception e) {
                 logger.info("VIEW ACT_ID_USER NOT exist, Initializing Activiti Identity DDL...");
                 //根据不同数据库类型执行不同初始化SQL脚本
-                ClassPathResource resource = new ClassPathResource("lab/s2jh/module/bpm/data/ddl_activiti.sql");
+                ClassPathResource resource = new ClassPathResource("com/rascal/module/bpm/data/ddl_activiti.sql");
                 ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator(resource);
                 resourceDatabasePopulator.populate(connection);
             }

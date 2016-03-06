@@ -31,7 +31,7 @@
     <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <property name="configLocation" value="classpath:ehcache-config.xml"/>
         <property name="shared" value="true"/>
-        <property name="cacheManagerName" value="s2jh_cache_v_${build_version}"/>
+        <property name="cacheManagerName" value="wei_cache_v_${build_version}"/>
     </bean>
 
     <!-- Spring Cache配置 -->

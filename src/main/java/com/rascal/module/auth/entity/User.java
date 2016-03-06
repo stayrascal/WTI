@@ -56,7 +56,7 @@ public class User extends BaseNativeEntity {
     @Column(length = 128)
     private String trueName;
 
-    @MetaData(value = "登录后友好显示昵称")
+    @MetaData(value = "昵称")
     @Column(length = 128)
     private String nickName;
 
@@ -124,7 +124,19 @@ public class User extends BaseNativeEntity {
         return selectedRoleIds;
     }
 
-    public static enum AuthTypeEnum {
+    @Override
+    @Transient
+    public String getDisplay() {
+        return authType + "_" + authUid;
+    }
+
+    @MetaData(value = "用户标识别名", comments = "用户在多个终端登录，需要一个标识同一个身份以便多终端推送消息")
+    @Transient
+    public String getAlias() {
+        return authType + "_" + authUid;
+    }
+
+    public enum AuthTypeEnum {
 
         @MetaData(value = "自建账号")
         SYS,
@@ -137,16 +149,17 @@ public class User extends BaseNativeEntity {
 
     }
 
-    @Override
-    @Transient
-    public String getDisplay() {
-        return authType + "_" + authUid;
-    }
+    public enum AuthTypeEnum {
 
-    @MetaData(value = "用户标识别名", comments = "用户在多个终端登录，需要一个标识同一个身份以便多终端推送消息")
-    @Transient
-    public String getAlias() {
-        return authType + "_" + authUid;
+        @MetaData(value = "自建账号")
+        SYS,
+
+        @MetaData(value = "QQ互联")
+        QQ,
+
+        @MetaData(value = "新浪微博")
+        WB
+
     }
 
 }

@@ -46,7 +46,7 @@
                 }, {
                     label : '时间',
                     name : 'timestampDate',
-                    index : 'timestmp',
+                    index: 'timestamp',
                     formatter : 'timestamp',
                     editable : true
                 }, {

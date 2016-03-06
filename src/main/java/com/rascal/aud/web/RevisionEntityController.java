@@ -157,7 +157,6 @@ public class RevisionEntityController extends BaseController<ExtDefaultRevisionE
 
     /**
      * 用于版本属性下拉列表集合
-     * @return
      */
     public Map<Field, String> getRevisionFields(final Class<?> entityClass) {
         Map<Field, String> revisionFields = Maps.newLinkedHashMap();

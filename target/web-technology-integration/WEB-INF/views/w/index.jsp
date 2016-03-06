@@ -95,8 +95,8 @@
                 <div class="caption lfl slide_item_left" data-x="20" data-y="95" data-speed="400" data-start="1500"
                      data-easing="easeOutBack">
                     <iframe src="http://player.vimeo.com/video/56974716?portrait=0" width="420" height="240"
-                            style="border: 0"
-                            allowFullScreen></iframe>
+                            style="border: 0" allowFullScreen>
+                    </iframe>
                 </div>
                 <div class="caption lfr slide_title" data-x="470" data-y="100" data-speed="400" data-start="2000"
                      data-easing="easeOutExpo">Responsive Video Support
@@ -115,8 +115,8 @@
             <!-- THE FORTH SLIDE -->
             <li data-transition="fade" data-slotamount="8" data-masterspeed="700" data-delay="9400"
                 data-thumb="${ctx}/assets/w/img/sliders/revolution/thumbs/thumb2.jpg">
-                <!-- THE MAIN IMAGE IN THE FIRST SLIDE --> <img src="${ctx}/assets/w/img/sliders/revolution/bg4.jpg"
-                                                                alt="">
+                <!-- THE MAIN IMAGE IN THE FIRST SLIDE -->
+                <img src="${ctx}/assets/w/img/sliders/revolution/bg4.jpg" alt="">
 
                 <div class="caption lft slide_title" data-x="0" data-y="105" data-speed="400" data-start="1500"
                      data-easing="easeOutExpo">What else included ?
@@ -130,8 +130,7 @@
                 </div>
                 <a class="caption lft slide_btn btn red slide_item_left"
                    href="http://www.keenthemes.com/preview/index.php?theme=metronic_admin" target="_blank" data-x="0"
-                   data-y="300"
-                   data-speed="400" data-start="3000" data-easing="easeOutExpo"> Learn More! </a>
+                   data-y="300" data-speed="400" data-start="3000" data-easing="easeOutExpo"> Learn More! </a>
 
                 <div class="caption lft start" data-x="670" data-y="55" data-speed="400" data-start="2000"
                      data-easing="easeOutBack">
@@ -155,9 +154,11 @@
         <h2 class="block">访问说明：</h2>
 
         <p>
-            目前 <a href="${ctx}/w" target="_blank"><i class="fa fa-windows"></i> 前端Web站点</a> |
-            <a href="${ctx}/m" target="_blank"><i class="fa fa-html5"></i> HTML5移动站点</a> 仅作站点布局展示，暂无太多功能实现
-        <h4>主要原型演示请访问：<a href="${ctx}/admin" target="_blank">管理后台系统</a></h4>
+            目前
+            <a href="${ctx}/w" target="_blank"><i class="fa fa-windows"></i> 前端Web站点</a> |
+            <a href="${ctx}/m" target="_blank"><i class="fa fa-html5"></i> HTML5移动站点</a>
+            仅作站点布局展示，暂无太多功能实现
+            <h4>主要原型演示请访问：<a href="${ctx}/admin" target="_blank">管理后台系统</a></h4>
         </p>
     </div>
 
@@ -177,7 +178,8 @@
                 <span>Well Documented</span>
             </div>
             <p>Lorem ipsum dolor sit amet, dolore eiusmod quis tempor incididunt ut et dolore Ut veniam unde
-                nostrudlaboris.Sed unde omnis iste natus error sit voluptatem.</p>
+                nostrudlaboris.Sed unde omnis iste natus error sit voluptatem.
+            </p>
         </div>
         <div class="col-md-4 col-sm-4">
             <div class="service-box-heading">
@@ -185,7 +187,8 @@
                 <span>Responsive Design</span>
             </div>
             <p>Lorem ipsum dolor sit amet, dolore eiusmod quis tempor incididunt ut et dolore Ut veniam unde
-                nostrudlaboris.Sed unde omnis iste natus error sit voluptatem.</p>
+                nostrudlaboris.Sed unde omnis iste natus error sit voluptatem.
+            </p>
         </div>
     </div>
     <!-- END SERVICE BOX -->
@@ -210,7 +213,8 @@
             </h2>
 
             <p>Lorem ipsum dolor sit amet, dolore eiusmod quis tempor incididunt ut et dolore Ut veniam unde voluptatem.
-                Sed unde omnis iste natus error sit voluptatem.</p>
+                Sed unde omnis iste natus error sit voluptatem.
+            </p>
         </div>
         <div class="col-md-9">
             <ul class="bxslider">

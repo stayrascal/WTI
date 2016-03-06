@@ -16,6 +16,7 @@ import com.rascal.module.auth.entity.UserExt;
 import com.rascal.module.auth.entity.UserR2Role;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,18 +26,22 @@ import java.util.List;
 @Transactional
 public class SignupUserService extends BaseService<SignupUser, Long> {
 
+    @Qualifier("signupUserDao")
     @Autowired
     private SignupUserDao signupUserDao;
 
     @Autowired
     private PasswordService passwordService;
 
+    @Qualifier("roleDao")
     @Autowired
     private RoleDao roleDao;
 
+    @Qualifier("userDao")
     @Autowired
     private UserDao userDao;
 
+    @Qualifier("userExtDao")
     @Autowired
     private UserExtDao userExtDao;
 
@@ -105,5 +110,9 @@ public class SignupUserService extends BaseService<SignupUser, Long> {
         signupUserDao.save(entity);
 
         return user;
+    }
+
+    public Long count() {
+        return signupUserDao.count();
     }
 }

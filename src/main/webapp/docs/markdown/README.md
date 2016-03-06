@@ -21,7 +21,3 @@
 ## Development Guide
 
 * [Code Generator](代码生成.md) - 用于基本CURD框架代码生成的工具
-* [Basic Functions(TODO)](TODO) - 框架已经实现的基础功能介绍说明
-* [Development Configuration](开发配置.md) - 开发基础环境配置说明
-* [Development Steps(TODO)](TODO) - 基于开发框架进行功能开发的基本过程介绍
-* [FAQ(TODO)](TODO) - 常见问题或设计思路说明

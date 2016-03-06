@@ -78,7 +78,7 @@
     <!-- Spring Data JPA配置 -->
     <jpa:repositories base-package="com.rascal.**.dao" transaction-manager-ref="transactionManager"
                       entity-manager-factory-ref="entityManagerFactory">
-        <repository:exclude-filter type="regex" expression="lab.s2jh.core.*"/>
+        <repository:exclude-filter type="regex" expression="com.rascal.core.*"/>
     </jpa:repositories>
 
 </beans>

@@ -187,6 +187,11 @@ public class UserService extends BaseService<User, Long> {
             params.put("user", user);
             params.put("resetPasswordLink", webContextUrl.toString());
             String contents = freemarkerService.processTemplateByFileName("PASSWORD_RESET_NOTIFY_EMAIL", params);
+
+            if (contents == null) {
+                mailService.sendHtmlMail(suject, webContextUrl.toString(), true, email);
+            }
+
             mailService.sendHtmlMail(suject, contents, true, email);
         } else {
             mailService.sendHtmlMail(suject, webContextUrl.toString(), true, email);

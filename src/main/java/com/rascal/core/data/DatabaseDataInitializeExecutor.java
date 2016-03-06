@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.util.ClassUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +20,7 @@ import org.springframework.util.Assert;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +43,45 @@ public class DatabaseDataInitializeExecutor {
     @Value("hibernate_hbm2ddl_auto:")
     private String hbm2ddl;
 
+    /**
+     * 初始化自增对象起始值
+     */
+    public static void autoIncrementInitValue(final Class<?> entity, final EntityManager entityManager) {
+        Object count = entityManager.createQuery(String.format("select count(1) from %s", entity.getSimpleName())).getSingleResult();
+        if (Integer.valueOf(String.valueOf(count)) > 0) {
+            logger.debug("Skipped autoIncrementInitValue as exist data: {}", entity.getClass());
+            return;
+        }
+        Session session = entityManager.unwrap(Session.class);
+        session.doWork(connection -> {
+            Table table = entity.getAnnotation(Table.class);
+            MetaData metaData = entity.getAnnotation(MetaData.class);
+            Assert.isTrue(metaData.autoIncrementInitValue() > 1, "Undefined MetaData autoIncrementInitValue for entity: " + entity.getClass());
+
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            String name = databaseMetaData.getDatabaseProductName().toLowerCase();
+            //根据不同数据库类型执行不同初始化SQL脚本
+            String sql = null;
+            if (name.contains("mysql")) {
+                sql = String.format("ALTER TABLE %s AUTO_INCREMENT =%d", table.name(), metaData.autoIncrementInitValue());
+            } else if (name.contains("sql server")) {
+                //DBCC   CHECKIDENT( 'tb ',   RESEED,   20000)
+                sql = String.format("DBCC CHECKIDENT('%s',RESEED,%d)", table.name(), metaData.autoIncrementInitValue());
+            } else if (name.contains("h2")) {
+                //DO Nothing;
+            } else if (name.contains("oracle")) {
+                //DO Nothing;
+            } else {
+                throw new UnsupportedOperationException(name);
+            }
+
+            if (StringUtils.isNotBlank(sql)) {
+                logger.debug("Execute autoIncrementInitValue SQL: {}", sql);
+                entityManager.createNativeQuery(sql).executeUpdate();
+            }
+        });
+    }
+
     @Transactional
     public void initialize(List<BaseDatabaseDataInitialize> initializeProcessors) {
         CountThread countThread = new CountThread();
@@ -65,8 +101,7 @@ public class DatabaseDataInitializeExecutor {
             Set<BeanDefinition> beanDefinitions = Sets.newHashSet();
             ClassPathScanningCandidateComponentProvider scan = new ClassPathScanningCandidateComponentProvider(false);
             scan.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
-            beanDefinitions.addAll(scan.findCandidateComponents("lab.s2jh.**.entity.**"));
-            beanDefinitions.addAll(scan.findCandidateComponents("s2jh.biz.**.entity.**"));
+            beanDefinitions.addAll(scan.findCandidateComponents("com.rascal.**.entity.**"));
 
             for (BeanDefinition beanDefinition : beanDefinitions) {
                 Class<?> entityClass = ClassUtils.forName(beanDefinition.getBeanClassName());
@@ -87,47 +122,6 @@ public class DatabaseDataInitializeExecutor {
         countThread.shutdown();
         //清空释放所有基础和模拟数据操作缓存
         entityManager.clear();
-    }
-
-    /**
-     * 初始化自增对象起始值
-     */
-    public static void autoIncrementInitValue(final Class<?> entity, final EntityManager entityManager) {
-        Object count = entityManager.createQuery(String.format("select count(1) from %s", entity.getSimpleName())).getSingleResult();
-        if (Integer.valueOf(String.valueOf(count)) > 0) {
-            logger.debug("Skipped autoIncrementInitValue as exist data: {}", entity.getClass());
-            return;
-        }
-        Session session = entityManager.unwrap(Session.class);
-        session.doWork(new Work() {
-            public void execute(Connection connection) throws SQLException {
-                Table table = entity.getAnnotation(Table.class);
-                MetaData metaData = entity.getAnnotation(MetaData.class);
-                Assert.isTrue(metaData.autoIncrementInitValue() > 1, "Undefined MetaData autoIncrementInitValue for entity: " + entity.getClass());
-
-                DatabaseMetaData databaseMetaData = connection.getMetaData();
-                String name = databaseMetaData.getDatabaseProductName().toLowerCase();
-                //根据不同数据库类型执行不同初始化SQL脚本
-                String sql = null;
-                if (name.contains("mysql")) {
-                    sql = String.format("ALTER TABLE %s AUTO_INCREMENT =%d", table.name(), metaData.autoIncrementInitValue());
-                } else if (name.contains("sql server")) {
-                    //DBCC   CHECKIDENT( 'tb ',   RESEED,   20000)  
-                    sql = String.format("DBCC CHECKIDENT('%s',RESEED,%d)", table.name(), metaData.autoIncrementInitValue());
-                } else if (name.contains("h2")) {
-                    //DO Nothing;
-                } else if (name.contains("oracle")) {
-                    //DO Nothing;
-                } else {
-                    throw new UnsupportedOperationException(name);
-                }
-
-                if (StringUtils.isNotBlank(sql)) {
-                    logger.debug("Execute autoIncrementInitValue SQL: {}", sql);
-                    entityManager.createNativeQuery(sql).executeUpdate();
-                }
-            }
-        });
     }
 
     private static class CountThread extends Thread {

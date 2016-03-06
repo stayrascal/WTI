@@ -21,8 +21,11 @@ public class HandlingAsyncTaskExecutor implements AsyncTaskExecutor {
 
     public HandlingAsyncTaskExecutor() {
         executor = new ThreadPoolTaskExecutor();
+        //线程池维护线程的最少数量
         executor.setCorePoolSize(7);
+        //线程池维护线程的最大数量
         executor.setMaxPoolSize(42);
+        //线程池所使用的缓冲队列
         executor.setQueueCapacity(11);
         executor.setThreadNamePrefix("HandlingAsyncTaskExecutor-");
         executor.initialize();
@@ -34,11 +37,13 @@ public class HandlingAsyncTaskExecutor implements AsyncTaskExecutor {
 
     @Override
     public void execute(Runnable task) {
+        logger.info("the task name is {}", task.getClass().getName());
         executor.execute(task);
     }
 
     @Override
     public void execute(Runnable task, long startTimeout) {
+        logger.info("the task name is {} and time is {}", task.getClass().getName(), startTimeout);
         executor.execute(createWrappedRunnable(task), startTimeout);
 
     }
@@ -63,7 +68,6 @@ public class HandlingAsyncTaskExecutor implements AsyncTaskExecutor {
             }
         };
     }
-
     private Runnable createWrappedRunnable(final Runnable task) {
         return () -> {
             try {

@@ -57,11 +57,17 @@ public class IndexController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String defaultIndex() {
-        return "w";
+        return "redirect:/w";
     }
 
+    @RequestMapping(value = "/m", method = RequestMethod.GET)
+    public String mobileIndex() {
+        return "m/index";
+    }
+
+
     @RequestMapping(value = "/unauthorized", method = RequestMethod.GET)
-    public String unauthorizedUrl(HttpServletRequest request, Model model) {
+    public String unauthorizedUrl(Model model) {
         model.addAttribute("readFileUrlPrefix", ServletUtils.getReadFileUrlPrefix());
         return "error/403";
     }
@@ -92,6 +98,15 @@ public class IndexController {
         //自助注册管理账号功能开关
         model.addAttribute("mgmtSignupEnabled", !dynamicConfigService.getBoolean(GlobalConstant.cfg_mgmt_signup_disabled, true));
         return source + "/login";
+    }
+
+    @RequestMapping(value = "/{source}/signup", method = RequestMethod.GET)
+    public String register(Model model, @PathVariable("source") String source) {
+        model.addAttribute("buildVersion", dynamicConfigService.getString("build_version"));
+        model.addAttribute("buildTimetamp", dynamicConfigService.getString("build_timestamp"));
+        //自助注册管理账号功能开关
+        model.addAttribute("mgmtSignupEnabled", !dynamicConfigService.getBoolean(GlobalConstant.cfg_mgmt_signup_disabled, true));
+        return source + "/signup";
     }
 
     /**

@@ -21,7 +21,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -37,7 +40,7 @@ public class SourceCodeFrameworkBuilder {
     public static void main(String[] args) throws Exception {
         Configuration cfg = new Configuration();
         // 设置FreeMarker的模版文件位置
-        cfg.setClassForTemplateLoading(SourceCodeFrameworkBuilder.class, "/lab/s2jh/tool//builder/freemarker");
+        cfg.setClassForTemplateLoading(SourceCodeFrameworkBuilder.class, "/com/rascal/tool//builder/freemarker");
         cfg.setDefaultEncoding("UTF-8");
 
         Set<String> entityNames = new HashSet<>();
@@ -259,7 +262,7 @@ public class SourceCodeFrameworkBuilder {
         System.out.println(message);
     }
 
-    private static void process(Template template, Map<String, Object> root, String dir, String fileName) throws Exception, FileNotFoundException {
+    private static void process(Template template, Map<String, Object> root, String dir, String fileName) throws Exception {
         if ((dir + fileName).length() > 300) {
             throw new IllegalArgumentException("Dir path too long.");
         }
@@ -297,16 +300,16 @@ public class SourceCodeFrameworkBuilder {
 
         private TestEnum testEnum;
 
-        public enum TestEnum {
-            Abc, Xyz
-        }
-
         public TestEnum getTestEnum() {
             return testEnum;
         }
 
         public void setTestEnum(TestEnum testEnum) {
             this.testEnum = testEnum;
+        }
+
+        public enum TestEnum {
+            Abc, Xyz
         }
     }
 

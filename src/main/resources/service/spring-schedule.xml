@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:task="http://www.springframework.org/schema/task"
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.1.xsd"
        default-lazy-init="false" default-autowire="no">
@@ -46,6 +46,7 @@
                             <property name="durability" value="true"/>
                         </bean>
                     </property>
+                    <!--每月23号上午七点执行-->
                     <property name="cronExpression" value="0 0 7-23 * * ?"/>
                 </bean>
             </list>

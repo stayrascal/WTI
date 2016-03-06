@@ -27,7 +27,7 @@
             <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
         </bean>
 
-        <!-- 用于获取当前Dialect对象之用，一般默认无需设定自动识别，个别环境需要特殊配置 -->
+        <!-- 用于获取当前Dialect对象之前，一般默认无需设定自动识别，个别环境需要特殊配置 -->
         <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
             <!-- 微软云平台返回的SQL Server MetaData不准确导致无法准确采用2012方言,因此手工设置
             jpa_database_platform=org.hibernate.dialect.SQLServer2012Dialect

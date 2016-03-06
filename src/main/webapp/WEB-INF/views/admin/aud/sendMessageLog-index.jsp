@@ -35,7 +35,7 @@
 		</div>
 	</div>
 
-	<script type="text/javascript">
+    <%--<script type="text/javascript">
         $(function() {
             $("#grid-aud-send-message-log-index").data("gridOptions", {
                 url : WEB_ROOT + '/admin/aud/send-message-log/list',
@@ -84,6 +84,58 @@
                 fullediturl : WEB_ROOT + '/admin/aud/send-message-log/edit-tabs'
             });
         });
+    </script>--%>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#grid-aud-send-message-log-index").data("gridOptions", {
+                url: WEB_ROOT + '/admin/aud/send-message-log/list',
+                colModel: [{
+                    label: '流水号',
+                    name: 'id',
+                    hidden: true
+                }, {
+                    label: '消息接受者',
+                    name: 'targets',
+                    width: 100,
+                    align: 'center',
+                    editable: true
+                }, {
+                    label: '标题',
+                    name: 'title',
+                    width: 200,
+                    align: 'left',
+                    editable: true
+                }, {
+                    label: '消息摘要',
+                    index: 'message',
+                    name: 'messageAbstract',
+                    width: 300,
+                    align: 'left'
+                }, {
+                    label: '消息类型',
+                    name: 'messageType',
+                    formatter: 'select',
+                    searchoptions: {
+                        valueJsonString: '<tags:json value="${messageTypeMap}"/>'
+                    },
+                    width: 80,
+                    align: 'center',
+                    editable: true
+                }, {
+                    label: '发送时间',
+                    name: 'sendTime',
+                    width: 150,
+                    align: 'center',
+                    formatter: 'timestamp',
+                    editable: true
+                }],
+                multiselect: false,
+                addable: false,
+                fullediturl: WEB_ROOT + '/admin/aud/send-message-log/edit-tabs'
+            });
+        });
     </script>
+
 </body>
 </html>

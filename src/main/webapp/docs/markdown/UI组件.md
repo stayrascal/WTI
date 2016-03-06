@@ -1,11 +1,10 @@
 ## 概要说明
 
-UI组件部分的设计主要基于JQuery/Bootstrap及相关插件，在尽量使用标准的Struts2标准标签的基础上，以bootstrap流行的DATA  API风格，添加框架定制的组件定义和扩展。如果能通过前端JS解决的问题尽量放到以JS扩展方式实现，当然也少量添加几个Struts2扩展 Tag以便于OGNL语法的利用。
+UI组件部分的设计主要基于JQuery/Bootstrap及相关插件，在使用标准的Struts2标准标签的基础上，以bootstrap流行的DATA  API风格，添加框架定制的组件定义和扩展。一般能通过前端JS解决的问题都放到以JS扩展方式实现。
 
 ## 主要UI组件介绍说明
 
-以下组件说明主要对框架扩展的一些属性进行说明，插件本身的相关标准属性和用法请直接参考对应组件的官方文档或网上用法资料。文档目的是初步指导开发之用，除非必要不再对每个组件截图，建议直接运行应用实际体验各UI组件效果。文档只是扩展属性简要说明，具体用法可以通过属性搜索JS和JSP文件了解细节。
-
+以下组件说明主要对框架扩展的一些属性进行说明。
 ### 全局属性
 
 **WEB_ROOT**: 当前Web应用ContextPath的JS变量，一般用于JS代码中组装URL
@@ -14,21 +13,17 @@ UI组件部分的设计主要基于JQuery/Bootstrap及相关插件，在尽量�
 
 针对典型的UI组件，提供一个基本的用法示意参考，结合对应的JSDoc文档了解相关UI组件的用法和支持的功能属性。
 
-### <a href="../../../../docs/jsdoc/index.html" target="_blank">Javascript注释JSDoc文档</a>
-
-基于框架主要Javascript代码文件注释，用jsdoc3-maven-plugin生成的UI组件用法参考文档。
-
 ## 设计思路要点
 
 ### 关于Form/Data Validation的处理
 
-基于Javascript的前端表单校验和基于Java逻辑的服务端校验应该说都是非常重要的，前端校验可以有效的提升用户UI交互友好度，并且减少不必要数据校验目的的服务器交互；服务端校验则是评价一个系统安全性、健壮性的重要环节，因为对于Web应用来说其访问的便捷性也决定了其及其容易受到恶意用户的攻击，只需要熟悉基本的HTTP请求原理和工具，即可轻易绕过前端的数据校验直接对服务器发起非法数据请求。
+基于Javascript的前端表单校验和基于Java逻辑的服务端校验都是非常重要的，前端校验可以有效的提升用户UI交互友好度，并且减少不必要数据校验目的的服务器交互；服务端校验则是评价一个系统安全性、健壮性的重要环节，因为对于Web应用来说其访问的便捷性也决定了其容易受到恶意用户的攻击，只需要熟悉基本的HTTP请求原理和工具，即可轻易绕过前端的数据校验直接对服务器发起非法数据请求。
 
-对于前端来说有比较多成熟的Javascript/JQuery表单校验插件，如本框架选择的JQuery Validation。对于服务端校验，Struts层面有Struts Validator，但是总感觉非常繁琐；而现在开始流行的[![link](images/link.gif)JSR303 Bean Validation](http://jcp.org/en/jsr/detail?id=303)把数据校验移到更细粒度的业务层乃至实体层，如本框架选择的Hibernate Validator。
+对于前端来说有比较多成熟的Javascript/JQuery表单校验插件，如本框架选择的JQuery Validation。对于服务端校验，Struts层面有Struts Validator，但是使用起来总感觉非常繁琐；而现在开始流行的[![link](images/link.gif)JSR303 Bean Validation](http://jcp.org/en/jsr/detail?id=303)则是把数据校验移到更细粒度的业务层乃至实体层，如本框架选择的Hibernate Validator。
 
-前标签也考虑到一些特殊情况而提供扩展的validator属性用于覆盖标签的自动化处理面说到前后端校验都非常重要，但是经常感觉二者存在烦人的阻抗，前端校验逻辑在相关JS组件中定义，服务端校验逻辑在相关XML文件或Java代码注解形式定义，这就很容易带来一个问题，有时前端校验逻辑改了忘了改后端逻辑，反之亦然。
+前面说到的前后端校验都非常重要，但是经常感觉二者存在烦人的阻抗，前端校验逻辑在相关JS组件中定义，服务端校验逻辑在相关XML文件或Java代码注解形式定义，这就很容易带来一个问题，有时前端校验逻辑改了忘了改后端逻辑，反之亦然。
 
-由于框架引入Grid Inline编辑模式和Form表单编辑同时存在，也就额外提出一个需求：如何能较好的简化和保持Grid Inline Edit界面/Form  Edit界面和Java Validator保持一致性。因此框架采用发起一个额外的AJAX JSON请求（基于当前Entity定义通过Java反射机制，尝试根据属性的类型、JSR303 Validator注解、Hibernate Entity注解等自动组合生成JSON结构校验规则响应，具体实现可参考：PersistableController的buildValidateRules方法），获取服务端校验规则带入到Grid Inline Validation和Form Validation动态添加校验。 从实际效果来看这样的处理基本能从容应付九成以上的常见表单校验需求，当然尽量预留入口以便于自定义校验规则。
+由于框架引入Grid Inline编辑模式和Form表单编辑模式，两种模式同时存在，也就额外提出一个需求：如何能较好的简化和保持Grid Inline Edit界面/Form  Edit界面和Java Validator保持一致性。因此框架采用发起一个额外的AJAX JSON请求（基于当前Entity定义通过Java反射机制，尝试根据属性的类型、JSR303 Validator注解、Hibernate Entity注解等自动组合生成JSON结构校验规则响应，具体实现可参考：PersistableController的buildValidateRules方法），获取服务端校验规则带入到Grid Inline Validation和Form Validation动态添加校验。 从实际效果来看这样的处理基本能从容应付九成以上的常见表单校验需求，同时预留入口以便于自定义校验规则。
 
 默认框架会自动根据规则对Grid Inline Edit和Form Edit提供校验处理，可通过对Grid添加editrulesurl:false或为form元素添加data-editrulesurl="false"属性来关闭自动化校验处理。
 

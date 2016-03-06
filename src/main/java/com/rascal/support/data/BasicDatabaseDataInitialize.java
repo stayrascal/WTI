@@ -36,6 +36,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -353,9 +354,7 @@ public class BasicDatabaseDataInitialize extends BaseDatabaseDataInitialize {
                     if (rp != null) {
                         //int startLine = method.getMethodInfo().getLineNumber(0);
                         String[] perms = rp.value();
-                        for (String perm : perms) {
-                            mergedPermissions.add(perm);
-                        }
+                        Collections.addAll(mergedPermissions, perms);
                     }
                 }
             }

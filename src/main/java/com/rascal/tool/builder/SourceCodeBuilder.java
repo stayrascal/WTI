@@ -21,7 +21,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -37,7 +40,7 @@ public class SourceCodeBuilder {
     public static void main(String[] args) throws Exception {
         Configuration cfg = new Configuration();
         // 设置FreeMarker的模版文件位置
-        cfg.setClassForTemplateLoading(SourceCodeBuilder.class, "/lab/s2jh/tool//builder/freemarker");
+        cfg.setClassForTemplateLoading(SourceCodeBuilder.class, "/com/rascal/tool//builder/freemarker");
         cfg.setDefaultEncoding("UTF-8");
 
         Set<String> entityNames = new HashSet<>();
@@ -52,8 +55,8 @@ public class SourceCodeBuilder {
             entityNames.add(beanDefinition.getBeanClassName());
         }
 
-        String integrateRoot = "." + File.separator + "target" + File.separator + "generated-codes" + File.separator + "integrate" + File.separator;
-        String standaloneRoot = "." + File.separator + "target" + File.separator + "generated-codes" + File.separator + "standalone" + File.separator;
+        final String integrateRoot = "." + File.separator + "target" + File.separator + "generated-codes" + File.separator + "integrate" + File.separator;
+        final String standaloneRoot = "." + File.separator + "target" + File.separator + "generated-codes" + File.separator + "standalone" + File.separator;
         new File(integrateRoot).mkdirs();
         new File(standaloneRoot).mkdirs();
 
@@ -105,9 +108,6 @@ public class SourceCodeBuilder {
 
             Field[] curfields = entityClass.getDeclaredFields();
             Collections.addAll(fields, curfields);
-            /*for (Field field : curfields) {
-                fields.add(field);
-            }*/
 
             Class superClass = entityClass.getSuperclass();
             while (superClass != null && !superClass.equals(BaseEntity.class)) {
@@ -143,7 +143,6 @@ public class SourceCodeBuilder {
                 } else if (PersistableEntity.class.isAssignableFrom(fieldType)) {
                     entityCodeField = new EntityCodeField();
                     entityCodeField.setFieldType("Entity");
-
                 } else if (Number.class.isAssignableFrom(fieldType)) {
                     entityCodeField = new EntityCodeField();
                     entityCodeField.setListFixed(true);
@@ -151,7 +150,6 @@ public class SourceCodeBuilder {
                     entityCodeField.setListAlign("right");
                 } else if (fieldType == String.class) {
                     entityCodeField = new EntityCodeField();
-
                     //根据Hibernate注解的字符串类型和长度设定是否列表显示
                     Column fieldColumn = field.getAnnotation(Column.class);
                     if (fieldColumn != null) {
@@ -278,7 +276,7 @@ public class SourceCodeBuilder {
         System.out.println(message);
     }
 
-    private static void process(Template template, Map<String, Object> root, String dir, String fileName) throws Exception, FileNotFoundException {
+    private static void process(Template template, Map<String, Object> root, String dir, String fileName) throws Exception {
         if ((dir + fileName).length() > 300) {
             throw new IllegalArgumentException("Dir path too long.");
         }
@@ -316,16 +314,16 @@ public class SourceCodeBuilder {
 
         private TestEnum testEnum;
 
-        public enum TestEnum {
-            Abc, Xyz
-        }
-
         public TestEnum getTestEnum() {
             return testEnum;
         }
 
         public void setTestEnum(TestEnum testEnum) {
             this.testEnum = testEnum;
+        }
+
+        public enum TestEnum {
+            Abc, Xyz
         }
     }
 

@@ -13,6 +13,7 @@ import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class JobBeanCfgService extends BaseService<JobBeanCfg, Long> {
 
     private static Logger logger = LoggerFactory.getLogger(JobBeanCfgService.class);
 
+    @Qualifier("jobBeanCfgDao")
     @Autowired
     private JobBeanCfgDao jobBeanCfgDao;
 
@@ -46,16 +48,14 @@ public class JobBeanCfgService extends BaseService<JobBeanCfg, Long> {
     public Map<Trigger, SchedulerFactoryBean> findAllTriggers() {
         Map<Trigger, SchedulerFactoryBean> allTriggers = Maps.newLinkedHashMap();
         try {
-            SchedulerFactoryBean quartzRAMScheduler = (SchedulerFactoryBean) SpringContextHolder.getApplicationContext().getBean(
-                    "&quartzRAMScheduler");
+            SchedulerFactoryBean quartzRAMScheduler = (SchedulerFactoryBean) SpringContextHolder.getApplicationContext().getBean("&quartzRAMScheduler");
             if (quartzRAMScheduler != null) {
                 for (Trigger trigger : (List<Trigger>) FieldUtils.readField(quartzRAMScheduler, "triggers", true)) {
                     allTriggers.put(trigger, quartzRAMScheduler);
                 }
             }
 
-            SchedulerFactoryBean quartzClusterScheduler = (SchedulerFactoryBean) SpringContextHolder.getApplicationContext().getBean(
-                    "&quartzClusterScheduler");
+            SchedulerFactoryBean quartzClusterScheduler = (SchedulerFactoryBean) SpringContextHolder.getApplicationContext().getBean("&quartzClusterScheduler");
             if (quartzClusterScheduler != null) {
                 Scheduler scheduler = quartzClusterScheduler.getScheduler();
                 for (Trigger trigger : (List<Trigger>) FieldUtils.readField(quartzClusterScheduler, "triggers", true)) {
