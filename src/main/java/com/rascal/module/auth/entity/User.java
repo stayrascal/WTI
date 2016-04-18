@@ -148,18 +148,4 @@ public class User extends BaseNativeEntity {
         WB
 
     }
-
-    public enum AuthTypeEnum {
-
-        @MetaData(value = "自建账号")
-        SYS,
-
-        @MetaData(value = "QQ互联")
-        QQ,
-
-        @MetaData(value = "新浪微博")
-        WB
-
-    }
-
 }
