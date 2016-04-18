@@ -48,7 +48,8 @@
                                    required="true" data-msg-required="请填写验证码"/>
                         </div>
                         <span class="input-group-btn" style="cursor: pointer;">
-                            <img alt="验证码" class="captcha-img" src="${ctx}/assets/img/captcha_placeholder.jpg" title="看不清？点击刷新"/>
+                            <img alt="验证码" class="captcha-img" src="${ctx}/assets/img/captcha_placeholder.jpg"
+                                 title="看不清？点击刷新"/>
                         </span>
                     </div>
                 </div>
@@ -77,7 +78,8 @@
                     <div class="col-md-9">
                         <p class="pull-right">
                             忘记密码?
-                            <a href="${ctx}/admin/password/forget" data-toggle="modal-ajaxify" title="找回密码" data-modal-size="550px">找回密码</a>
+                            <a href="${ctx}/admin/password/forget" data-toggle="modal-ajaxify" title="找回密码"
+                               data-modal-size="550px">找回密码</a>
                             <c:if test="${mgmtSignupEnabled}">
                                 &nbsp; &nbsp;&nbsp; &nbsp; 没有账号?
                                 <a href="${ctx}/admin/signup" data-toggle="modal-ajaxify" title="自助注册">自助注册</a>

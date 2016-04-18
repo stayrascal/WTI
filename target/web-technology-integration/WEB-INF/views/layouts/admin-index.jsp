@@ -38,7 +38,7 @@
                 color="white" size="+2">${applicationScope.cfg.cfg_system_title} 管理平台</font></a>
         <!-- END LOGO -->
         <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-        <a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <a href="javascript:" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <img src="${ctx}/assets/admin/img/menu-toggler.png" alt=""/>
         </a>
         <!-- END RESPONSIVE MENU TOGGLER -->
@@ -92,7 +92,7 @@
 
             <!-- BEGIN NOTIFICATION DROPDOWN -->
             <li class="dropdown" id="header_notification_bar">
-                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
                    data-close-others="true" rel="address:/admin/profile/notify-message|公告信息列表">
                     <i class="fa fa-warning"></i> <span class="badge" style="display: none"></span>
                 </a>
@@ -104,7 +104,7 @@
 
             <!-- BEGIN INBOX DROPDOWN -->
             <li class="dropdown" id="header_inbox_bar">
-                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
+                <a href="javascript:" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
                    data-close-others="true" rel="address:/admin/profile/user-message|个人消息列表">
                     <i class="fa fa-envelope"></i>
                     <span class="badge" style="display: none"></span>
@@ -128,14 +128,14 @@
                     <li><a href="${ctx}/w" target="_blank"><i class="fa fa-windows"></i> 前端Web站点</a></li>
                     <li><a href="${ctx}/m" target="_blank"><i class="fa fa-html5"></i> HTML5移动站点</a></li>
                     <li class="divider"></li>
-                    <li><a href="javascript:;" id="trigger_fullscreen"><i class="fa fa-move"></i> 全屏显示</a></li>
+                    <li><a href="javascript:" id="trigger_fullscreen"><i class="fa fa-move"></i> 全屏显示</a></li>
                     <li>
                         <a href="${ctx}/admin/profile/password" data-toggle="modal-ajaxify"
                            data-modal-size="600px" title="修改密码">
                             <i class="fa fa-key"></i> 修改密码</a>
                     </li>
                     <li class="divider"></li>
-                    <li><a id="a-logout" href="javascript:;"><i class="fa fa-sign-out"></i> 注销登录</a></li>
+                    <li><a id="a-logout" href="javascript:"><i class="fa fa-sign-out"></i> 注销登录</a></li>
                 </ul>
             </li>
             <!-- END USER LOGIN DROPDOWN -->
@@ -224,7 +224,7 @@
                     <div class="sidebar-search">
                         <div class="form-container">
                             <div class="input-box">
-                                <a href="javascript:;" class="remove"></a>
+                                <a href="javascript:" class="remove"></a>
                                 <input type="text" name="search" placeholder="菜单项快速查询过滤..." value=""
                                        title="试试输入菜单名称拼音首字母"/>
                                 <input type="button" class="submit" value=" "/>

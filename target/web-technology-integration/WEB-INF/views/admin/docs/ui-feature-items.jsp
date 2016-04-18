@@ -30,8 +30,8 @@
                 <i class="fa fa-reorder"></i> 基础组件
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -126,8 +126,8 @@
                 <i class="fa fa-reorder"></i> 表单控制及校验
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -207,8 +207,8 @@
                 <i class="fa fa-reorder"></i> 扩展组件
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -361,8 +361,8 @@
                 <i class="fa fa-reorder"></i> 下拉、选取等处理组件
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -574,8 +574,8 @@
                 <i class="fa fa-reorder"></i> 日期、时间等处理组件
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -646,8 +646,8 @@
                 <i class="fa fa-reorder"></i> Text、HTML等处理组件
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -701,8 +701,8 @@
                 <i class="fa fa-reorder"></i> 文件、图片等处理组件
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -817,8 +817,8 @@
                 <i class="fa fa-reorder"></i> 动态表格等处理组件
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -839,6 +839,7 @@
                         <div class="col-md-10">
                             <div class="form-group">
                                 <label class="control-label">标题</label>
+
                                 <div class="controls">
                                     <input type="text" class="form-control" name="textContent" required="true"/>
                                 </div>
@@ -850,6 +851,7 @@
                         <div class="col-md-10">
                             <div class="form-group">
                                 <label class="control-label">数量</label>
+
                                 <div class="controls">
                                     <input type="text" class="form-control" name="quantity" required="true"/>
                                 </div>
@@ -861,6 +863,7 @@
                         <div class="col-md-10">
                             <div class="form-group">
                                 <label class="control-label">选取多个Tag(Remote查询选取)</label>
+
                                 <div class="controls">
                                     <form:input path="splitText" class="form-control" data-select2-type="tags"
                                                 data-url="${ctx}/docs/mock/tags"/>
@@ -887,9 +890,9 @@
                                         <tbody>
                                         <c:forEach var="item" items="${entity.mockItemEntites}" varStatus="status">
                                             <tr>
-                                                <%--<input type="hidden"
-                                                       name="mockItemEntites[${status.index}].extraAttributes['operation']"
-                                                       value="update"/>--%>
+                                                    <%--<input type="hidden"
+                                                           name="mockItemEntites[${status.index}].extraAttributes['operation']"
+                                                           value="update"/>--%>
                                                 <input type="hidden"
                                                        name="mockItemEntites[${status.index}].mockEntity.id"
                                                        value="${entity.id}"/>
@@ -911,8 +914,8 @@
                                             </tr>
                                         </c:forEach>
                                         <tr class="dynamic-table-row-template">
-                                            <%--<input type="hidden" name="mockItemEntites[X].extraAttributes['operation']"
-                                                   value="create"/>--%>
+                                                <%--<input type="hidden" name="mockItemEntites[X].extraAttributes['operation']"
+                                                       value="create"/>--%>
                                             <input type="hidden" name="mockItemEntites[X].assignment.id"
                                                    value="${entity.id}"/>
                                             <td><input type="hidden" name="mockItemEntites[X].department.id"/> <input
@@ -958,8 +961,8 @@
                 <i class="fa fa-reorder"></i> 递归树形和拖放操作Grid组件
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -1093,8 +1096,8 @@
                 <i class="fa fa-reorder"></i> 为Grid组件数据添加功能操作
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -1195,8 +1198,8 @@
                 <i class="fa fa-reorder"></i> 百度地图
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">
@@ -1247,7 +1250,8 @@
                                 <label class="control-label">以经纬度坐标初始化地图</label>
 
                                 <div class="controls">
-                                    <div class="gmaps gmaps-baidu gmaps-demo-point" data-point-longitude="103.9959850000"
+                                    <div class="gmaps gmaps-baidu gmaps-demo-point"
+                                         data-point-longitude="103.9959850000"
                                          data-point-latitude="30.5857340000"/>
                                 </div>
                             </div>
@@ -1292,7 +1296,7 @@
                         $(".gmaps-demo-location").on("clickMapPoint", function (event, geocoderResult) {
                             var $el = $(this);
                             $el.closest("form").find("input[name='location']").val(geocoderResult.fullAddress);
-                        })
+                        });
 
                         $(".gmaps-demo-point").on("clickMapPoint", function (event, geocoderResult) {
                             var $el = $(this);
@@ -1311,8 +1315,8 @@
                 <i class="fa fa-reorder"></i> TODO
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body"></div>
@@ -1324,8 +1328,8 @@
                 <i class="fa fa-reorder"></i> 无限滚动表格组件
             </div>
             <div class="tools">
-                <a class="collapse" href="javascript:;"></a>
-                <a class="remove" href="javascript:;"></a>
+                <a class="collapse" href="javascript:"></a>
+                <a class="remove" href="javascript:"></a>
             </div>
         </div>
         <div class="portlet-body">

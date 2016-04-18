@@ -9,13 +9,16 @@
     <title>账号注册</title>
 </head>
 <body>
-<form class="form-horizontal form-bordered form-label-stripped form-validation" action="${ctx}/admin/signup" method="post" data-editrulesurl="false">
+<form class="form-horizontal form-bordered form-label-stripped form-validation" action="${ctx}/admin/signup"
+      method="post" data-editrulesurl="false">
     <div class="form-body">
         <div class="row" data-equal-height="false">
             <div class="col-md-6">
                 <p>请填写如下主要的注册信息：</p>
+
                 <div class="form-group">
                     <label class="control-label">登录账号</label>
+
                     <div class="controls">
                         <input class="form-control" type="text" name="authUid" required="true" data-rule-minlength="3"
                                data-rule-remote="${ctx}/admin/signup/unique/uid" data-msg-remote="已被注册使用，请重新填写"
@@ -81,7 +84,8 @@
                                        placeholder="验证码...看不清可点击图片可刷新" name="captcha" required="true"/>
                             </div>
                             <span class="input-group-btn" style="cursor: pointer;">
-                                <img alt="验证码" height="34px" class="captcha-img" src="${ctx}/assets/img/captcha_placeholder.jpg" title="看不清？点击刷新"/>
+                                <img alt="验证码" height="34px" class="captcha-img"
+                                     src="${ctx}/assets/img/captcha_placeholder.jpg" title="看不清？点击刷新"/>
                             </span>
                         </div>
                     </div>
@@ -94,7 +98,8 @@
                     <label class="control-label">备注说明</label>
 
                     <div class="controls">
-                        <textarea rows="8" class="form-control" name="remarkInfo" placeholder="提供相关备注说明信息，如账号类型，需要访问的 功能列表等，有助于管理员快速有效的进行账号设定"></textarea>
+                        <textarea rows="8" class="form-control" name="remarkInfo"
+                                  placeholder="提供相关备注说明信息，如账号类型，需要访问的 功能列表等，有助于管理员快速有效的进行账号设定"></textarea>
                     </div>
                 </div>
             </div>

@@ -65,7 +65,7 @@
                         }
                         $item.attr("data-path", path.join(":"));
                     })
-                })
+                });
 
                 //计算隐藏同组重复项
                 $list.find(" > .row").each(function (i, row) {
@@ -81,7 +81,7 @@
                             }
                         })
                     }
-                })
+                });
 
                 $list.on("click", 'input[type="checkbox"]:not([name])', function () {
                     var $el = $(this);

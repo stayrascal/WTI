@@ -145,7 +145,7 @@ var Grid = function () {
                     var b = jQuery.parseJSON(c.responseText);
                     return b.message
                 }, afterComplete: function (d) {
-                    var c = new Array();
+                    var c = [];
                     var b = jQuery.parseJSON(d.responseText);
                     if (b.type == "success") {
                         top.$.publishMessage(b.message);
@@ -294,7 +294,7 @@ var Grid = function () {
                         if (!confirm("确认导出当前页面 " + f.p.caption + " 数据为Excel下载文件？")) {
                             return
                         }
-                        var e = new Array();
+                        var e = [];
                         e = $(f).getDataIDs();
                         var m = f.p.colModel;
                         var p = f.p.colNames;
@@ -1620,7 +1620,7 @@ var Grid = function () {
                     $.each(o, function (ay, az) {
                         if (c.field == az.field) {
                             ax = true;
-                            return
+
                         }
                     });
                     if (ax == false) {

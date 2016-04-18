@@ -18,7 +18,7 @@
                     <i class="fa fa-reorder"></i> 界面布局默认设置
                 </div>
                 <div class="tools">
-                    <a class="expand" href="javascript:;"></a>
+                    <a class="expand" href="javascript:"></a>
                 </div>
             </div>
             <div class="portlet-body">
@@ -26,10 +26,11 @@
                     <p>以下设置参数将用于管理界面右上角界面布局参数的初始化设置，具体参数设置效果可以通过右上角操作体验。</p>
                 </div>
                 <form:form class="form-horizontal form-bordered form-label-stripped form-validation" method="post"
-                    action="${ctx}/admin/profile/layout" modelAttribute="user" data-editrulesurl="false">
+                           action="${ctx}/admin/profile/layout" modelAttribute="user" data-editrulesurl="false">
                     <div class="form-body">
                         <div class="form-group">
                             <label class="control-label">页面布局</label>
+
                             <div class="controls">
                                 <form:select path="extraAttributes['_layout_page']" class="form-control">
                                     <form:option value="fluid">扩展</form:option>
@@ -40,6 +41,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label">页面头部</label>
+
                             <div class="controls">
                                 <form:select path="extraAttributes['_layout_header']" class="form-control">
                                     <form:option value="fixed">固定</form:option>
@@ -50,6 +52,7 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label">页面底部</label>
+
                             <div class="controls">
                                 <form:select path="extraAttributes['_layout_footer']" class="form-control">
                                     <form:option value="fixed">固定</form:option>
@@ -60,23 +63,25 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label">右键菜单</label>
+
                             <div class="controls">
                                 <form:select path="extraAttributes['_layout_context_menu']" class="form-control">
                                     <form:option value="enable">启用</form:option>
                                     <form:option value="disable">禁用</form:option>
                                 </form:select>
-                                <span class="help-block">启用：特定区域显示业务定制的鼠标右键菜单；<br />禁用：全局关闭如表格组件的右键功能，显示浏览器标准右键菜单
+                                <span class="help-block">启用：特定区域显示业务定制的鼠标右键菜单；<br/>禁用：全局关闭如表格组件的右键功能，显示浏览器标准右键菜单
                                 </span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label">表格布局</label>
+
                             <div class="controls">
                                 <form:select path="extraAttributes['_layout_grid_shrink']" class="form-control">
                                     <form:option value="auto">自动</form:option>
                                     <form:option value="true">收缩</form:option>
                                 </form:select>
-                                <span class="help-block">自动：根据表格组件列数和宽度动态控制显示模式，为了避免数据显示太拥挤可能会自动出现横向滚动条；<br />收缩：始终以收缩方式显示表格组件，不会出现横向滚动条，但是可能数据显示会比较拥挤
+                                <span class="help-block">自动：根据表格组件列数和宽度动态控制显示模式，为了避免数据显示太拥挤可能会自动出现横向滚动条；<br/>收缩：始终以收缩方式显示表格组件，不会出现横向滚动条，但是可能数据显示会比较拥挤
                                 </span>
                             </div>
                         </div>
@@ -97,7 +102,7 @@
                     <i class="fa fa-reorder"></i> 信息记录
                 </div>
                 <div class="tools">
-                    <a class="collapse" href="javascript:;"></a>
+                    <a class="collapse" href="javascript:"></a>
                 </div>
             </div>
             <div class="portlet-body">
@@ -132,7 +137,7 @@
 
                             <div class="controls">
                                 <p class="form-control-static">
-                                     <fmt:formatDate value="${user.userExt.signupTime}" type="both" />
+                                    <fmt:formatDate value="${user.userExt.signupTime}" type="both"/>
                                 </p>
                             </div>
                         </div>
@@ -151,7 +156,7 @@
 
                             <div class="controls">
                                 <p class="form-control-static">
-                                     <fmt:formatDate value="${user.userExt.lastLogonTime}" type="both" />
+                                    <fmt:formatDate value="${user.userExt.lastLogonTime}" type="both"/>
                                 </p>
                             </div>
                         </div>

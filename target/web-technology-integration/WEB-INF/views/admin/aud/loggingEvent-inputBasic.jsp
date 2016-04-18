@@ -13,7 +13,8 @@
            action="${ctx}/admin/aud/logging-event/edit" method="post" modelAttribute="entity" data-editrulesurl="false">
     <form:hidden path="id"/>
     <div class="form-actions">
-        <button class="btn blue" type="submit" data-grid-reload="#grid-aud-logging-event-index" data-post-dismiss="modal">
+        <button class="btn blue" type="submit" data-grid-reload="#grid-aud-logging-event-index"
+                data-post-dismiss="modal">
             <i class="fa fa-check"></i> 保存
         </button>
         <button class="btn default" type="button" data-dismiss="modal">取消</button>

@@ -81,7 +81,7 @@
 
                         <p class="list-group-item-text">对整个开发框架整体的设计说明和开发指南。</p>
                     </a>
-                    <a class="list-group-item" href="javascript:;" rel="address:/docs/ui-feature/items|UI组件用法示例">
+                    <a class="list-group-item" href="javascript:" rel="address:/docs/ui-feature/items|UI组件用法示例">
                         <h4 class="list-group-item-heading">UI组件用法示例</h4>
 
                         <p class="list-group-item-text">针对典型的UI组件，提供一个基本的用法示意参考，结合对应的JSDoc文档了解相关UI组件的用法和支持的功能属性。</p>
@@ -91,11 +91,11 @@
 
                         <p class="list-group-item-text">基于框架主要Javascript代码文件注释，用jsdoc3-maven-plugin生成的UI组件用法参考文档。</p>
                     </a>
-                    <%--<a class="list-group-item" href="${ctx}/docs/javadoc/" target="_blank">
-                        <h4 class="list-group-item-heading">Javadoc文档</h4>
+                        <%--<a class="list-group-item" href="${ctx}/docs/javadoc/" target="_blank">
+                            <h4 class="list-group-item-heading">Javadoc文档</h4>
 
-                        <p class="list-group-item-text">基于maven-javadoc-plugin插件生成的项目Javadoc。</p>
-                    </a>--%>
+                            <p class="list-group-item-text">基于maven-javadoc-plugin插件生成的项目Javadoc。</p>
+                        </a>--%>
                 </div>
             </div>
         </div>

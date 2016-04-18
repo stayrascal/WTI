@@ -27,7 +27,7 @@
                 $.each(codes, function (j, code) {
                     $row.append('<div class="col-md-3" data-index="' + j + '" data-text="' + code + '" ><div style="margin:5px;border-top: 1px solid #ddd;">' + code + '</div></div>');
                 })
-            })
+            });
 
             $list.find(" > .row").each(function (i, row) {
                 var $row = $(this);

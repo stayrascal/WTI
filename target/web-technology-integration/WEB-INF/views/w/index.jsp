@@ -158,7 +158,7 @@
             <a href="${ctx}/w" target="_blank"><i class="fa fa-windows"></i> 前端Web站点</a> |
             <a href="${ctx}/m" target="_blank"><i class="fa fa-html5"></i> HTML5移动站点</a>
             仅作站点布局展示，暂无太多功能实现
-            <h4>主要原型演示请访问：<a href="${ctx}/admin" target="_blank">管理后台系统</a></h4>
+        <h4>主要原型演示请访问：<a href="${ctx}/admin" target="_blank">管理后台系统</a></h4>
         </p>
     </div>
 
