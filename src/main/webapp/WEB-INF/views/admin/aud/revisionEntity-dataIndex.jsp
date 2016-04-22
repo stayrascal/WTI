@@ -91,7 +91,8 @@
                 name: 'revisionEntity.authType',
                 formatter: 'select',
                 searchoptions: {
-                    valueJsonString: '<tags:json value="${authTypeMap}"/>'
+                    /*valueJsonString: '<tags:json value="${authTypeMap}"/>'*/
+                    valueJsonString: '{"SYS":"自建账号","QQ":"QQ互联","WB":"新浪微博"}'
                 },
                 align: 'center',
                 width: 60

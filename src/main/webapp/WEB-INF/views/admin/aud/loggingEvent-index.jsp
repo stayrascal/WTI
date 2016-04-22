@@ -90,7 +90,8 @@
                     name : 'state',
                     formatter : 'select',
                     searchoptions : {
-                        valueJsonString : '<tags:json value="${stateMap}"/>'
+                        /*valueJsonString : '<tags:json value="${stateMap}"/>'*/
+                        valueJsonString: '{"SYS":"自建账号","QQ":"QQ互联","WB":"新浪微博"}'
                     },
                     width : 80,
                     align : 'center',
