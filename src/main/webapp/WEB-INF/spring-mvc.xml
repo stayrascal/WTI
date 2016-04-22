@@ -121,4 +121,6 @@
         <property name="securityManager" ref="securityManager"/>
     </bean>
     <!-- end -->
+
+    <bean id="brokeredMessageListener" class="com.rascal.core.mq.MessageMonitorListener"></bean>
 </beans>

@@ -70,16 +70,7 @@ public class AnnotationHandlerMethodExceptionResolver implements HandlerExceptio
                 for (MediaType mediaType : mediaTypes) {
                     //JSON类型请求响应
                     if (mediaType.equals(MediaType.APPLICATION_JSON)) {
-                        ModelAndView mv = new ModelAndView();
-                        MappingJackson2JsonView view = new MappingJackson2JsonView();
-                        Map<String, Object> attributes = Maps.newHashMap();
-                        attributes.put("type", OperationResult.OPERATION_RESULT_TYPE.failure);
-                        attributes.put("code", OperationResult.FAILURE);
-                        attributes.put("message", errorMessage);
-                        attributes.put("exception", e.getMessage());
-                        view.setAttributesMap(attributes);
-                        mv.setView(view);
-                        return mv;
+                        return getModelAndView(e, errorMessage);
                     }
                 }
             } catch (HttpMediaTypeNotAcceptableException e1) {
@@ -176,16 +167,7 @@ public class AnnotationHandlerMethodExceptionResolver implements HandlerExceptio
         }
 
         if (json) {
-            ModelAndView mv = new ModelAndView();
-            MappingJackson2JsonView view = new MappingJackson2JsonView();
-            Map<String, Object> attributes = Maps.newHashMap();
-            attributes.put("type", OperationResult.OPERATION_RESULT_TYPE.failure);
-            attributes.put("code", OperationResult.FAILURE);
-            attributes.put("message", errorMessage);
-            attributes.put("exception", e.getMessage());
-            view.setAttributesMap(attributes);
-            mv.setView(view);
-            return mv;
+            return getModelAndView(e, errorMessage);
         } else {
             if (httpStatus.equals(HttpStatus.UNAUTHORIZED)) {
                 //记录当前请求信息，登录完成后直接转向登录之前URL
@@ -204,6 +186,19 @@ public class AnnotationHandlerMethodExceptionResolver implements HandlerExceptio
         }
 
         return new ModelAndView("error/" + httpStatus.value());
+    }
+
+    private ModelAndView getModelAndView(Exception e, String errorMessage) {
+        ModelAndView mv = new ModelAndView();
+        MappingJackson2JsonView view = new MappingJackson2JsonView();
+        Map<String, Object> attributes = Maps.newHashMap();
+        attributes.put("type", OperationResult.OPERATION_RESULT_TYPE.failure);
+        attributes.put("code", OperationResult.FAILURE);
+        attributes.put("message", errorMessage);
+        attributes.put("exception", e.getMessage());
+        view.setAttributesMap(attributes);
+        mv.setView(view);
+        return mv;
     }
 
     /**

@@ -20,6 +20,11 @@ public abstract class AbstractPojo implements Serializable {
     protected Map<String, Object> extraAttributes;
 
     @Transient
+    public void setExtraAttributes(Map<String, Object> extraAttributes) {
+        this.extraAttributes = extraAttributes;
+    }
+
+    @Transient
     public void addExtraAttribute(String key, Object value) {
         if (this.extraAttributes == null) {
             this.extraAttributes = Maps.newHashMap();

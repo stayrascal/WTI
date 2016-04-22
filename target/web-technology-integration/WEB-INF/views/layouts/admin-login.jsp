@@ -62,7 +62,7 @@
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-2">
-                                <img src="${ctx}/assets/img/logo.png" width="100px" />
+                                <img src="${ctx}/assets/img/logo.png" style="margin-top: 20%;width: 100px" />
                             </div>
                             <div class="col-md-8">
                                 <h2 style="color: #555555">${applicationScope.cfg.cfg_system_title}-管理平台</h2>

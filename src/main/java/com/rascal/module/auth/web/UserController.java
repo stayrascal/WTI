@@ -158,19 +158,7 @@ public class UserController extends BaseController<User, Long> {
     @RequestMapping(value = "/menus/data", method = RequestMethod.GET)
     @ResponseBody
     public Object menusData(@ModelAttribute("entity") User entity) {
-        List<Map<String, Object>> items = Lists.newArrayList();
-        List<NavMenuVO> navMenuVOs = menuService.processUserMenu(entity);
-        for (NavMenuVO navMenuVO : navMenuVOs) {
-            //组装zTree结构数据
-            Map<String, Object> item = Maps.newHashMap();
-            item.put("id", navMenuVO.getId());
-            item.put("pId", navMenuVO.getParentId());
-            item.put("name", navMenuVO.getName());
-            item.put("open", true);
-            item.put("isParent", StringUtils.isBlank(navMenuVO.getUrl()));
-            items.add(item);
-        }
-        return items;
+        return menuService.getItemsList(menuService.processUserMenu(entity));
     }
 
     @RequestMapping(value = "/tags", method = RequestMethod.GET)

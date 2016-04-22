@@ -1,6 +1,7 @@
 package com.rascal.module.sys.service;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.rascal.core.dao.jpa.BaseDao;
 import com.rascal.core.security.AuthUserDetails;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -247,5 +249,19 @@ public class MenuService extends BaseService<Menu, Long> {
             userNavMenuVOs.removeAll(toRemoves);
             removeEmptyParentItem(userNavMenuVOs);
         }
+    }
+
+    public Object getItemsList(List<NavMenuVO> navMenuVOs) {
+        List<Map<String, Object>> items = Lists.newArrayList();
+        for (NavMenuVO navMenuVO : navMenuVOs) {
+            Map<String, Object> item = Maps.newHashMap();
+            item.put("id", navMenuVO.getId());
+            item.put("pId", navMenuVO.getParentId());
+            item.put("name", navMenuVO.getName());
+            item.put("open", true);
+            item.put("isParent", StringUtils.isBlank(navMenuVO.getUrl()));
+            items.add(item);
+        }
+        return items;
     }
 }

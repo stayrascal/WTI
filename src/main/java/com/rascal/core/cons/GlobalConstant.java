@@ -38,4 +38,7 @@ public class GlobalConstant {
     @MetaData("数据字典:消息类型")
     public final static String DataDict_Message_Type = "DataDict_Message_Type";
 
+    @MetaData("数据字典")
+    public final static String DataDict = "DataDict";
+
 }

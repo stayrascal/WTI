@@ -58,7 +58,7 @@ public class UtilController {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Autowired(required = false)
+    @Autowired
     private BrokeredMessageListener brokeredMessageListener;
 
     @MenuData("配置管理:系统管理:辅助管理")

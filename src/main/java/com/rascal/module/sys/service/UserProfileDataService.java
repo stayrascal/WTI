@@ -38,8 +38,7 @@ public class UserProfileDataService extends BaseService<UserProfileData, Long> {
     @Transactional(readOnly = true)
     public Map<String, Object> findMapDataByUser(User user) {
         Map<String, Object> mapData = Maps.newHashMap();
-        List<UserProfileData> datas = userProfileDataDao.findByUser(user);
-        for (UserProfileData data : datas) {
+        for (UserProfileData data : userProfileDataDao.findByUser(user)) {
             mapData.put(data.getCode(), data.getValue());
         }
         return mapData;

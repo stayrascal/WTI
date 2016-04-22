@@ -193,30 +193,36 @@ public class BasicDatabaseDataInitialize extends BaseDatabaseDataInitialize {
 
         //数据字典项初始化
         if (dataDictService.findByProperty("primaryKey", GlobalConstant.DataDict_Message_Type) == null) {
-            DataDict entity = new DataDict();
-            entity.setPrimaryKey(GlobalConstant.DataDict_Message_Type);
-            entity.setPrimaryValue("消息类型");
-            dataDictService.save(entity);
+            DataDict dataDict = new DataDict();
+            dataDict.setPrimaryKey(GlobalConstant.DataDict);
+            dataDict.setPrimaryValue("数据字典");
+            dataDictService.save(dataDict);
+
+            DataDict message = new DataDict();
+            message.setPrimaryKey(GlobalConstant.DataDict_Message_Type);
+            message.setPrimaryValue("消息类型");
+            message.setParent(dataDict);
+            dataDictService.save(message);
 
             DataDict item = new DataDict();
             item.setPrimaryKey("notify");
             item.setPrimaryValue("通知");
             item.setSecondaryValue("#32CFC4");
-            item.setParent(entity);
+            item.setParent(message);
             dataDictService.save(item);
 
             item = new DataDict();
             item.setPrimaryKey("bulletin");
             item.setPrimaryValue("喜报");
             item.setSecondaryValue("#FF645D");
-            item.setParent(entity);
+            item.setParent(message);
             dataDictService.save(item);
 
             item = new DataDict();
             item.setPrimaryKey("remind");
             item.setPrimaryValue("提醒");
             item.setSecondaryValue("#FF8524");
-            item.setParent(entity);
+            item.setParent(message);
             dataDictService.save(item);
         }
 

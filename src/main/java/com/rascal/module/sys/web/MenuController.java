@@ -86,19 +86,7 @@ public class MenuController extends BaseController<Menu, Long> {
     @RequestMapping(value = "/data", method = RequestMethod.GET)
     @ResponseBody
     public Object menusData() {
-        List<Map<String, Object>> items = Lists.newArrayList();
-        List<NavMenuVO> navMenuVOs = menuService.findAvailableNavMenuVOs();
-        for (NavMenuVO navMenuVO : navMenuVOs) {
-            //组装zTree结构数据
-            Map<String, Object> item = Maps.newHashMap();
-            item.put("id", navMenuVO.getId());
-            item.put("pId", navMenuVO.getParentId());
-            item.put("name", navMenuVO.getName());
-            item.put("open", true);
-            item.put("isParent", StringUtils.isBlank(navMenuVO.getUrl()));
-            items.add(item);
-        }
-        return items;
+        return menuService.getItemsList(menuService.findAvailableNavMenuVOs());
     }
 
     @RequiresUser
